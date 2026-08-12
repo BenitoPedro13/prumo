@@ -92,6 +92,22 @@ than a form.
 The pre-qualification needs "proceed" and "not yet", and **neither may be red**. "Not yet" is
 useful guidance, not a rejection — it renders in brass. Red is reserved for system errors.
 
+| Token | Light | Dark | Role |
+|---|---|---|---|
+| `--state-ok` | `--verde` | `--verde-deep` ground | "No prumo" |
+| `--state-wait` | `--latao` | `--latao` | "Ainda fora do prumo" — brass, never red |
+| `--state-error` | `#9a3324` | `#e2887a` | System errors only, never a result |
+| `--on-verde` | `#f5f6f1` | `#0f1a15` | Text on a filled verde surface |
+| `--on-latao` | `#f5f6f1` | `#131613` | Text on a filled brass surface |
+
+### Where these live
+
+`src/app/globals.css`, as Tailwind v4 theme variables, available both by their own names
+(`bg-verde`, `text-ink-muted`) and through the shadcn semantic tokens they feed. The palette is
+defined for three theme states — explicit light, explicit dark via `data-theme` on `<html>`, and
+the unstamped system default — and every semantic token derives from it, so a color is changed
+in one place. Changing a value here is a design decision: update this table in the same commit.
+
 ---
 
 ## 04. Typography
@@ -110,6 +126,17 @@ No webfonts. These are system stacks — the page carries no font download, whic
 budget. Body is set **deliberately larger than default**: 17px base, never below 15px for
 anything the buyer must read. This audience reads on mid-range Android, often in sunlight,
 sometimes on a cracked screen. Large type is accessibility and respect in equal measure.
+
+### Scale
+
+Tailwind's default scale is rebuilt around the 17px base rather than layered on top of 16px.
+
+| Step | Size | Use |
+|---|---|---|
+| `text-xs` | 13px | Utility and legal data only. Still clears the 11px CRECI floor |
+| `text-sm` | 15px | The floor for anything the buyer must read |
+| `text-base` | 17px | Body |
+| `text-lg` – `text-4xl` | 19 · 22 · 26 · 32 · 40px | Headings, in the display slab |
 
 ---
 
@@ -154,7 +181,16 @@ social profiles, portal listings.
 **Test:** any screenshot of any part of the system must contain the complete signature. If it
 does not, the layout is wrong.
 
-> Adriana's real CRECI number is still unknown. Every prototype shows `CRECI-RJ 00.000-F`.
+> Adriana's real CRECI number is still unknown. Every prototype shows `CRECI-RJ 00.000-F`, and
+> so does `BROKER_CRECI` in `src/lib/site-config.ts`. It must not reach production.
+
+**Implemented** as `src/components/signature.tsx`, variants `header` · `footer` · `full`. The
+three rules above are computed from the wordmark size by `signatureSizes()` rather than left to
+whoever composes the next screen, so a new surface inherits them instead of re-deriving them.
+
+The wordmark is currently the brand name set in the display slab, with no mark. A drawn plumb
+glyph waits on the name being settled — a mark for a name that may still change to Chão or
+Soleira is work thrown away.
 
 ---
 

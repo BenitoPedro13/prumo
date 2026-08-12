@@ -12,11 +12,11 @@
 
 ## 0. Project context — Prumo
 
-**Status: definition and design complete, no application code yet.** The product, market,
-architecture and phasing live in `docs/product-definition.md`. The visual identity, tokens,
-voice and screen inventory live in `docs/design-handoff.md`. Four working HTML prototypes
-live in `docs/design/prototypes/`. Nothing has been scaffolded — the next step is
-`docs/tasks/TASK-scaffold-nextjs.md`.
+**Status: scaffolded. Themed shell and admin schema in place, no screens yet.** The product,
+market, architecture and phasing live in `docs/product-definition.md`. The visual identity,
+tokens, voice and screen inventory live in `docs/design-handoff.md`. Four working HTML
+prototypes live in `docs/design/prototypes/`. The scaffold is done
+(`docs/tasks/TASK-scaffold-nextjs.md`); Phase 0 screens are next, each with its own task doc.
 
 `docs/product-definition.md` and `docs/design-handoff.md` are the source of truth for *what
 to build*; this file covers *how to work*. The root `README.md` is the implementation README
@@ -48,14 +48,14 @@ a single config constant so a rename is one edit.
 
 | Layer | Choice | Status |
 |---|---|---|
-| Framework | **Next.js** (App Router, TypeScript, `src/` dir, `@/*` alias) — always the latest stable major, never a pinned number (see §2.0) | not scaffolded |
-| Styling / components | **Tailwind CSS v4 + shadcn/ui**, CSS-first config, retheming to the tokens in `docs/design-handoff.md` | not scaffolded |
-| Content + admin | **Payload CMS 3**, embedded in the Next app. Chosen because Adriana is non-technical and the value is *validation* (blocking an expired price table, a missing CRECI) more than editing | not scaffolded |
-| Data + files | Managed **Postgres** (Neon or Supabase) + S3-compatible storage (R2). Renders and floor plans are heavy — the image pipeline matters more than the database | not scaffolded |
-| Messaging | `wa.me` deep links with pre-filled context. **Not** the WhatsApp Business API — at her volume the per-message cost buys nothing. See `docs/product-definition.md` §05 | not scaffolded |
+| Framework | **Next.js** (App Router, TypeScript, `src/` dir, `@/*` alias) — always the latest stable major, never a pinned number (see §2.0) | installed, 16.3.0 · React 19.2.8 · React Compiler on |
+| Styling / components | **Tailwind CSS v4 + shadcn/ui**, CSS-first config, retheming to the tokens in `docs/design-handoff.md` | installed, Tailwind 4.3.3 · shadcn on Radix primitives, `nova` preset, rethemed |
+| Content + admin | **Payload CMS 3**, embedded in the Next app. Chosen because Adriana is non-technical and the value is *validation* (blocking an expired price table, a missing CRECI) more than editing | installed, 3.87.1 · admin pt-BR · schema only, no validation rules yet |
+| Data + files | Managed **Postgres** (Neon or Supabase) + S3-compatible storage (R2). Renders and floor plans are heavy — the image pipeline matters more than the database | adapters wired, **no database provisioned yet** |
+| Messaging | `wa.me` deep links with pre-filled context. **Not** the WhatsApp Business API — at her volume the per-message cost buys nothing. See `docs/product-definition.md` §05 | not built |
 | Credit analysis | Hand off to **Cury's existing broker link**. Never rebuild | n/a |
 | Hosting | **Vercel**, São Paulo edge | not deployed |
-| Package manager | **pnpm** — decided here, never mixed | — |
+| Package manager | **pnpm** — decided here, never mixed | pnpm 11.21.0 |
 
 **Version numbers written anywhere in this repo are a snapshot, not a pin.** See §2.0 before
 adding a dependency.
@@ -101,7 +101,8 @@ or a promise made to the user.
 2. `docs/design-handoff.md` — identity, tokens, type, voice, signature spec, screens.
 3. `docs/design/prototypes/` — four working HTML prototypes. Open them in a browser; they are
    the real reference, not mockups.
-4. `docs/tasks/TASK-scaffold-nextjs.md` — the next unit of work, awaiting approval.
+4. `docs/tasks/` — task docs. `TASK-scaffold-nextjs.md` is done; read it for what the
+   scaffold does and does not include.
 
 ### Open questions blocking Phase 1
 
@@ -240,10 +241,12 @@ emerges.
 - **Proposed layout:**
 
   ```
-  src/app/                   App Router routes — /, /empreendimentos/[slug], /simulador,
+  src/app/(frontend)/        App Router routes — /, /empreendimentos/[slug], /simulador,
                               /p/[token] (proposta), /sobre, /contato; icon.tsx,
                               opengraph-image.tsx, robots.ts, sitemap.ts
-  src/app/(payload)/         Payload admin, pt-BR
+  src/app/(payload)/         Payload admin and REST/GraphQL API, pt-BR. Generated —
+                              regenerate rather than hand-edit
+  src/app/globals.css        design tokens, ported from design-handoff.md §03-04, §07, §09
   src/components/ui/         shadcn primitives
   src/components/            shared composites — signature (CRECI lockup), plumb-rail,
                               site-nav, site-footer
@@ -252,13 +255,27 @@ emerges.
   src/lib/                   cn(); mcmv.ts (faixas, rates, subsidy — admin-backed);
                               incc.ts (projection); site-config.ts (BRAND_NAME, SITE_URL,
                               CRECI); whatsapp.ts (wa.me link builder)
-  src/payload/               collections: Incorporadora, Empreendimento, Tipologia,
-                              CondicaoComercial, Lead, Consentimento, Proposta
+  src/payload/collections/   Incorporadora, Empreendimento, Tipologia, CondicaoComercial,
+                              Media, Users — plus Lead, Consentimento, Proposta in Phase 1
+  src/payload/payload-types.ts  generated; `pnpm generate:types` after any schema change
+  payload.config.ts          root, per Payload's docs. Postgres + S3 adapters, pt-BR admin
   docs/product-definition.md market, product, architecture, phases, risks
   docs/design-handoff.md     identity, tokens, voice, signature spec, screens
   docs/design/prototypes/    four working HTML prototypes (reference, not built output)
   docs/tasks/                task docs (§1)
   ```
+
+- **Two route groups, and nothing at the top of `src/app/`.** Payload's admin ships its own
+  root layout, so the site needs its own alongside it. A file added directly under `src/app/`
+  breaks the admin.
+
+- **The palette is available under its own names** — `bg-verde`, `text-ink-muted`, `border-rule`
+  — as well as through the shadcn semantic tokens they feed. Screens should read the way
+  `design-handoff.md` reads.
+
+- **Dark mode has three states**, and all three are token-driven: explicit light, explicit dark
+  (`data-theme` on `<html>`), and the unstamped system default. Never define a color only inside
+  a media query or a `[data-theme]` block.
 
 - **Language.** All user-facing copy is **Brazilian Portuguese**. Code, comments, commit
   messages and docs are English, except where a domain term has no useful translation — keep
@@ -293,3 +310,13 @@ system. The process should match the size of the problem.
 pre-qualification as orientation and not credit analysis, no invented availability, both
 installment figures shown together, dignity over luxury, no exclamation marks, the page-weight
 budget, MCMV numbers configurable and dated, expired tables blocking proposals.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

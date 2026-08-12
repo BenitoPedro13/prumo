@@ -1,0 +1,262 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+  Design tokens — docs/design-handoff.md §03 (color), §04 (typography), §07 (motion),
+  §09 (layout). Values are ported from the handoff, not invented here. Changing one is a
+  design decision: update the handoff in the same commit.
+*/
+
+/*
+  Dark mode has three states: an explicit choice stamps [data-theme] on <html>; the default
+  "system" setting stamps nothing and only prefers-color-scheme separates light from dark.
+  The palette below flips for all three, so every semantic token that derives from it
+  follows automatically and needs defining only once.
+*/
+@custom-variant dark {
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+      @slot;
+    }
+  }
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+}
+
+/* ---- Palette · light (design-handoff.md §03) ---- */
+:root {
+  --verde: #2e4a3c;
+  --verde-deep: #22392e;
+  --latao: #9c7b3f;
+  --paper: #e8e9e3;
+  --sheet: #f5f6f1;
+  --ink: #22251f;
+  --ink-muted: #5b6157;
+  --rule: #cdd0c6;
+
+  /* Text that sits on a filled verde/latao surface. */
+  --on-verde: #f5f6f1;
+  --on-latao: #f5f6f1;
+
+  /*
+    Pre-qualification states. "Ainda fora do prumo" renders in brass, never red —
+    it is guidance, not a rejection (§03). Red is reserved for system errors.
+  */
+  --state-ok: var(--verde);
+  --state-wait: var(--latao);
+  --state-error: #9a3324;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --verde: #82b598;
+    --verde-deep: #0f1a15;
+    --latao: #c9a464;
+    --paper: #131613;
+    --sheet: #1c201b;
+    --ink: #e7e9e2;
+    --ink-muted: #a3a99d;
+    --rule: #333930;
+
+    --on-verde: #0f1a15;
+    --on-latao: #131613;
+
+    --state-error: #e2887a;
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --verde: #82b598;
+  --verde-deep: #0f1a15;
+  --latao: #c9a464;
+  --paper: #131613;
+  --sheet: #1c201b;
+  --ink: #e7e9e2;
+  --ink-muted: #a3a99d;
+  --rule: #333930;
+
+  --on-verde: #0f1a15;
+  --on-latao: #131613;
+
+  --state-error: #e2887a;
+
+  color-scheme: dark;
+}
+
+/* ---- Type, radius, motion (design-handoff.md §04, §07, §09) ---- */
+:root {
+  /*
+    System stacks only — the page carries no font download, which is what keeps it inside
+    the weight budget in §09.
+  */
+  --font-display: Superclarendon, Rockwell, "Roboto Slab", "Bitstream Charter", Georgia,
+    serif;
+  --font-sans: "Avenir Next", Avenir, "Segoe UI", Roboto, system-ui, -apple-system,
+    sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Light corner radius — deliberately, per §09. */
+  --radius: 0.25rem;
+
+  /* §07: one easing, with a slight overshoot reserved for the bob's drop. */
+  --ease-prumo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---- Semantic tokens consumed by shadcn primitives ---- */
+:root {
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--sheet);
+  --card-foreground: var(--ink);
+  --popover: var(--sheet);
+  --popover-foreground: var(--ink);
+  --primary: var(--verde);
+  --primary-foreground: var(--on-verde);
+  --secondary: var(--sheet);
+  --secondary-foreground: var(--ink);
+  --muted: var(--sheet);
+  --muted-foreground: var(--ink-muted);
+  --accent: color-mix(in oklab, var(--verde) 10%, var(--paper));
+  --accent-foreground: var(--verde);
+  --destructive: var(--state-error);
+  --border: var(--rule);
+  --input: var(--rule);
+  --ring: var(--verde);
+
+  --chart-1: var(--verde);
+  --chart-2: var(--latao);
+  --chart-3: var(--ink-muted);
+  --chart-4: var(--verde-deep);
+  --chart-5: var(--rule);
+
+  --sidebar: var(--sheet);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--verde);
+  --sidebar-primary-foreground: var(--on-verde);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--verde);
+  --sidebar-border: var(--rule);
+  --sidebar-ring: var(--verde);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* The palette by its own names, so screens can read as the handoff reads. */
+  --color-verde: var(--verde);
+  --color-verde-deep: var(--verde-deep);
+  --color-latao: var(--latao);
+  --color-paper: var(--paper);
+  --color-sheet: var(--sheet);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-rule: var(--rule);
+  --color-on-verde: var(--on-verde);
+  --color-on-latao: var(--on-latao);
+  --color-state-ok: var(--state-ok);
+  --color-state-wait: var(--state-wait);
+  --color-state-error: var(--state-error);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --ease-prumo: var(--ease-prumo);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+  §04: body is set deliberately larger than default — 17px base, and nothing the buyer
+  must read falls below 15px (text-sm). This audience reads on mid-range Android, often
+  in sunlight. text-xs exists for utility data only and still clears the 11px CRECI floor.
+*/
+@theme {
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: calc(1.125 / 0.8125);
+  --text-sm: 0.9375rem;
+  --text-sm--line-height: calc(1.375 / 0.9375);
+  --text-base: 1.0625rem;
+  --text-base--line-height: calc(1.625 / 1.0625);
+  --text-lg: 1.1875rem;
+  --text-lg--line-height: calc(1.75 / 1.1875);
+  --text-xl: 1.375rem;
+  --text-xl--line-height: calc(1.875 / 1.375);
+  --text-2xl: 1.625rem;
+  --text-2xl--line-height: calc(2.125 / 1.625);
+  --text-3xl: 2rem;
+  --text-3xl--line-height: calc(2.5 / 2);
+  --text-4xl: 2.5rem;
+  --text-4xl--line-height: calc(3 / 2.5);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground text-base;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* §09: visible keyboard focus everywhere. */
+  :focus-visible {
+    @apply outline-ring outline-2 outline-offset-2;
+  }
+}
+
+/* §07: everything disabled under prefers-reduced-motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

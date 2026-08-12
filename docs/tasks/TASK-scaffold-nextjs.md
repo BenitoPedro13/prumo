@@ -1,6 +1,7 @@
 # TASK — Scaffold the Next.js application
 
-> Status: **awaiting approval.** No code written.
+> Status: **built.** Outstanding: no database provisioned, so the admin has not been run
+> against Postgres. See §7.
 
 ## 1. Current scenario
 
@@ -109,3 +110,65 @@ signature re-implemented per screen is exactly how the screenshot test starts fa
 
 Home, listing, pre-qualification, proposal, simulator, admin validation rules, LGPD consent
 capture, SEO assets, deployment. Each gets its own task doc.
+
+---
+
+## 7. What was actually built
+
+Recorded because the plan above was written before the tooling was checked, and several things
+came back different (`CLAUDE.md` §2.0).
+
+### Versions installed
+
+Next.js 16.3.0 · React 19.2.8 · Tailwind 4.3.3 · Payload 3.87.1 · pnpm 11.21.0. Payload's
+`latest` is 3.88.0; pnpm's supply-chain policy held it back one patch, which is that policy
+working as intended and not worth overriding.
+
+### Deviations from the plan
+
+- **Two route groups, `(frontend)` and `(payload)`.** Not in the plan. Payload's admin ships its
+  own root layout, so the site cannot keep its routes at the top of `src/app/` — a file there
+  breaks the admin. `CLAUDE.md` §4's layout block is updated to match.
+- **Two collections beyond the four.** `Users` because Payload needs an auth collection to sign
+  into the panel at all, and `Media` because `planta[]` and `midia[]` are upload fields with
+  nothing to point at without it. Both are infrastructure, filed under a "Sistema" admin group
+  rather than the catalogue. Lead, Consentimento and Proposta remain deliberately absent.
+- **shadcn's CLI has changed shape.** `init` now takes a component library (`--base radix`) and a
+  preset (`--preset nova`) rather than a base colour. Radix over Base UI for maturity; the preset
+  only seeds an icon library and a starting theme, both of which the retheme replaces.
+- **React Compiler enabled.** Not in the plan. The pre-qualification is a six-step form whose
+  rail re-renders on every answer, which is the shape the compiler exists for — automatic
+  memoisation there beats hand-placed `useMemo` kept correct by discipline.
+- **A theme toggle**, `src/components/theme-toggle.tsx`, marked scaffold-scope. The three theme
+  states are a token contract and this is the only practical way to check them by hand. Whether
+  the finished site offers a theme control is an open design decision.
+- **No plumb glyph in the wordmark.** The mark waits on the name being settled; drawing one for a
+  name that may still become Chao or Soleira is work thrown away.
+- **`next dev` appends its own agent-rules block to `CLAUDE.md`** on every run. It is accurate
+  and self-maintaining, so it is committed rather than fought. The opt-out, if it ever becomes
+  noise, is `agentRules: false` in `next.config.ts`.
+
+### Additions to the design handoff
+
+`design-handoff.md` §03 gains the state and on-surface tokens the palette table implied but did
+not name, and §04 gains the type scale that the 17px base and 15px floor imply. §06 records that
+the proportions are now computed rather than observed.
+
+### Done-when, checked
+
+- `pnpm build` passes, `pnpm lint` passes, `tsc --noEmit` clean.
+- `/` renders; the palette, both type stacks and the 0.25rem radius resolve in the compiled CSS,
+  with all three theme states emitted.
+- `Signature` renders in all three variants. Measured from the served HTML: header 20/13/11px,
+  footer 24/15/12px, full 32/20/13px — each clears the >=50% name, >=25% CRECI and 11px floor
+  rules in `design-handoff.md` §06.
+- `payload generate:importmap` and `payload generate:types` both succeed, so the config and all
+  six collections load.
+- **Not checked: the admin against a real database.** There is no Postgres or Docker on this
+  machine, so `/admin` reaches the connection and fails there. It needs a `DATABASE_URL` from
+  Neon or Supabase before "the four collections accept a record" can be confirmed.
+
+### Still placeholder
+
+`BROKER_CRECI` and `WHATSAPP_NUMBER` in `src/lib/site-config.ts`, and
+`public/adriana-placeholder.jpg`. None may reach production.
