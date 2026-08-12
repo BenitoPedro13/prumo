@@ -1,0 +1,815 @@
+<title>No Prumo</title>
+<style>
+  :root {
+    --ground:     #edebe6;
+    --surface:    #f7f6f2;
+    --surface-2:  #e3e0d8;
+    --ink:        #26241f;
+    --ink-muted:  #5f5b52;
+    --ink-faint:  #8b867b;
+    --rule:       #d6d2c8;
+    --rule-soft:  #e3e0d8;
+    --verde:      #2e4a3c;
+    --verde-soft: #dfe6e0;
+    --brass:      #9c7b3f;
+    --brass-soft: #f0e8d8;
+
+    --display: Charter, "Bitstream Charter", "Iowan Old Style", Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:     #191813;
+      --surface:    #221f1a;
+      --surface-2:  #2c2922;
+      --ink:        #eae7de;
+      --ink-muted:  #a9a396;
+      --ink-faint:  #7a7468;
+      --rule:       #37332b;
+      --rule-soft:  #2c2922;
+      --verde:      #7fb295;
+      --verde-soft: #1d2b23;
+      --brass:      #c9a464;
+      --brass-soft: #2b2417;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:     #191813;
+    --surface:    #221f1a;
+    --surface-2:  #2c2922;
+    --ink:        #eae7de;
+    --ink-muted:  #a9a396;
+    --ink-faint:  #7a7468;
+    --rule:       #37332b;
+    --rule-soft:  #2c2922;
+    --verde:      #7fb295;
+    --verde-soft: #1d2b23;
+    --brass:      #c9a464;
+    --brass-soft: #2b2417;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--verde); text-underline-offset: 2px; }
+  a:focus-visible { outline: 2px solid var(--verde); outline-offset: 3px; }
+
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 32px; }
+
+  /* ---------- the plumb spine ---------- */
+
+  .spine {
+    position: relative;
+    padding-left: 58px;
+  }
+  .spine::before {
+    content: "";
+    position: absolute;
+    left: 15px; top: 0; bottom: 0;
+    width: 1px;
+    background: var(--rule);
+  }
+
+  /* ---------- hero ---------- */
+
+  .hero {
+    background: var(--surface);
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero-inner {
+    padding: 74px 0 62px;
+    display: grid;
+    gap: 34px;
+  }
+  .kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+  }
+  .kicker b { color: var(--verde); font-weight: 500; }
+
+  .lockup { display: flex; align-items: flex-end; gap: 22px; flex-wrap: wrap; }
+  .bob { flex: 0 0 auto; }
+  .wordmark {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(52px, 11vw, 104px);
+    line-height: 0.82;
+    letter-spacing: 0.06em;
+    margin: 0;
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+  .tagline {
+    font-family: var(--display);
+    font-size: clamp(19px, 2.5vw, 25px);
+    line-height: 1.4;
+    color: var(--ink-muted);
+    margin: 0;
+    max-width: 40ch;
+  }
+  .tagline em { font-style: italic; color: var(--verde); }
+
+  /* ---------- sections ---------- */
+
+  section { padding: 58px 0; border-bottom: 1px solid var(--rule-soft); }
+  section:last-of-type { border-bottom: none; }
+
+  .shead { display: grid; gap: 8px; margin-bottom: 26px; }
+  .snum {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brass);
+  }
+  h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(26px, 3.6vw, 36px);
+    line-height: 1.13;
+    margin: 0;
+    text-wrap: balance;
+    max-width: 22ch;
+  }
+  h3 {
+    font-family: var(--sans);
+    font-weight: 650;
+    font-size: 14.5px;
+    margin: 26px 0 10px;
+  }
+  p { margin: 0 0 16px; max-width: 66ch; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 16px; padding-left: 20px; max-width: 66ch; display: grid; gap: 8px; }
+  li::marker { color: var(--ink-faint); }
+  .m { font-family: var(--mono); font-size: 0.87em; background: var(--surface-2); padding: 1px 5px; }
+
+  /* ---------- name candidates ---------- */
+
+  .names { display: grid; gap: 0; border-top: 1px solid var(--ink); }
+  .cand {
+    display: grid;
+    grid-template-columns: 168px minmax(0, 1fr);
+    gap: 0 32px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    align-items: start;
+  }
+  .cand.pick { background: var(--verde-soft); padding-left: 20px; padding-right: 20px; margin-left: -20px; margin-right: -20px; }
+  .cand-name {
+    font-family: var(--display);
+    font-size: 27px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+  }
+  .cand.pick .cand-name { color: var(--verde); }
+  .cand-meta {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-top: 6px;
+  }
+  .cand-body { display: grid; gap: 9px; }
+  .cand-body p { margin: 0; font-size: 15px; max-width: 62ch; }
+  .cand-body .against { color: var(--ink-muted); font-size: 14.5px; }
+  .cand-body .against b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- palette ---------- */
+
+  .swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: 14px; }
+  .sw { display: grid; gap: 0; border: 1px solid var(--rule); }
+  .sw .chip { height: 74px; }
+  .sw .meta { padding: 11px 13px; background: var(--surface); display: grid; gap: 3px; }
+  .sw .nm { font-size: 13.5px; font-weight: 650; }
+  .sw .hx { font-family: var(--mono); font-size: 11.5px; color: var(--ink-muted); }
+  .sw .role { font-size: 12px; color: var(--ink-muted); line-height: 1.35; }
+
+  /* ---------- type specimen ---------- */
+
+  .spec { border: 1px solid var(--rule); background: var(--surface); display: grid; }
+  .spec-row { padding: 20px 22px; border-bottom: 1px solid var(--rule-soft); display: grid; gap: 9px; }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-lbl {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .sp-display { font-family: var(--display); font-size: clamp(27px, 4vw, 40px); font-weight: 700; line-height: 1.12; margin: 0; }
+  .sp-body { font-family: var(--sans); font-size: 17px; line-height: 1.6; margin: 0; max-width: 60ch; }
+  .sp-mono { font-family: var(--mono); font-size: 13px; letter-spacing: 0.06em; margin: 0; }
+
+  /* ---------- signature ---------- */
+
+  .sig-demo {
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    padding: 26px 24px;
+    display: grid;
+    gap: 22px;
+  }
+  .sig {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .sig-photo {
+    width: 52px; height: 52px;
+    flex: 0 0 auto;
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    display: grid;
+    place-items: center;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-faint);
+    text-align: center;
+    line-height: 1.2;
+  }
+  .sig-text { display: grid; gap: 1px; }
+  .sig-name { font-size: 16px; font-weight: 650; line-height: 1.25; }
+  .sig-role { font-size: 13px; color: var(--ink-muted); line-height: 1.3; }
+  .sig-creci {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--ink-muted);
+    line-height: 1.3;
+  }
+  .sig-caption {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .ratio { display: grid; gap: 0; border-top: 1px solid var(--ink); }
+  .ratio-row {
+    display: grid;
+    grid-template-columns: 150px 88px minmax(0, 1fr);
+    gap: 0 20px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    font-size: 14.5px;
+    align-items: baseline;
+  }
+  .ratio-row .el { font-weight: 600; }
+  .ratio-row .val { font-family: var(--mono); font-size: 13px; color: var(--brass); font-variant-numeric: tabular-nums; }
+  .ratio-row .rl { color: var(--ink-muted); font-size: 14px; line-height: 1.45; }
+  .ratio-head { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.11em; text-transform: uppercase; color: var(--ink-faint); font-weight: 400; }
+
+  /* ---------- applications ---------- */
+
+  .apps { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 18px; }
+  .app { border: 1px solid var(--rule); background: var(--surface); display: grid; }
+  .app-cap {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .app-body { padding: 16px 14px; display: grid; gap: 12px; }
+
+  .mock-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .mock-wm { font-family: var(--display); font-weight: 700; font-size: 19px; letter-spacing: 0.07em; text-transform: uppercase; }
+  .mock-og {
+    background: var(--verde);
+    padding: 20px 18px;
+    display: grid;
+    gap: 14px;
+    min-height: 158px;
+    align-content: space-between;
+  }
+  .mock-og .og-wm { font-family: var(--display); font-weight: 700; font-size: 17px; letter-spacing: 0.07em; text-transform: uppercase; color: #f7f6f2; }
+  .mock-og .og-h { font-family: var(--display); font-size: 21px; font-weight: 700; line-height: 1.18; color: #f7f6f2; margin: 0; }
+  .mock-og .og-sig { font-size: 12px; color: #cfdcd3; line-height: 1.4; }
+  .mock-og .og-sig b { color: #f7f6f2; font-weight: 600; display: block; }
+
+  .mock-wa { display: grid; gap: 8px; }
+  .bubble {
+    background: var(--verde-soft);
+    border: 1px solid var(--rule);
+    padding: 10px 12px;
+    font-size: 13.5px;
+    line-height: 1.45;
+    max-width: 92%;
+  }
+  .bubble .link { color: var(--verde); font-size: 12.5px; font-family: var(--mono); word-break: break-all; }
+
+  /* ---------- note ---------- */
+
+  .note {
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--brass);
+    background: var(--surface);
+    padding: 18px 20px;
+    display: grid;
+    gap: 7px;
+    max-width: 66ch;
+  }
+  .note .nk {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brass);
+  }
+  .note p { margin: 0; }
+
+  /* ---------- next ---------- */
+
+  ol.next { counter-reset: n; list-style: none; padding: 0; margin: 0; display: grid; border-top: 1px solid var(--ink); max-width: none; }
+  ol.next li {
+    counter-increment: n;
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 0 18px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  ol.next li::before {
+    content: counter(n, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--brass);
+    padding-top: 4px;
+  }
+  ol.next p { margin: 0; }
+  ol.next .sub { color: var(--ink-muted); font-size: 14.5px; margin-top: 3px; }
+
+  @media (max-width: 780px) {
+    .wrap { padding: 0 20px; }
+    .spine { padding-left: 30px; }
+    .spine::before { left: 7px; }
+    .cand { grid-template-columns: 1fr; gap: 10px; }
+    .cand.pick { margin-left: -12px; margin-right: -12px; padding-left: 12px; padding-right: 12px; }
+    .ratio-row { grid-template-columns: 1fr 80px; gap: 4px 14px; }
+    .ratio-row .rl { grid-column: 1 / -1; }
+    .ratio-row .ratio-head:nth-child(3) { display: none; }
+  }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-inner spine">
+      <div class="kicker">
+        <span>Identidade</span>
+        <span><b>Proposta de marca</b></span>
+        <span>Corretora autônoma · Cury · SP/RJ</span>
+        <span>12 ago 2026</span>
+      </div>
+
+      <div class="lockup">
+        <svg class="bob" width="46" height="104" viewBox="0 0 46 104" aria-label="Marca: prumo" role="img">
+          <line x1="23" y1="0" x2="23" y2="58" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M23 58 L36 74 L23 96 L10 74 Z" fill="currentColor"/>
+          <line x1="23" y1="96" x2="23" y2="104" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <h1 class="wordmark">Prumo</h1>
+      </div>
+
+      <p class="tagline">
+        O prumo é o instrumento que diz se algo está <em>certo</em>. Não decora, não
+        promete — só mostra a verdade e deixa você decidir.
+      </p>
+    </div>
+  </div>
+</header>
+
+<main class="wrap spine">
+
+  <!-- 01 -->
+  <section>
+    <div class="shead">
+      <div class="snum">01 — Recomendação</div>
+      <h2>Por que Prumo</h2>
+    </div>
+    <p>
+      A definição do sistema concluiu que o produto dela é honestidade: dizer a uma família se
+      ela consegue, antes de vender o sonho. O nome precisa carregar isso sem anunciar isso.
+    </p>
+    <p>
+      <strong>Prumo</strong> é o fio com peso que encontra a vertical verdadeira. É a ferramenta
+      mais antiga da construção, e a mais simples: não calcula, não opina, só revela o que está
+      certo e o que está torto. <em>"Estar no prumo"</em> já significa, em português corrente,
+      estar correto e em ordem — o nome carrega a promessa da marca sem precisar explicá-la.
+    </p>
+    <p>
+      Quatro razões práticas o colocam à frente dos outros quatro candidatos:
+    </p>
+    <ul>
+      <li><strong>É vocabulário de obra, não vocabulário de elite.</strong> Todo pedreiro conhece a palavra. Isso importa muito: o nome sinaliza pertencimento ao mundo do comprador, não distância dele.</li>
+      <li><strong>Não é imobiliário genérico.</strong> Não tem "imóveis", "casa", "lar" nem "chave" — as quatro palavras que tornam toda corretora indistinguível e todo domínio indisponível.</li>
+      <li><strong>Sobrevive à Cury.</strong> Ela já trocou de construtora uma vez. O nome não se prende a produto, segmento nem faixa de renda; se ela subir de segmento em cinco anos, continua servindo.</li>
+      <li><strong>Vira desenho sozinho.</strong> Um fio e um peso. Funciona a 16px num favicon e a 2m numa fachada, em uma cor só.</li>
+    </ul>
+    <div class="note">
+      <div class="nk">Verificar antes de fechar</div>
+      <p>
+        Disponibilidade de <span class="m">prumo.com.br</span> ou <span class="m">noprumo.com.br</span>
+        no Registro.br, do @ no Instagram, e busca de marca no INPI na classe de serviços
+        imobiliários. Nenhuma dessas eu consigo confirmar daqui — são 15 minutos de checagem antes
+        de qualquer arte final.
+      </p>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section>
+    <div class="shead">
+      <div class="snum">02 — Alternativas</div>
+      <h2>Os outros quatro, e por que não</h2>
+    </div>
+    <p>
+      Todos passam no teste legal e todos funcionam ao lado do nome real dela. Estão aqui com o
+      argumento contra explícito, para a escolha ser dela e não minha.
+    </p>
+
+    <div class="names">
+      <div class="cand pick">
+        <div>
+          <div class="cand-name">Prumo</div>
+          <div class="cand-meta">Recomendado · precisão</div>
+        </div>
+        <div class="cand-body">
+          <p>O fio que encontra a vertical verdadeira. Honestidade como instrumento, não como discurso.</p>
+          <p class="against"><b>Contra:</b> parte do público vai precisar de uma frase para entender. Isso é custo real, mas se paga: o que precisa ser explicado uma vez é lembrado, e a explicação <em>é</em> o posicionamento.</p>
+        </div>
+      </div>
+
+      <div class="cand">
+        <div>
+          <div class="cand-name">Chão</div>
+          <div class="cand-meta">Segurança</div>
+        </div>
+        <div class="cand-body">
+          <p>"Ter um chão" é exatamente o que essa família está comprando. Curto, quente, imediato, sem nenhuma barreira de compreensão.</p>
+          <p class="against"><b>Contra:</b> talvez humilde demais para uma decisão de R$ 300 mil, e difícil de proteger — palavra comum demais para registro no INPI e para busca.</p>
+        </div>
+      </div>
+
+      <div class="cand">
+        <div>
+          <div class="cand-name">Soleira</div>
+          <div class="cand-meta">Passagem</div>
+        </div>
+        <div class="cand-body">
+          <p>A pedra da porta que se atravessa ao entrar. Metáfora precisa do momento de virar proprietário, e sonoramente bonita.</p>
+          <p class="against"><b>Contra:</b> mais literária que as outras, e o feminino singular soa delicado num setor onde ela já precisa afirmar autoridade.</p>
+        </div>
+      </div>
+
+      <div class="cand">
+        <div>
+          <div class="cand-name">Raiz</div>
+          <div class="cand-meta">Permanência</div>
+        </div>
+        <div class="cand-body">
+          <p>Duplo sentido forte: criar raiz num lugar, e a gíria "é raiz" — autêntico, sem firula. Muito brasileiro e muito quente.</p>
+          <p class="against"><b>Contra:</b> a gíria envelhece e já foi bastante usada por marcas. Daqui a cinco anos pode datar o projeto.</p>
+        </div>
+      </div>
+
+      <div class="cand">
+        <div>
+          <div class="cand-name">Boa Praça</div>
+          <div class="cand-meta">Confiança</div>
+        </div>
+        <div class="cand-body">
+          <p>Pessoa boa de tratar, e literalmente a praça do bairro. O duplo sentido é encantador e desarma na hora.</p>
+          <p class="against"><b>Contra:</b> informal demais para o único assunto em que o comprador não quer descontração — dinheiro, contrato e crédito.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section>
+    <div class="shead">
+      <div class="snum">03 — Cor</div>
+      <h2>Verde profundo e latão</h2>
+    </div>
+    <p>
+      A tese do §04 da definição era <strong>dignidade, não luxo</strong>. A paleta executa isso
+      evitando os dois extremos: o amarelo-e-verde saturado da convenção do MCMV, e o preto-e-dourado
+      do alto padrão, que diz "não é para você".
+    </p>
+    <p>
+      O verde-mata é calmo, institucional e sério sem ser frio — e carrega, sem gritar, a leitura de
+      "aprovado, pode seguir", que é a emoção central da pré-qualificação. O latão aparece pouco: só
+      em números, marcadores e destaques. Os neutros são de reboco e cal, quentes, para a página
+      parecer um lugar e não um formulário.
+    </p>
+
+    <div class="swatches">
+      <div class="sw">
+        <div class="chip" style="background:#2e4a3c"></div>
+        <div class="meta">
+          <div class="nm">Verde mata</div>
+          <div class="hx">#2E4A3C</div>
+          <div class="role">Acento único. Ações, links, marca.</div>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background:#9c7b3f"></div>
+        <div class="meta">
+          <div class="nm">Latão</div>
+          <div class="hx">#9C7B3F</div>
+          <div class="role">Raro. Números, marcadores, ênfase.</div>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background:#edebe6"></div>
+        <div class="meta">
+          <div class="nm">Reboco</div>
+          <div class="hx">#EDEBE6</div>
+          <div class="role">Fundo da página.</div>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background:#f7f6f2"></div>
+        <div class="meta">
+          <div class="nm">Cal</div>
+          <div class="hx">#F7F6F2</div>
+          <div class="role">Cartões, campos, superfícies.</div>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background:#26241f"></div>
+        <div class="meta">
+          <div class="nm">Tinta</div>
+          <div class="hx">#26241F</div>
+          <div class="role">Texto. Preto quente, nunca #000.</div>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background:#d6d2c8"></div>
+        <div class="meta">
+          <div class="nm">Fio</div>
+          <div class="hx">#D6D2C8</div>
+          <div class="role">Réguas, bordas, separadores.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Cores de estado</h3>
+    <p>
+      A pré-qualificação precisa de "segue" e "ainda não", e nenhum dos dois pode ser vermelho.
+      "Ainda não" é uma orientação útil, não uma reprovação — em latão, nunca em alerta. Vermelho
+      fica reservado a erro de sistema.
+    </p>
+  </section>
+
+  <!-- 04 -->
+  <section>
+    <div class="shead">
+      <div class="snum">04 — Tipografia</div>
+      <h2>Serifa robusta, corpo grande</h2>
+    </div>
+    <p>
+      Charter — com Georgia como reserva — é uma serifa de baixo contraste feita para segurar em
+      tela ruim e impressão barata. É sólida e sem pretensão: bem-feita sem ser cara, que é
+      literalmente a tese da marca. As duas estão em praticamente todo aparelho, então a página
+      carrega sem baixar fonte, o que também serve o orçamento de peso.
+    </p>
+    <p>
+      O corpo é a sans do sistema, em tamanho <strong>deliberadamente maior que o padrão</strong>:
+      17px de base, nunca abaixo de 15px em nada que o comprador precise ler. O público lê em
+      Android intermediário, muitas vezes no sol, às vezes com a tela trincada. Corpo grande aqui
+      é acessibilidade e é respeito na mesma medida.
+    </p>
+
+    <div class="spec">
+      <div class="spec-row">
+        <div class="spec-lbl">Display · Charter / Georgia 700</div>
+        <p class="sp-display">Você vai saber se consegue, hoje.</p>
+      </div>
+      <div class="spec-row">
+        <div class="spec-lbl">Corpo · sans do sistema · 17px / 1.6</div>
+        <p class="sp-body">
+          As parcelas antes da entrega são corrigidas todo mês pelo INCC, o índice que acompanha o
+          custo da obra. Isso significa que a parcela de hoje não é a mesma do ano que vem. A gente
+          mostra as duas, para não ter surpresa.
+        </p>
+      </div>
+      <div class="spec-row">
+        <div class="spec-lbl">Utilitária · mono · números e dados legais</div>
+        <p class="sp-mono">R$ 279.000 · 42 m² · CRECI-SP 123.456-F · RI 12.345 · 1º Ofício</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <div class="nk">Regra de copy herdada da definição</div>
+      <p>
+        Nenhum ponto de exclamação, em lugar nenhum. Nenhuma caixa alta em frase. Nenhuma urgência
+        fabricada. A voz é adulta e calma — é o contraste mais barato e mais visível com a
+        concorrência dela.
+      </p>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section>
+    <div class="shead">
+      <div class="snum">05 — Assinatura</div>
+      <h2>A exigência legal é o melhor ativo da marca</h2>
+    </div>
+    <p>
+      Como ela é autônoma, o nome de projeto só é permitido se o nome real dela aparecer junto, com
+      destaque. Em vez de tratar isso como imposto, a identidade se organiza em torno disso: a marca
+      dá seriedade, a pessoa dá confiança, e o comprador de MCMV procura exatamente as duas coisas
+      ao mesmo tempo.
+    </p>
+
+    <div class="sig-demo">
+      <div class="sig">
+        <div class="sig-photo">FOTO</div>
+        <div class="sig-text">
+          <div class="sig-name">Ana Lúcia Ferreira</div>
+          <div class="sig-role">Corretora de Imóveis · Profissional liberal</div>
+          <div class="sig-creci">CRECI-SP 123.456-F</div>
+        </div>
+      </div>
+      <div class="sig-caption">Nome, CRECI e foto ilustrativos — substituir pelos reais</div>
+    </div>
+
+    <h3>Proporções</h3>
+    <div class="ratio">
+      <div class="ratio-row">
+        <div class="ratio-head">Elemento</div>
+        <div class="ratio-head">Mínimo</div>
+        <div class="ratio-head">Regra</div>
+      </div>
+      <div class="ratio-row">
+        <div class="el">Nome dela</div>
+        <div class="val">≥ 50%</div>
+        <div class="rl">Do corpo do wordmark na mesma peça. Padrão nosso, mais rigoroso que o exigido.</div>
+      </div>
+      <div class="ratio-row">
+        <div class="el">CRECI</div>
+        <div class="val">≥ 25%</div>
+        <div class="rl">Do maior nome da peça — o wordmark, não o nome dela. Leitura conservadora da regra.</div>
+      </div>
+      <div class="ratio-row">
+        <div class="el">CRECI · piso</div>
+        <div class="val">11px</div>
+        <div class="rl">Nunca menor, mesmo que a proporção permita. 25% de um wordmark pequeno daria texto ilegível — a regra é um mínimo legal, não um alvo de design.</div>
+      </div>
+      <div class="ratio-row">
+        <div class="el">Foto</div>
+        <div class="val">obrigatória</div>
+        <div class="rl">Na proposta e na página "sobre". Opcional no rodapé de páginas internas.</div>
+      </div>
+    </div>
+
+    <h3>Onde aparece, sempre</h3>
+    <ul>
+      <li>Cabeçalho ou primeira dobra de toda página, e rodapé de todas.</li>
+      <li>Toda ficha de empreendimento, toda proposta compartilhada, todo resultado de pré-qualificação.</li>
+      <li>Imagem de Open Graph, PDF exportado, perfis sociais e anúncios em portais.</li>
+    </ul>
+    <div class="note">
+      <div class="nk">Regra de teste</div>
+      <p>
+        Qualquer captura de tela de qualquer parte do sistema precisa conter a assinatura completa.
+        Se não contiver, o layout está errado. Isso cobre de uma vez os três lugares onde o descuido
+        realmente acontece — o OG, o PDF, e a página compartilhada isolada no WhatsApp.
+      </p>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section>
+    <div class="shead">
+      <div class="snum">06 — Aplicações</div>
+      <h2>Como isso chega no celular</h2>
+    </div>
+    <p>
+      O sistema quase nunca será visto num desktop. Ele será visto num link do WhatsApp, e a
+      primeira impressão é a prévia do link — que por isso é uma peça de marca, não um resto técnico.
+    </p>
+
+    <div class="apps">
+      <div class="app">
+        <div class="app-cap">Cabeçalho do site</div>
+        <div class="app-body">
+          <div class="mock-nav">
+            <div style="display:flex; align-items:center; gap:9px;">
+              <svg width="13" height="30" viewBox="0 0 46 104" aria-hidden="true">
+                <line x1="23" y1="0" x2="23" y2="58" stroke="currentColor" stroke-width="3"/>
+                <path d="M23 58 L36 74 L23 96 L10 74 Z" fill="currentColor"/>
+              </svg>
+              <span class="mock-wm">Prumo</span>
+            </div>
+            <div class="sig-text">
+              <div class="sig-name" style="font-size:13px">Ana Lúcia Ferreira</div>
+              <div class="sig-creci" style="font-size:11px">Corretora de Imóveis · CRECI-SP 123.456-F</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app">
+        <div class="app-cap">Prévia do link · Open Graph</div>
+        <div class="mock-og">
+          <div class="og-wm">Prumo</div>
+          <h4 class="og-h">Separei duas opções para você e o Marcos.</h4>
+          <div class="og-sig">
+            <b>Ana Lúcia Ferreira</b>
+            Corretora de Imóveis · CRECI-SP 123.456-F
+          </div>
+        </div>
+      </div>
+
+      <div class="app">
+        <div class="app-cap">Como ela manda</div>
+        <div class="app-body">
+          <div class="mock-wa">
+            <div class="bubble">
+              Oi Juliana, tudo bem? Montei uma página só com as duas plantas que a gente viu, já com
+              a conta certinha da entrada e das parcelas.
+            </div>
+            <div class="bubble">
+              <span class="link">prumo.com.br/p/8f3a</span>
+            </div>
+            <div class="bubble">
+              Dá uma olhada com calma e me fala o que achou. Qualquer dúvida é só chamar.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>O favicon</h3>
+    <p>
+      O prumo em uma cor, sem o wordmark. É a razão de a marca ser um fio e um peso e não uma casa
+      estilizada: a 16px, casa vira mancha — fio e triângulo continuam legíveis.
+    </p>
+  </section>
+
+  <!-- 07 -->
+  <section>
+    <div class="shead">
+      <div class="snum">07 — Sequência</div>
+      <h2>O que fazer com isto</h2>
+    </div>
+    <ol class="next">
+      <li>
+        <div>
+          <p>Escolher o nome com ela.</p>
+          <p class="sub">Mostre os cinco, não só o recomendado. É a marca dela e ela precisa conseguir dizer o nome em voz alta sem hesitar.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p>Checar domínio, @ e INPI.</p>
+          <p class="sub">15 minutos. Pode derrubar a primeira escolha — por isso há mais quatro.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p>Coletar os dados reais da assinatura.</p>
+          <p class="sub">Nome completo como consta no CRECI, número e formato exatos, e uma foto boa. A foto é peça de marca; vale contratar alguém por uma hora.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p>Escrever o TASK doc e abrir o repositório.</p>
+          <p class="sub">Projeto novo, fora do repo do estúdio. Fase 0 conforme §08 da definição.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p>Desenhar a pré-qualificação.</p>
+          <p class="sub">Primeira tela real, já nestes tokens. É onde a tese vive ou morre.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+</main>

@@ -1,0 +1,295 @@
+# Workflow Guidelines — Prumo (Corretora de Imóveis, Rio de Janeiro)
+
+> This file follows a portable process template (plan before you touch anything, lean on
+> existing tooling while you work, treat documentation as part of the deliverable when you
+> finish) instantiated for this specific project. Section 0 is project-specific; sections
+> 1–4 are the portable rules with paths and examples adapted to this repo.
+>
+> The philosophy in one line: **Plan before you write, lean on existing tooling while you
+> work, and treat documentation as part of the deliverable when you finish.**
+
+---
+
+## 0. Project context — Prumo
+
+**Status: definition and design complete, no application code yet.** The product, market,
+architecture and phasing live in `docs/product-definition.md`. The visual identity, tokens,
+voice and screen inventory live in `docs/design-handoff.md`. Four working HTML prototypes
+live in `docs/design/prototypes/`. Nothing has been scaffolded — the next step is
+`docs/tasks/TASK-scaffold-nextjs.md`.
+
+`docs/product-definition.md` and `docs/design-handoff.md` are the source of truth for *what
+to build*; this file covers *how to work*. The root `README.md` is the implementation README
+(setup, scripts, status).
+
+### What this is
+
+A marketing and pre-qualification site for **Adriana Monteiro**, an autonomous real-estate
+broker (corretora autônoma, pessoa física) in Rio de Janeiro who resells **Cury Construtora**
+launches — Porto Maravilha, Niterói, Barra da Tijuca and Recreio. Cury's Rio product is
+concentrated in Minha Casa Minha Vida, mostly Faixas 2 and 3, from around R$ 210 mil.
+
+She does not own inventory, set prices, or control delivery. She competes against **other
+brokers selling the identical units with the identical Cury PDFs**. Therefore 100% of the
+available differentiation is the buyer's experience — which is the entire thesis of this
+project. See `docs/product-definition.md` §01–02.
+
+**The product in one sentence:** answer *"eu consigo?"* before answering *"qual
+apartamento?"* — because in MCMV the anxiety is credit approval, not finishes.
+
+### Naming — unresolved
+
+**"Prumo" is the working codename, not a confirmed brand.** `prumo.com.br` and `prumo.co` are
+both taken. Four alternatives (Chão, Soleira, Raiz, Boa Praça) are documented with rationale in
+`docs/design-handoff.md`. Adriana has not chosen yet. Do not hardcode the name — it belongs in
+a single config constant so a rename is one edit.
+
+### Stack
+
+| Layer | Choice | Status |
+|---|---|---|
+| Framework | **Next.js** (App Router, TypeScript, `src/` dir, `@/*` alias) — always the latest stable major, never a pinned number (see §2.0) | not scaffolded |
+| Styling / components | **Tailwind CSS v4 + shadcn/ui**, CSS-first config, retheming to the tokens in `docs/design-handoff.md` | not scaffolded |
+| Content + admin | **Payload CMS 3**, embedded in the Next app. Chosen because Adriana is non-technical and the value is *validation* (blocking an expired price table, a missing CRECI) more than editing | not scaffolded |
+| Data + files | Managed **Postgres** (Neon or Supabase) + S3-compatible storage (R2). Renders and floor plans are heavy — the image pipeline matters more than the database | not scaffolded |
+| Messaging | `wa.me` deep links with pre-filled context. **Not** the WhatsApp Business API — at her volume the per-message cost buys nothing. See `docs/product-definition.md` §05 | not scaffolded |
+| Credit analysis | Hand off to **Cury's existing broker link**. Never rebuild | n/a |
+| Hosting | **Vercel**, São Paulo edge | not deployed |
+| Package manager | **pnpm** — decided here, never mixed | — |
+
+**Version numbers written anywhere in this repo are a snapshot, not a pin.** See §2.0 before
+adding a dependency.
+
+### Things that must not break
+
+These are not style preferences. Each one is either a legal requirement, the product thesis,
+or a promise made to the user.
+
+- **The CRECI signature is a component, present on every surface.** Adriana's full name,
+  "Corretora de Imóveis", and her CRECI-RJ number, with her photo. Required on every page, every
+  shared proposal, every pre-qualification result, the OG image, exported PDFs, social profiles
+  and portal listings. Proportions: her name ≥ 50% of the wordmark, CRECI ≥ 25% of the largest
+  name on the piece, and **never below 11px** regardless of what the ratio permits.
+  **Test: any screenshot of any screen must contain the complete signature.**
+- **Her real name must always accompany the project name.** She is PF, so a nome fantasia is
+  only permitted as a pseudonym when her real name appears clearly and prominently alongside it.
+  Dropping her name to "clean up" a layout is a legal regression, not a design improvement.
+- **The pre-qualification is orientation, not credit analysis.** No bureau lookups, no document
+  uploads, no promise of approval. Everything it outputs is labelled an estimate. Crossing that
+  line adds regulatory and LGPD risk for zero product gain.
+- **Never claim availability she cannot guarantee.** The sales mirror is Cury's and changes
+  hourly. Language is "consultar disponibilidade", never "disponível", and anything stock-derived
+  carries a timestamp.
+- **Both installment figures always appear together** — nominal today and INCC-projected at
+  handover. Showing only the first is the industry's standard omission and the thing this
+  product exists to correct.
+- **Dignity, not luxury.** Marble, gold, thin display serifs, "exclusivo", "seleto" — a family
+  earning R$ 5 mil reads these as *not for me*. What transfers from high-end work is respect:
+  space, calm, complete information, no shouting.
+- **No exclamation marks. No fabricated urgency. No sentence-case shouting.** A copy rule, not a
+  suggestion — it is the cheapest and most visible contrast with her competition.
+- **Page weight is an ethical constraint.** Much of this audience is on prepaid data. Budget:
+  < 500 KB above the fold, AVIF, no autoplay video, LCP under 2.0s on 4G.
+- **MCMV faixas, rates and subsidy bands are configurable in the admin, never hardcoded**, with
+  the date of last revision displayed. They changed in 2026 and will change again.
+- **An expired price table blocks proposal generation.** A deliberate hard gate — a proposal
+  built on a stale table is the most expensive mistake available here.
+
+### Start here
+
+1. `docs/product-definition.md` — market, product, architecture, data model, phases, risks.
+2. `docs/design-handoff.md` — identity, tokens, type, voice, signature spec, screens.
+3. `docs/design/prototypes/` — four working HTML prototypes. Open them in a browser; they are
+   the real reference, not mockups.
+4. `docs/tasks/TASK-scaffold-nextjs.md` — the next unit of work, awaiting approval.
+
+### Open questions blocking Phase 1
+
+Tracked in `docs/product-definition.md` §10. The two that matter most: Adriana's real CRECI
+number (every prototype currently shows a placeholder), and **of every ten interested buyers,
+how many she loses at credit analysis** — that number sizes the whole project.
+
+---
+
+## 1. Plan before executing — write a task document first
+
+**Rule:** Before editing or creating **any** code file, write a task document at
+`docs/tasks/TASK-<slug>.md` describing the work. No exceptions for "small" changes.
+
+This applies from the very first scaffold commit: no code exists yet, so the initial
+`create-next-app` scaffold gets a task document before any file is created.
+
+### 1.1 Required sections
+
+Every task document must contain these four sections, in this order:
+
+1. **Current scenario** — how it works today. What exists, what's missing or blocked.
+2. **Planned changes** — what will change, file by file. New behaviour, not just "edit X."
+   Note any alternatives considered and rejected.
+3. **Why** — justification with context. What does this unblock, what does it cost?
+4. **Affected files** — a table:
+
+   | File | Change type | Notes |
+   |------|-------------|-------|
+   | `src/app/page.tsx` | new | home per `docs/design-handoff.md` Screens |
+   | `src/components/signature.tsx` | new | CRECI lockup, §0 "must not break" |
+
+### 1.2 How to apply it
+
+- **Write the document silently.** Create the file, then point the user at it or summarize in
+  2–3 lines, and wait for alignment on anything significant before writing code.
+- **One document per task / unit of work.** Short kebab-case slug:
+  `TASK-scaffold-nextjs.md`, `TASK-pre-qualificacao.md`, `TASK-proposta-links.md`.
+- **Keep it in sync** if the plan changes mid-task — it's a living record, not write-once.
+- **The document is the contract.** When scope is unclear, the task doc is the source of truth
+  for what was agreed.
+
+### 1.3 Why this matters
+
+The user wants review and alignment before code is written. It also leaves a trail of *why* a
+decision was made — the CRECI proportions, the decision not to rebuild Cury's credit analysis,
+the choice of Payload over a hand-built admin — none of which is recoverable from the code
+later.
+
+---
+
+## 2. Use CLIs, generators, and SDKs — don't write everything by hand
+
+**Rule:** Prefer invoking existing, canonical tooling over hand-authoring files a tool can
+generate correctly.
+
+### 2.0 Assume your framework knowledge is outdated — check first, every time
+
+Frontend tooling moves fast, and this stack has a second fast-moving surface: **Brazilian
+housing policy**. Before scaffolding or writing framework-specific code:
+
+1. **Go to the framework's own current docs first** — Next.js, Tailwind, shadcn/ui, Payload.
+   Don't rely on remembered APIs or flags; they may already be wrong.
+2. **Use the official CLI to scaffold/generate**, not a hand-written file:
+   `pnpm create next-app@latest`, `pnpm dlx shadcn@latest init` / `add <component>`,
+   `pnpm create payload-app@latest`.
+3. **shadcn/ui specifically**: not a versioned dependency installed once — components are pulled
+   into the repo via its CLI and the conventions change. Re-check its docs each time. **Before
+   any UI work**, load the `frontend-design` skill first and build with shadcn primitives rather
+   than hand-rolled markup.
+4. **Take the current major version as authoritative** over anything written in this file, and
+   update the stack table to match (§3.1).
+5. **MCMV faixas, income ceilings, property caps, rates and subsidy rules must be re-verified
+   against Caixa before they are shown to any real user.** They were revised in 2026 by the
+   Conselho Curador do FGTS. Anything unconfirmed gets `[VERIFICAR: ...]` inline rather than a
+   guess. The same applies to CRECI/COFECI advertising rules, which vary by regional.
+
+### 2.1 What this looks like in practice
+
+- **Scaffolding & generators.** `pnpm create next-app@latest`, `pnpm dlx shadcn@latest add …`,
+  `gh repo create`.
+- **Run the command, then verify the output** rather than hand-recreating what a reliable
+  generator already produces.
+- **Use the agent's dedicated tools** (Read/Edit/Write/Grep) over improvised shell commands.
+- **One package manager, decided at scaffold time, then never mixed.**
+
+### 2.2 When to hand-write instead
+
+No generator covers the pre-qualification logic, the INCC projection, the proposal link and its
+open-tracking, or the retheming to the design tokens. That is hand-written, matching surrounding
+code style.
+
+### 2.3 Why this matters
+
+Less human error, canonical and reproducible output, and — for anything touching MCMV numbers —
+a result that reflects current policy rather than a stale figure from training data. A wrong
+subsidy figure shown to a family is the worst failure this product can have.
+
+---
+
+## 3. Update documentation after executing
+
+**Rule:** Before considering a task **done**, update all documentation affected by the change.
+
+### 3.1 What to check and update
+
+- **`CLAUDE.md`** — if the change alters the stack, architecture, or any of §0's "things that
+  must not break," update the corresponding section here.
+- **`README.md`** — the *implementation* README (setup, scripts, status). Update when scripts,
+  stack, or the "Status" section change.
+- **`docs/product-definition.md`** — market, product, architecture. Update when a product or
+  architectural decision genuinely changes, and when an open question in §10 gets answered.
+- **`docs/design-handoff.md`** — identity, tokens, voice, screens. Update when a design decision
+  genuinely changes, not merely because an implementation differs slightly from a prototype.
+- **`docs/tasks/`** — keep task docs in sync while work is in progress (§1.2).
+
+### 3.2 How to apply it
+
+Treat "docs updated" as an explicit checklist item before declaring a task complete. When unsure
+whether a doc is affected, grep for the thing you changed across `README.md`,
+`docs/product-definition.md`, `docs/design-handoff.md`, and this file.
+
+### 3.3 Why this matters
+
+The facts underneath this project have already shifted twice mid-flight: the market moved from
+São Paulo to Rio, and the segment thesis survived only because it was re-checked. A doc that
+silently goes stale is how a future session builds against the wrong spec.
+
+---
+
+## 4. Project conventions
+
+**Rule:** Single Next.js app, not a monorepo — no workspace tooling unless a real second package
+emerges.
+
+- **Proposed layout:**
+
+  ```
+  src/app/                   App Router routes — /, /empreendimentos/[slug], /simulador,
+                              /p/[token] (proposta), /sobre, /contato; icon.tsx,
+                              opengraph-image.tsx, robots.ts, sitemap.ts
+  src/app/(payload)/         Payload admin, pt-BR
+  src/components/ui/         shadcn primitives
+  src/components/            shared composites — signature (CRECI lockup), plumb-rail,
+                              site-nav, site-footer
+  src/components/prequalificacao/  the six-step flow and its result states
+  src/components/proposta/   the shared-link proposal surface
+  src/lib/                   cn(); mcmv.ts (faixas, rates, subsidy — admin-backed);
+                              incc.ts (projection); site-config.ts (BRAND_NAME, SITE_URL,
+                              CRECI); whatsapp.ts (wa.me link builder)
+  src/payload/               collections: Incorporadora, Empreendimento, Tipologia,
+                              CondicaoComercial, Lead, Consentimento, Proposta
+  docs/product-definition.md market, product, architecture, phases, risks
+  docs/design-handoff.md     identity, tokens, voice, signature spec, screens
+  docs/design/prototypes/    four working HTML prototypes (reference, not built output)
+  docs/tasks/                task docs (§1)
+  ```
+
+- **Language.** All user-facing copy is **Brazilian Portuguese**. Code, comments, commit
+  messages and docs are English, except where a domain term has no useful translation — keep
+  `espelho de vendas`, `tabela`, `faixa`, `entrada`, `repasse`, `INCC`, `CRECI` as-is.
+- **Styling:** Tailwind v4 + shadcn/ui, rethemed to `docs/design-handoff.md`. Don't introduce a
+  second styling system alongside it.
+
+**Why:** this is a marketing and pre-qualification site for one broker, not a distributed
+system. The process should match the size of the problem.
+
+### 4.1 Commit conventions
+
+- **Commit automatically once a task doc's work is complete and verified** (build/lint passing) —
+  don't wait to be asked for each one. This is a standing authorization scoped to work that
+  followed the task-doc process in §1; it is not blanket permission for destructive git
+  operations (force-push, `reset --hard`), which still require explicit confirmation.
+
+---
+
+## TL;DR
+
+| Phase | Rule | Output |
+|-------|------|--------|
+| **Stack** | Next.js + Tailwind v4 + shadcn/ui + Payload CMS 3 + Postgres + Vercel, pnpm | Single-app repo: `src/app/`, `src/components/`, `docs/tasks/` |
+| **Before** | Write a task document first | `docs/tasks/TASK-<slug>.md`: current scenario, planned changes (file by file), why, affected-files table |
+| **During** | Use CLIs / generators; `[VERIFICAR: ...]` for any MCMV or CRECI rule not confirmed against the source | Canonical output, no guessed policy numbers |
+| **After** | Update `README.md` / `docs/product-definition.md` / `docs/design-handoff.md` / `CLAUDE.md`, then commit | Docs in sync, a commit |
+
+**The loop:** plan → align → build with tooling → document → commit → done.
+
+**Never broken:** the CRECI signature on every surface, her real name beside the project name,
+pre-qualification as orientation and not credit analysis, no invented availability, both
+installment figures shown together, dignity over luxury, no exclamation marks, the page-weight
+budget, MCMV numbers configurable and dated, expired tables blocking proposals.
