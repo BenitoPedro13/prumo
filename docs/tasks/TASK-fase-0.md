@@ -1,7 +1,8 @@
 # TASK — Phase 0, the real site pages
 
-> Status: **in progress.** Unit 1 is built; units 2–5 are commissioned below and drafted when
-> reached.
+> Status: **in progress.** Unit 1 is built; unit 2 (the catalogue) is built and verified against
+> a running Postgres — see `TASK-empreendimentos.md`. Units 3–5 are commissioned below and
+> drafted when reached.
 >
 > This is a roadmap, not a unit of work. It sequences Phase 0 into five task docs and records
 > the order and the reasons. Each unit gets its own document with the four sections required by
@@ -53,15 +54,20 @@ than by discipline.
 Depended on nothing and needed no database. Done — see §7 of that document for where the build
 departed from its plan, and §8 for what it left blocked.
 
-### 2. `TASK-empreendimentos.md` — the catalogue
+### 2. `TASK-empreendimentos.md` — the catalogue · **built**
 
 `/empreendimentos` and `/empreendimentos/[slug]`. Address and surroundings first, floor plans as
 the primary visual, commercial terms with both installment figures, total cost visible, the
 registro block, and availability phrased as a question rather than a claim. A publication gate in
-the admin: no `registro_incorporacao` or `cartorio`, no publish.
+the admin: no `registro_incorporacao` or `cartorio`, no publish — verified end to end, not just
+configured.
 
-**Blocked on a provisioned Postgres and on real Cury data.** The largest unit of the phase and
-the one where the "must not break" rules do the most work.
+Built and verified against a Postgres running in Docker; the seed uses one real Rio development
+(Cury's Residencial Pixinguinha, Santo Cristo) for everything Cury publishes, and marks
+everything it does not — the registro number, the cartório, the payment schedule — as
+placeholder. The largest unit of the phase and the one where the "must not break" rules do the
+most work. Still open: a Supabase connection string for deployment, and the real registro data
+per development. See `TASK-empreendimentos.md` §7 and §10.
 
 ### 3. `TASK-contato-lgpd.md` — the way in
 
@@ -157,8 +163,8 @@ Carried from `product-definition.md` §10, mapped to what each one stops.
 | Item | Blocks | Note |
 |---|---|---|
 | **Adriana's real CRECI-RJ number** | shipping anything publicly | `BROKER_CRECI` is `00.000-F`. The one legally load-bearing element still fake |
-| **A provisioned Postgres** | unit 2, and the admin entirely | Neon or Supabase; the adapters are already wired |
-| **Real Cury data** — prices, tables, registro numbers | unit 2 | Prototype figures are invented and must never reach a buyer |
+| **A provisioned Postgres for deployment** | going live, not unit 2 anymore | Local dev runs on Docker now; Neon or Supabase still needed for Vercel |
+| **Real Cury data** — registro numbers, price tables | going live, not unit 2 anymore | The seed's address, station, delivery and one price are real (§10 of `TASK-empreendimentos.md`); the registro de incorporação, cartório and payment schedule are still invented and must never reach a buyer |
 | **A real photograph of her** | unit 4 | An hour with a photographer, per §08 |
 | **Her WhatsApp number** | unit 1's CTA being real | `WHATSAPP_NUMBER` is a placeholder |
 | **The brand name** | the wordmark, the icon, the domain | Prumo, Chão, Soleira, Raiz or Boa Praça. `BRAND_NAME` is one edit; a drawn mark is not |

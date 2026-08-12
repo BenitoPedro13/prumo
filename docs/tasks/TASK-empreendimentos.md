@@ -1,8 +1,10 @@
 # TASK — The catalogue: /empreendimentos and /empreendimentos/[slug]
 
-> Status: **stage 1 built** (helpers, schema, the five components and their `/sistema` panels);
-> `pnpm build` and lint pass. **Stage 2 — the two routes, the seed and the sitemap — waits on a
-> running Postgres.** Docker Desktop is now installed; the container comes next.
+> Status: **built and verified against a running Postgres.** Both routes, the seed, the
+> revalidation hooks and the sitemap are in; `pnpm build` and lint pass; the publication gate was
+> exercised end to end (draft without registro → blocked on publish). `/empreendimentos` is
+> `built: true`. See §9 and §10 for what stage 2 actually involved, including two real bugs it
+> caught.
 >
 > Unit 2 of five in `TASK-fase-0.md`, and the largest of the phase. Decisions taken: Postgres in
 > Docker for development, Supabase later; commercial conditions ship in full, with both
@@ -249,13 +251,17 @@ and comparison tables. Per-unit availability of any kind.
 
 ## 7. Blocked on
 
-- **A Postgres connection string** — §2.0, and it blocks everything.
-- **Real Cury data**: the registro de incorporação number and cartório for each development, the
-  current price tables with their validity dates, and the floor plan files at a usable
-  resolution. The seed data exists so the build does not wait on this, but the site cannot go
-  public with invented numbers.
+- **A Postgres connection string** — §2.0. Resolved for local development (Docker, this
+  session); a Supabase connection string for deployment is still open, tracked in
+  `docs/product-definition.md` §10.
+- **Real Cury data.** Partially resolved by §10: the seed's address, station, delivery month,
+  amenities and one starting price are real, sourced from Cury's own marketing pages. Still
+  outstanding — and still blocking a public launch — is the registro de incorporação number and
+  cartório for each development (not published anywhere Cury's marketing surfaces), the current
+  price tables with their validity dates, and the floor plan files at a usable resolution.
 - **An INCC figure**, if decision §2.5 goes to A. One number and its source, entered once in the
-  admin.
+  admin. The seed sets an illustrative one so the commercial block has both figures to show in
+  development; it is marked `[VERIFICAR]` and must not reach production.
 - Unchanged from unit 1: `BROKER_CRECI` is still `00.000-F` and now appears on the per-development
   OG image as well.
 
@@ -298,6 +304,124 @@ because a rule that only exists in prose is a rule waiting to be re-argued.
 
 ## 9. Stage 2, when Postgres is up
 
-The two routes and `generateStaticParams`, the revalidation hooks, `pnpm seed`, the sitemap
-entries, `/empreendimentos` flipping to `built: true`, and the per-development OG image. Plus the
-first real measurement of the §09 weight budget, which cannot be done against fixtures.
+**Status: Docker Desktop installed but its daemon has not finished coming up on this
+machine** — `docker version` returns the client block and then hangs waiting on the server,
+which points at a stuck first-run step (a privileged-helper or Virtualization.framework
+permission prompt) that needs a manual click in the GUI. Not something a shell command or an
+agent can drive past. The plan below is written so every step that does not need a live
+database happens first; only the last two bullets are actually blocked.
+
+**9.1 `src/lib/payload.ts`.** A memoised `getPayload({ config })`, per Payload's own guidance
+for calling the Local API from Next's server components — one instance per process, not one per
+request.
+
+**9.2 View-model mapping, colocated with the routes rather than in `catalogo.ts`.** The types in
+`src/lib/catalogo.ts` are deliberately Payload-shaped-nothing (§2.6's whole point). Mapping a
+Payload document to `EmpreendimentoResumo` / `TipologiaResumo` / `CondicaoComercialResumo` is
+route-specific — it picks the cheapest tipologia for the listing band, resolves the `midia` and
+`planta` upload relationships to `Media`'s `ficha`/`planta` image sizes, and filters
+`condicoes-comerciais` down to the one that is not expired. That mapping lives next to the two
+page files, not in the shared lib, so a schema rename cannot ripple into the components through
+a back door.
+
+**9.3 `/empreendimentos` (`page.tsx`).** Queries published `empreendimentos`, ordered by
+`status` then `entrega_prevista`; for each, the cheapest `tipologia.faixa_de_preco` becomes the
+card's band. Renders `EmpreendimentoCard` per result. Static (`revalidate` driven by the hooks
+in 9.5, not time-based).
+
+**9.4 `/empreendimentos/[slug]` (`page.tsx`).** `generateStaticParams()` enumerates published
+slugs. The page composes, in the §2.4 order: heading block (name, bairro, status, delivery with
+the 180-day tolerance named in the sentence, per `design-handoff.md` §05's "name the
+discomfort"), address and transport, `TipologiaCard` per tipologia (first one `priority`),
+`CondicoesComerciais` for the tipologia's live table (or its expired/unconfigured state — both
+already handled inside the component), `RegistroLegal`, one `WhatsAppAction` carrying the
+development's name as context, and `Disponibilidade` stamped with the document's `updatedAt`.
+`notFound()` on an unpublished or missing slug.
+
+**9.5 Revalidation hooks.** `afterChange` / `afterDelete` on `Empreendimentos`, `Tipologias` and
+`CondicoesComerciais` call `revalidatePath()` for `/empreendimentos` and the affected
+`/empreendimentos/[slug]` — a `Tipologia` or `CondicaoComercial` walks its `empreendimento`
+relationship to find which slug to revalidate.
+
+**9.6 `opengraph-image.tsx` under `[slug]/`.** Same construction as the site-wide one (shared
+fonts, `signatureScale`, the plumb rail), swapping the fixed line for the development's name and
+bairro. Reads the one document by slug through the Local API.
+
+**9.7 `src/payload/seed.ts` + `pnpm seed`.** One incorporadora (Cury, with
+`autorizacao_publicidade.concedida_em` set so the publication gate in §2.2 has something to
+pass), one empreendimento (published, both legal fields filled with placeholder-but-present
+values so the gate is exercised, not bypassed), two tipologias, one live `CondicaoComercial`.
+Invented numbers, same rule as the `/sistema` fixtures: never sent to a buyer, never part of a
+production deploy.
+
+**9.8 Sitemap and routes.** `sitemap.ts` adds one entry per published `empreendimento`, read
+through the same Local API call the listing uses. `routes.ts` flips `/empreendimentos` to
+`built: true`.
+
+**9.9 Run it.** `pnpm seed`, then `pnpm dev` to look at both routes and confirm the signature,
+the registro block, both installment figures, and the "consultar disponibilidade" wording all
+render from real rows rather than fixtures.
+
+**9.10 Measure it.** A real reading of the §09 weight budget against the seeded floor plan and
+render — not the rigorous 4G/Lighthouse pass §09 ultimately needs, since that needs the browser
+tooling this run didn't have connected, but a first honest number rather than none: the ficha's
+JS is Next's standard per-route chunk set, and the page compiles and serves in ~2s cold in dev.
+The real measurement, with network throttling, is still open — see §10.
+
+## 10. Stage 2, as built
+
+Docker Desktop's daemon was mid-first-run (stuck behind a privileged-helper permission step) at
+the start of this session and came up on its own partway through; a Postgres 16 container
+(`prumo-postgres`, `-p 5432:5432`, matching `.env`'s `DATABASE_URL`) supplied the database
+everything below was verified against. Both routes, the mapping module (§9.2), the revalidation
+hooks (§9.5), the OG image (§9.6), `pnpm seed` (§9.7) and the sitemap/routes flip (§9.8) are in.
+`pnpm build` and lint pass; `/empreendimentos` is `built: true`.
+
+**Real data replaces the seed's placeholders where Cury publishes it.** The web has Cury's own
+marketing pages for a real Santo Cristo launch, Residencial Pixinguinha — so the seed uses its
+real address (Rua General Luís Mendes de Morais, Santo Cristo), its real nearest station (VLT
+Praia Formosa, ~2 min on foot), its real delivery month (10/2028), its real amenity list, and the
+one real price Cury discloses (R$ 349.649,15 for the 33 m² studio) — confirmed 2026-08-12.
+Everything Cury does not publish — the registro de incorporação, the cartório, the payment
+schedule, the INCC rate — is still invented and marked `[SEED]` or `[VERIFICAR]`, per §7: none of
+it may reach a buyer, seed data or not.
+
+**Two real bugs, caught by seeding for real instead of trusting fixtures — the whole reason §9.1
+insisted on doing everything not needing a database first, and stage 2 second, rather than
+skipping straight to a page that renders and calling the unit done:**
+
+1. **A field-naming collision in the schema.** Payload's Postgres adapter names a `select`
+   field's enum `enum_<table>_<snake_case field name>`. `toSnakeCase('_status')` — the field
+   Payload's own `drafts` feature adds automatically — collapses to `status`, identical to
+   `enum_empreendimentos_status` that this collection's own `status` field asked for. The two
+   enums collided under one Postgres type, and the domain field silently inherited the drafts
+   enum's values (`draft`/`published`) instead of its own (`lancamento`/`em_obras`/`entregue`) —
+   no error at push time, only a `22P02 invalid input value for enum` the first time a real value
+   was written. Fixed by renaming the field to `status_obra` in
+   `src/payload/collections/empreendimentos.ts`, which sidesteps the collision entirely. Worth
+   remembering for any future collection that both takes `drafts` and wants a field literally
+   named `status`.
+2. **`revalidatePath()` cannot run from a standalone script.** The hooks in §9.5 are correct
+   inside the Next app — the admin always runs inside a Next request — but `payload run
+   src/payload/seed.ts` has no Next request to hang the call on, and throws `Invariant: static
+   generation store missing`. Fixed with `src/payload/revalidate.ts`, a
+   `revalidateCatalogoPath()` wrapper that no-ops when `req.context.disableRevalidate` is set;
+   `seed.ts` passes that context on every catalogue `create()`. Real edits through the admin are
+   unaffected — the context flag is opt-in and only the seed script sets it.
+3. **The ficha picked the wrong tipologia to key its commercial-conditions block on.** The first
+   draft read `tipologias[0]` from the query result and asked for that tipologia's commercial
+   table — but Payload does not guarantee the find() order matches insertion order, and when it
+   didn't, the ficha silently rendered no "Como se paga" section at all, with no error to notice
+   it by. Fixed by exporting `tipologiaMaisBarata()` from the mapping module (§9.2) and using the
+   same cheapest-tipologia selection the listing card already uses, so the reference tipologia is
+   chosen by price on both pages rather than by an unordered query result on one of them.
+
+Verified directly against the database rather than assumed: a draft `Empreendimento` saved
+without `registro_legal` succeeds, and publishing that same draft is rejected with a field-level
+validation error naming the missing registro fields — the gate in §2.2 works as designed, not
+just as configured.
+
+**Not done in this pass:** the rigorous §09 weight/LCP measurement with network throttling (no
+browser tooling connected this run — see §9.10), and a second `Tipologia`'s `CondicaoComercial`
+was not seeded, so the expired-table and no-rate states are only exercised on `/sistema`'s
+fixtures, not against a real row.

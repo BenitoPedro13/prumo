@@ -262,7 +262,7 @@ In order of value.
 2. **Proposta compartilhada** — a personal letter, floor plans, the payment timeline, the three
    things that could go wrong, one action.
 3. **Ficha do empreendimento** — address, surroundings, transport, typologies, commercial terms,
-   total cost.
+   total cost. **Built** — `/empreendimentos/[slug]`, `docs/tasks/TASK-empreendimentos.md`.
 4. **Sobre ela** — face and story inside the project brand. Trust is the product.
 5. **Home and admin** — deliberately simple.
 

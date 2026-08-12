@@ -30,7 +30,7 @@ export const PRIMARY_ROUTES: SiteRoute[] = [
   {
     href: "/empreendimentos",
     label: "Empreendimentos",
-    built: false,
+    built: true,
     changeFrequency: "weekly",
     priority: 0.8,
   },

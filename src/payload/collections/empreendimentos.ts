@@ -1,6 +1,23 @@
-import type { CollectionConfig } from "payload";
+import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, CollectionConfig } from "payload";
 
 import { publicadosOuAutenticado } from "../access";
+import { revalidateCatalogoPath } from "../revalidate";
+
+/**
+ * Rendering is static (docs/tasks/TASK-empreendimentos.md §2.1): Adriana publishes, these hooks
+ * revalidate the two pages this document appears on, and nothing renders per request.
+ */
+const revalidateEmpreendimento: CollectionAfterChangeHook = ({ doc, req }) => {
+  revalidateCatalogoPath("/empreendimentos", req.context);
+  revalidateCatalogoPath(`/empreendimentos/${doc.slug}`, req.context);
+  return doc;
+};
+
+const revalidateEmpreendimentoOnDelete: CollectionAfterDeleteHook = ({ doc, req }) => {
+  revalidateCatalogoPath("/empreendimentos", req.context);
+  revalidateCatalogoPath(`/empreendimentos/${doc.slug}`, req.context);
+  return doc;
+};
 
 /**
  * `registro_incorporacao` and `cartorio` are required by law in any advertising of a unit
@@ -20,7 +37,7 @@ export const Empreendimentos: CollectionConfig = {
   labels: { singular: "Empreendimento", plural: "Empreendimentos" },
   admin: {
     useAsTitle: "nome",
-    defaultColumns: ["nome", "status", "entrega_prevista", "_status"],
+    defaultColumns: ["nome", "status_obra", "entrega_prevista", "_status"],
     group: "Catálogo",
     description:
       "Um empreendimento só vai ao ar com registro de incorporação e cartório preenchidos. Salve como rascunho até tê-los.",
@@ -30,6 +47,10 @@ export const Empreendimentos: CollectionConfig = {
     maxPerDoc: 10,
   },
   access: { read: publicadosOuAutenticado },
+  hooks: {
+    afterChange: [revalidateEmpreendimento],
+    afterDelete: [revalidateEmpreendimentoOnDelete],
+  },
   fields: [
     {
       name: "nome",
@@ -56,7 +77,15 @@ export const Empreendimentos: CollectionConfig = {
       required: true,
     },
     {
-      name: "status",
+      /**
+       * Named `status_obra`, not `status`: Payload's Postgres adapter derives an enum's name
+       * from `toSnakeCase(field.name)`, and `toSnakeCase('_status')` — the field `drafts` adds
+       * automatically — collapses to the same string as this field's own name. A `status`
+       * field on any collection with drafts enabled collides with the drafts enum and gets
+       * silently overwritten with `draft`/`published` at the database level, one field winning
+       * arbitrarily depending on migration order. Caught by seeding this collection stage 2.
+       */
+      name: "status_obra",
       type: "select",
       label: "Status da obra",
       required: true,

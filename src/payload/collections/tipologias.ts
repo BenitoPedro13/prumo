@@ -1,6 +1,45 @@
-import type { CollectionConfig } from "payload";
+import type {
+  CollectionAfterChangeHook,
+  CollectionAfterDeleteHook,
+  CollectionConfig,
+  RequestContext,
+} from "payload";
 
 import { somenteAutenticado } from "../access";
+import { revalidateCatalogoPath } from "../revalidate";
+
+/**
+ * A tipologia has no page of its own — it revalidates the empreendimento's ficha, walking the
+ * relationship to find the slug. `doc.empreendimento` arrives as an id, not the populated
+ * document, at the default query depth.
+ */
+const revalidateTipologia: CollectionAfterChangeHook = async ({ doc, req }) => {
+  await revalidateEmpreendimentoFicha(doc.empreendimento, req.payload, req.context);
+  return doc;
+};
+
+const revalidateTipologiaOnDelete: CollectionAfterDeleteHook = async ({ doc, req }) => {
+  await revalidateEmpreendimentoFicha(doc.empreendimento, req.payload, req.context);
+  return doc;
+};
+
+async function revalidateEmpreendimentoFicha(
+  empreendimento: unknown,
+  payload: import("payload").Payload,
+  context: RequestContext,
+) {
+  const id = typeof empreendimento === "object" && empreendimento
+    ? (empreendimento as { id: number }).id
+    : empreendimento;
+  if (!id) return;
+
+  const doc = await payload.findByID({
+    collection: "empreendimentos",
+    id: id as number,
+    depth: 0,
+  });
+  revalidateCatalogoPath(`/empreendimentos/${doc.slug}`, context);
+}
 
 /**
  * The floor plan is the primary visual, not a render — a planta is what a couple actually
@@ -13,6 +52,10 @@ export const Tipologias: CollectionConfig = {
   slug: "tipologias",
   labels: { singular: "Tipologia", plural: "Tipologias" },
   access: { read: somenteAutenticado },
+  hooks: {
+    afterChange: [revalidateTipologia],
+    afterDelete: [revalidateTipologiaOnDelete],
+  },
   admin: {
     useAsTitle: "nome",
     defaultColumns: ["nome", "empreendimento", "dormitorios", "area_privativa"],

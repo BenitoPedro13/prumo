@@ -12,12 +12,14 @@
 
 ## 0. Project context — Prumo
 
-**Status: site chrome and metadata envelope built; content screens next.** The product,
+**Status: the catalogue is live; the way in and the person come next.** The product,
 market, architecture and phasing live in `docs/product-definition.md`. The visual identity,
 tokens, voice and screen inventory live in `docs/design-handoff.md`. Four working HTML
 prototypes live in `docs/design/prototypes/`. The scaffold is done
-(`docs/tasks/TASK-scaffold-nextjs.md`), and so is unit 1 of Phase 0 — nav, footer, OG image,
-icon, robots, sitemap and the `wa.me` builder (`docs/tasks/TASK-chrome-e-seo.md`). Units 2–5 of
+(`docs/tasks/TASK-scaffold-nextjs.md`), and so are units 1 and 2 of Phase 0 — nav, footer, OG
+image, icon, robots, sitemap and the `wa.me` builder (`docs/tasks/TASK-chrome-e-seo.md`), and
+`/empreendimentos` + `/empreendimentos/[slug]` against a running Postgres, with the publication
+gate verified end to end (`docs/tasks/TASK-empreendimentos.md`). Units 3–5 of
 `docs/tasks/TASK-fase-0.md` are next, each with its own task doc.
 
 `docs/product-definition.md` and `docs/design-handoff.md` are the source of truth for *what
@@ -53,7 +55,7 @@ a single config constant so a rename is one edit.
 | Framework | **Next.js** (App Router, TypeScript, `src/` dir, `@/*` alias) — always the latest stable major, never a pinned number (see §2.0) | installed, 16.3.0 · React 19.2.8 · React Compiler on |
 | Styling / components | **Tailwind CSS v4 + shadcn/ui**, CSS-first config, retheming to the tokens in `docs/design-handoff.md` | installed, Tailwind 4.3.3 · shadcn on Radix primitives, `nova` preset, rethemed |
 | Content + admin | **Payload CMS 3**, embedded in the Next app. Chosen because Adriana is non-technical and the value is *validation* (blocking an expired price table, a missing CRECI) more than editing | installed, 3.87.1 · admin pt-BR · schema only, no validation rules yet |
-| Data + files | Managed **Postgres** (Neon or Supabase) + S3-compatible storage (R2). Renders and floor plans are heavy — the image pipeline matters more than the database | adapters wired, **no database provisioned yet** |
+| Data + files | Managed **Postgres** (Neon or Supabase) + S3-compatible storage (R2). Renders and floor plans are heavy — the image pipeline matters more than the database | adapters wired, **local dev runs on Postgres in Docker; no deployment database provisioned yet** |
 | Messaging | `wa.me` deep links with pre-filled context. **Not** the WhatsApp Business API — at her volume the per-message cost buys nothing. See `docs/product-definition.md` §05 | not built |
 | Credit analysis | Hand off to **Cury's existing broker link**. Never rebuild | n/a |
 | Hosting | **Vercel**, São Paulo edge | not deployed |

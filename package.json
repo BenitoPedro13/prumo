@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "payload": "payload",
+    "seed": "payload run src/payload/seed.ts",
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap"
   },

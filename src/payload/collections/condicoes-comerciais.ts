@@ -1,6 +1,50 @@
-import type { CollectionConfig } from "payload";
+import type {
+  CollectionAfterChangeHook,
+  CollectionAfterDeleteHook,
+  CollectionConfig,
+  RequestContext,
+} from "payload";
 
 import { somenteAutenticado } from "../access";
+import { revalidateCatalogoPath } from "../revalidate";
+
+/** Two hops to the page this table affects: tipologia, then that tipologia's empreendimento. */
+const revalidateCondicao: CollectionAfterChangeHook = async ({ doc, req }) => {
+  await revalidateEmpreendimentoFicha(doc.tipologia, req.payload, req.context);
+  return doc;
+};
+
+const revalidateCondicaoOnDelete: CollectionAfterDeleteHook = async ({ doc, req }) => {
+  await revalidateEmpreendimentoFicha(doc.tipologia, req.payload, req.context);
+  return doc;
+};
+
+async function revalidateEmpreendimentoFicha(
+  tipologia: unknown,
+  payload: import("payload").Payload,
+  context: RequestContext,
+) {
+  const tipologiaId = typeof tipologia === "object" && tipologia
+    ? (tipologia as { id: number }).id
+    : tipologia;
+  if (!tipologiaId) return;
+
+  const tipologiaDoc = await payload.findByID({
+    collection: "tipologias",
+    id: tipologiaId as number,
+    depth: 0,
+  });
+  const empreendimentoId =
+    typeof tipologiaDoc.empreendimento === "object"
+      ? tipologiaDoc.empreendimento.id
+      : tipologiaDoc.empreendimento;
+  const empreendimentoDoc = await payload.findByID({
+    collection: "empreendimentos",
+    id: empreendimentoId,
+    depth: 0,
+  });
+  revalidateCatalogoPath(`/empreendimentos/${empreendimentoDoc.slug}`, context);
+}
 
 /**
  * The one entity in the catalogue that expires.
@@ -18,6 +62,10 @@ export const CondicoesComerciais: CollectionConfig = {
   slug: "condicoes-comerciais",
   labels: { singular: "Condição comercial", plural: "Condições comerciais" },
   access: { read: somenteAutenticado },
+  hooks: {
+    afterChange: [revalidateCondicao],
+    afterDelete: [revalidateCondicaoOnDelete],
+  },
   admin: {
     useAsTitle: "referencia",
     defaultColumns: ["referencia", "tipologia", "validade_da_tabela"],

@@ -95,8 +95,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    parametros: Parametro;
+  };
+  globalsSelect: {
+    parametros: ParametrosSelect<false> | ParametrosSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -126,6 +130,8 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Um empreendimento só vai ao ar com registro de incorporação e cartório preenchidos. Salve como rascunho até tê-los.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "empreendimentos".
  */
@@ -137,7 +143,7 @@ export interface Empreendimento {
    */
   slug: string;
   incorporadora: number | Incorporadora;
-  status: 'lancamento' | 'em_obras' | 'entregue';
+  status_obra: 'lancamento' | 'em_obras' | 'entregue';
   /**
    * A data do contrato. A tolerância de 180 dias é explicada na página — não é escondida aqui.
    */
@@ -187,6 +193,7 @@ export interface Empreendimento {
   };
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -242,6 +249,32 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    ficha?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    planta?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -434,7 +467,7 @@ export interface EmpreendimentosSelect<T extends boolean = true> {
   nome?: T;
   slug?: T;
   incorporadora?: T;
-  status?: T;
+  status_obra?: T;
   entrega_prevista?: T;
   endereco?:
     | T
@@ -475,6 +508,7 @@ export interface EmpreendimentosSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -560,6 +594,40 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        ficha?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        planta?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -623,6 +691,44 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Índices e regras que mudam com o tempo. Toda página que mostra um número daqui mostra também a data desta revisão.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "parametros".
+ */
+export interface Parametro {
+  id: number;
+  incc?: {
+    /**
+     * Acumulado de 12 meses do INCC, em porcentagem. Enquanto estiver vazio, nenhuma parcela é exibida no site — nem a de hoje, porque as duas só aparecem juntas.
+     */
+    taxa_anual?: number | null;
+    /**
+     * Quando este número foi conferido na fonte. Aparece ao lado de cada valor.
+     */
+    data_revisao?: string | null;
+    fonte?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "parametros_select".
+ */
+export interface ParametrosSelect<T extends boolean = true> {
+  incc?:
+    | T
+    | {
+        taxa_anual?: T;
+        data_revisao?: T;
+        fonte?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
