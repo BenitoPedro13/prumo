@@ -216,7 +216,24 @@ target rather than the shadcn default of 32 — this audience is on a phone, oft
 states, and the theme toggle, which had been living in that page's hand-rolled header and needed
 somewhere to go.
 
-## 8. Still blocked
+## 8. Revised after review
+
+Two changes once the built pages were looked at rather than reasoned about.
+
+**The OG line.** It read *"Antes de escolher o apartamento, a pergunta é: eu consigo?"* — the
+product thesis verbatim, and wrong for this surface. A preview arrives unrequested in someone's
+WhatsApp; a question about whether they can afford something reads as a doubt about them. It now
+reads *"Primeiro a conta inteira. Depois o apartamento."*, which states her order of operations
+and asks the reader nothing. Recorded in `design-handoff.md` §06 so it does not get sharpened
+back.
+
+**The nav is two rows at every width, deliberately.** The signature runs about 400px on its own,
+and beside three links and a 44px action it exceeds any container width the content column can
+justify — so it wrapped, and a wrapped header looks like an accident. The lockup now takes the
+first line and the nav the second, links left and action right, which is also exactly what it
+does on a phone. No separate mobile treatment, still no JavaScript.
+
+## 9. Still blocked
 
 Unchanged by this unit, and both belong to `product-definition.md` §10:
 

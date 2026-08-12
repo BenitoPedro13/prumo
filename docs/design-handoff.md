@@ -211,6 +211,13 @@ project, because the site is reached from a WhatsApp message more often than fro
 result, and it is advertising in the CRECI sense — the signature on it is a legal requirement,
 not a nicety.
 
+The line on it reads *"Primeiro a conta inteira. Depois o apartamento."* It went through
+*"a pergunta é: eu consigo?"* first, which is the thesis stated exactly — but aimed at a
+stranger in a preview they did not ask for, the question reads as a doubt about them rather than
+a promise from her. Same order of operations, different subject. Worth remembering before
+anyone sharpens it back: on this surface the sentence is about how she works, never about
+whether the reader measures up (§01, §05).
+
 **Neither the nav nor the footer belongs to a page.** Both are rendered by
 `src/app/(frontend)/layout.tsx`, so a screen cannot forget the signature: it does not get to
 decide.

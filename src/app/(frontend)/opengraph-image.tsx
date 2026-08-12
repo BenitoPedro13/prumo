@@ -15,6 +15,11 @@ import {
 /**
  * The surface most likely to be seen and most likely to be forgotten.
  *
+ * The line states the order she works in, not a question about the reader. An earlier draft
+ * asked "eu consigo?" — which is the product thesis, but pointed at a stranger in a preview
+ * they did not ask for it reads as a doubt about them rather than a promise from her. The
+ * order is the same; the subject is not.
+ *
  * This site is reached from a WhatsApp message far more often than from a search result
  * (docs/product-definition.md §08), which makes the shared preview the front door — and makes
  * it advertising in the CRECI sense, so the complete signature on it is a legal requirement
@@ -120,12 +125,12 @@ export default function OpenGraphImage() {
               display: "flex",
               flexDirection: "column",
               fontFamily: "Roboto Slab",
-              fontSize: 54,
+              fontSize: 62,
               lineHeight: 1.24,
             }}
           >
-            <div>Antes de escolher o apartamento,</div>
-            <div>a pergunta é: eu consigo?</div>
+            <div>Primeiro a conta inteira.</div>
+            <div>Depois o apartamento.</div>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column" }}>
