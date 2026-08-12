@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { CondicoesComerciais } from "@/components/condicoes-comerciais";
+import { ContatoForm } from "@/components/contato-form";
 import { Disponibilidade } from "@/components/disponibilidade";
 import { EmpreendimentoCard } from "@/components/empreendimento-card";
 import { RegistroLegal } from "@/components/registro-legal";
@@ -309,6 +310,17 @@ export default function Sistema() {
           O número em src/lib/site-config.ts ainda é placeholder, então os links abrem uma
           conversa que não existe.
         </p>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">Formulário de contato</h2>
+        <p className="max-w-prose text-ink-muted">
+          O componente real de <code className="font-mono text-sm">/contato</code>, não uma
+          maquete — enviar aqui cria um <code className="font-mono text-sm">Lead</code> e um{" "}
+          <code className="font-mono text-sm">Consentimento</code> de verdade no banco, do mesmo
+          jeito que enviar no site faria.
+        </p>
+        <ContatoForm className="max-w-md" />
       </section>
 
       <section className="space-y-4">

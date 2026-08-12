@@ -72,6 +72,8 @@ export interface Config {
     'condicoes-comerciais': CondicoesComerciai;
     incorporadoras: Incorporadora;
     media: Media;
+    leads: Lead;
+    consentimentos: Consentimento;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -85,6 +87,8 @@ export interface Config {
     'condicoes-comerciais': CondicoesComerciaisSelect<false> | CondicoesComerciaisSelect<true>;
     incorporadoras: IncorporadorasSelect<false> | IncorporadorasSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    leads: LeadsSelect<false> | LeadsSelect<true>;
+    consentimentos: ConsentimentosSelect<false> | ConsentimentosSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -345,6 +349,56 @@ export interface CondicoesComerciai {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads".
+ */
+export interface Lead {
+  id: number;
+  nome: string;
+  telefone: string;
+  mensagem?: string | null;
+  /**
+   * De onde o lead chegou. Preenchido pelo formulário que o criou.
+   */
+  origem?: string | null;
+  /**
+   * Movido à mão por ela na medida em que a conversa avança.
+   */
+  estagio?: ('novo' | 'em_conversa' | 'aguardando_retomada' | 'convertido' | 'perdido') | null;
+  /**
+   * Data escolhida por ela quando marca o lead como "aguardando retomada". O formulário público nunca preenche este campo.
+   */
+  retomar_em?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "consentimentos".
+ */
+export interface Consentimento {
+  id: number;
+  lead: number | Lead;
+  /**
+   * O que ela pode usar este contato para fazer, em texto claro.
+   */
+  finalidade: string;
+  /**
+   * Qual versão da cópia de consentimento a pessoa aceitou.
+   */
+  texto_versao: string;
+  /**
+   * Lido do cabeçalho da requisição no servidor, nunca enviado pelo cliente.
+   */
+  ip?: string | null;
+  /**
+   * Preenchido à mão quando ela é avisada para parar de usar este contato.
+   */
+  revogado_em?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -412,6 +466,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'leads';
+        value: number | Lead;
+      } | null)
+    | ({
+        relationTo: 'consentimentos';
+        value: number | Consentimento;
       } | null)
     | ({
         relationTo: 'users';
@@ -628,6 +690,33 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads_select".
+ */
+export interface LeadsSelect<T extends boolean = true> {
+  nome?: T;
+  telefone?: T;
+  mensagem?: T;
+  origem?: T;
+  estagio?: T;
+  retomar_em?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "consentimentos_select".
+ */
+export interface ConsentimentosSelect<T extends boolean = true> {
+  lead?: T;
+  finalidade?: T;
+  texto_versao?: T;
+  ip?: T;
+  revogado_em?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

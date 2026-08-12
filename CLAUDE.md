@@ -12,15 +12,17 @@
 
 ## 0. Project context — Prumo
 
-**Status: the catalogue is live; the way in and the person come next.** The product,
+**Status: the catalogue is live; the way in is built, the person comes next.** The product,
 market, architecture and phasing live in `docs/product-definition.md`. The visual identity,
 tokens, voice and screen inventory live in `docs/design-handoff.md`. Four working HTML
 prototypes live in `docs/design/prototypes/`. The scaffold is done
-(`docs/tasks/TASK-scaffold-nextjs.md`), and so are units 1 and 2 of Phase 0 — nav, footer, OG
-image, icon, robots, sitemap and the `wa.me` builder (`docs/tasks/TASK-chrome-e-seo.md`), and
+(`docs/tasks/TASK-scaffold-nextjs.md`), and so are units 1–3 of Phase 0 — nav, footer, OG
+image, icon, robots, sitemap and the `wa.me` builder (`docs/tasks/TASK-chrome-e-seo.md`);
 `/empreendimentos` + `/empreendimentos/[slug]` against a running Postgres, with the publication
-gate verified end to end (`docs/tasks/TASK-empreendimentos.md`). Units 3–5 of
-`docs/tasks/TASK-fase-0.md` are next, each with its own task doc.
+gate verified end to end (`docs/tasks/TASK-empreendimentos.md`); and `/contato` +
+`/privacidade`, with `Lead` and `Consentimento` writing through a Server Action, never a public
+endpoint (`docs/tasks/TASK-contato-lgpd.md`). Units 4–5 of `docs/tasks/TASK-fase-0.md` — sobre
+and the home page — are next, each with its own task doc.
 
 `docs/product-definition.md` and `docs/design-handoff.md` are the source of truth for *what
 to build*; this file covers *how to work*. The root `README.md` is the implementation README
@@ -260,7 +262,7 @@ emerges.
   src/app/globals.css        design tokens, ported from design-handoff.md §03-04, §07, §09
   src/components/ui/         shadcn primitives
   src/components/            shared composites — signature (CRECI lockup), site-nav,
-                              site-footer, whatsapp-action; the catálogo pieces
+                              site-footer, whatsapp-action, contato-form; the catálogo pieces
                               (empreendimento-card, tipologia-card, registro-legal,
                               condicoes-comerciais, disponibilidade); plumb-rail (Phase 1)
   src/components/prequalificacao/  the six-step flow and its result states
@@ -272,10 +274,12 @@ emerges.
                               og-palette.ts (hex mirror of the tokens, for Satori);
                               format.ts (money, areas, dates — calendar dates in UTC);
                               catalogo.ts (view types the components take instead of Payload
-                              documents); incc.ts (projection, admin-backed); mcmv.ts in Phase 1
+                              documents); incc.ts (projection, admin-backed); lgpd.ts (the
+                              consent copy and version, shared by the form and the Server
+                              Action); mcmv.ts in Phase 1
   src/assets/fonts/          TTFs for the OG image only — never served to a browser (§04)
   src/payload/collections/   Incorporadora, Empreendimento, Tipologia, CondicaoComercial,
-                              Media, Users — plus Lead, Consentimento, Proposta in Phase 1
+                              Media, Lead, Consentimento, Users — plus Proposta in Phase 1
   src/payload/globals/       Parametros — the INCC rate and its revision date. Any number that
                               policy or the market moves goes here, never in code
   src/payload/access.ts      what the public REST/GraphQL endpoints may hand out. The site

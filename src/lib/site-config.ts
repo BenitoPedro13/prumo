@@ -47,5 +47,8 @@ export const BROKER_CRECI = "CRECI-RJ 00.000-F";
 /** PLACEHOLDER. E.164 without punctuation, the form `wa.me` expects. */
 export const WHATSAPP_NUMBER = "5521900000000";
 
+/** PLACEHOLDER. The second channel `/privacidade` offers for a stop-or-delete request. */
+export const BROKER_EMAIL = "adriana@example.com";
+
 /** Optional in interior footers, required on the proposal and the "sobre" page (§06). */
 export const BROKER_PHOTO = "/adriana-placeholder.jpg";

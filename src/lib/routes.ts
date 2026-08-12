@@ -44,18 +44,18 @@ export const PRIMARY_ROUTES: SiteRoute[] = [
   {
     href: "/contato",
     label: "Contato",
-    built: false,
+    built: true,
     changeFrequency: "monthly",
     priority: 0.6,
   },
 ];
 
-/** Footer-only. Arrives with the LGPD work in unit 3; until then the footer omits it. */
+/** Footer-only. */
 export const LEGAL_ROUTES: SiteRoute[] = [
   {
     href: "/privacidade",
     label: "Privacidade e dados",
-    built: false,
+    built: true,
     changeFrequency: "yearly",
     priority: 0.3,
   },

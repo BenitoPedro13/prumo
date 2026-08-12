@@ -1,8 +1,9 @@
 # TASK — Phase 0, the real site pages
 
 > Status: **in progress.** Unit 1 is built; unit 2 (the catalogue) is built and verified against
-> a running Postgres — see `TASK-empreendimentos.md`. Units 3–5 are commissioned below and
-> drafted when reached.
+> a running Postgres — see `TASK-empreendimentos.md`. Unit 3 (`/contato`, `/privacidade`, `Lead`
+> and `Consentimento`) is built — see `TASK-contato-lgpd.md`. Units 4–5 are commissioned below
+> and drafted when reached.
 >
 > This is a roadmap, not a unit of work. It sequences Phase 0 into five task docs and records
 > the order and the reasons. Each unit gets its own document with the four sections required by
@@ -69,13 +70,14 @@ placeholder. The largest unit of the phase and the one where the "must not break
 most work. Still open: a Supabase connection string for deployment, and the real registro data
 per development. See `TASK-empreendimentos.md` §7 and §10.
 
-### 3. `TASK-contato-lgpd.md` — the way in
+### 3. `TASK-contato-lgpd.md` — the way in · **planned**
 
 `/contato`, the `wa.me` CTA everywhere, and the `Lead` and `Consentimento` collections with the
 consent text versioned and stored with its timestamp and origin. Includes the `retomar_em`
 field — the one that turns "hoje não" into pipeline rather than a lost lead.
 
-Independent of unit 2. Carries the real legal weight of the phase, so it gets its own review.
+Independent of unit 2. Carries the real legal weight of the phase, so it gets its own review —
+drafted in full in `TASK-contato-lgpd.md`, not started.
 
 ### 4. `TASK-sobre.md` — the person
 

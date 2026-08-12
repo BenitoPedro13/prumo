@@ -9,8 +9,10 @@ import { buildConfig } from "payload";
 import sharp from "sharp";
 
 import { CondicoesComerciais } from "./src/payload/collections/condicoes-comerciais";
+import { Consentimentos } from "./src/payload/collections/consentimentos";
 import { Empreendimentos } from "./src/payload/collections/empreendimentos";
 import { Incorporadoras } from "./src/payload/collections/incorporadoras";
+import { Leads } from "./src/payload/collections/leads";
 import { Media } from "./src/payload/collections/media";
 import { Tipologias } from "./src/payload/collections/tipologias";
 import { Users } from "./src/payload/collections/users";
@@ -46,6 +48,8 @@ export default buildConfig({
     CondicoesComerciais,
     Incorporadoras,
     Media,
+    Leads,
+    Consentimentos,
     Users,
   ],
   globals: [Parametros],
