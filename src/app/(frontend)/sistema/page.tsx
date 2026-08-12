@@ -1,14 +1,21 @@
 import type { Metadata } from "next";
 
+import { CondicoesComerciais } from "@/components/condicoes-comerciais";
+import { Disponibilidade } from "@/components/disponibilidade";
+import { EmpreendimentoCard } from "@/components/empreendimento-card";
+import { RegistroLegal } from "@/components/registro-legal";
 import { Signature } from "@/components/signature";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { TipologiaCard } from "@/components/tipologia-card";
 import { WhatsAppAction } from "@/components/whatsapp-action";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { CondicaoComercialResumo, EmpreendimentoResumo, TipologiaResumo } from "@/lib/catalogo";
+import type { ProjecaoIndice } from "@/lib/incc";
 
 /**
  * The design system, rendered with the real components and the real tokens.
@@ -49,6 +56,67 @@ const TYPE = [
   { size: "text-sm", label: "15px", family: "font-sans", note: "Piso do que o comprador lê" },
   { size: "text-xs", label: "13px", family: "font-mono", note: "Dado técnico e legal" },
 ];
+
+
+/**
+ * Fixtures. Real Cury RJ names with invented numbers — the same rule the prototypes carry
+ * (docs/design-handoff.md §08): useful for showing Adriana, who recognises the developments,
+ * never to be sent to a buyer.
+ *
+ * The date is fixed rather than `new Date()` so this page renders the same way every build and
+ * the expired-table panel stays expired.
+ */
+const HOJE = new Date("2026-08-12T12:00:00Z");
+
+const EMPREENDIMENTO: EmpreendimentoResumo = {
+  nome: "Cury Pixinguinha",
+  slug: "cury-pixinguinha",
+  bairro: "Santo Cristo",
+  cidade: "Rio de Janeiro",
+  status: "em_obras",
+  entregaPrevista: "2029-03-01",
+  transporte: [{ modo: "vlt", nome: "Estação Santo Cristo", minutosAPe: 6 }],
+  faixa: { minimo: 249000, maximo: 289000 },
+  atualizadoEm: "2026-08-12T14:30:00Z",
+};
+
+const TIPOLOGIA: TipologiaResumo = {
+  nome: "2 quartos com varanda",
+  dormitorios: 2,
+  vagas: 1,
+  areaPrivativa: 42,
+  faixa: { minimo: 268000, maximo: 289000 },
+  faixasMcmv: ["2", "3"],
+  planta: {
+    url: "/planta-exemplo.svg",
+    alt: "Planta de exemplo: dois dormitórios, sala, cozinha, banheiro e varanda, 42 m²",
+    width: 600,
+    height: 420,
+  },
+};
+
+const CONDICAO: CondicaoComercialResumo = {
+  referencia: "Tabela 12 — agosto",
+  validadeDaTabela: "2026-08-31",
+  entradaPercentual: 7,
+  parcelasObra: { quantidade: 36, valor: 1480 },
+  baloes: [{ mes: 12, valor: 5000 }],
+  valorNasChaves: 210000,
+  indiceReajuste: "incc",
+};
+
+const CONDICAO_VENCIDA: CondicaoComercialResumo = {
+  ...CONDICAO,
+  referencia: "Tabela 9 — maio",
+  validadeDaTabela: "2026-05-31",
+};
+
+/** Illustrative, and marked as such wherever it renders. [VERIFICAR: INCC real na FGV] */
+const PROJECAO: ProjecaoIndice = {
+  taxaAnual: 0.0812,
+  dataRevisao: "2026-08-01",
+  fonte: "INCC-DI/FGV, acumulado em 12 meses",
+};
 
 export default function Sistema() {
   return (
@@ -147,6 +215,62 @@ export default function Sistema() {
             </div>
           </CardContent>
         </Card>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">Catálogo</h2>
+        <p className="max-w-prose text-ink-muted">
+          As peças da ficha do empreendimento. Nomes reais da Cury com números inventados, como
+          nos protótipos: serve para conferir o desenho, nunca para mandar para um comprador.
+        </p>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <EmpreendimentoCard empreendimento={EMPREENDIMENTO} />
+          <TipologiaCard tipologia={TIPOLOGIA} />
+        </div>
+
+        <RegistroLegal
+          registroIncorporacao="R-4 · matrícula 00.000"
+          cartorio="2º Ofício de Registro de Imóveis do Rio de Janeiro"
+          incorporadora="Cury Construtora"
+        />
+
+        <Disponibilidade atualizadoEm={EMPREENDIMENTO.atualizadoEm} />
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">Condições comerciais</h2>
+        <p className="max-w-prose text-ink-muted">
+          Três estados, e os dois últimos são os que importam: as parcelas nunca aparecem
+          sozinhas, e uma tabela vencida não vira número. Os dois valores juntos são a razão de
+          o produto existir.
+        </p>
+
+        <CondicoesComerciais
+          condicao={CONDICAO}
+          projecao={PROJECAO}
+          entregaPrevista={EMPREENDIMENTO.entregaPrevista}
+          hoje={HOJE}
+        />
+
+        <p className="font-mono text-xs uppercase tracking-widest text-ink-muted">
+          Sem índice configurado
+        </p>
+        <CondicoesComerciais
+          condicao={CONDICAO}
+          entregaPrevista={EMPREENDIMENTO.entregaPrevista}
+          hoje={HOJE}
+        />
+
+        <p className="font-mono text-xs uppercase tracking-widest text-ink-muted">
+          Tabela vencida
+        </p>
+        <CondicoesComerciais
+          condicao={CONDICAO_VENCIDA}
+          projecao={PROJECAO}
+          entregaPrevista={EMPREENDIMENTO.entregaPrevista}
+          hoje={HOJE}
+        />
       </section>
 
       <section className="space-y-4">

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 210" width="600" height="420" role="img" aria-label="Planta de exemplo: dois dormitórios, sala, cozinha, banheiro e varanda, 42 metros quadrados">
+  <!-- Design-system fixture only. Geometry taken from docs/design/prototypes/proposta.html.
+       Colours are fixed rather than themed on purpose: a real planta arrives as a PDF or PNG
+       export from the builder and will not adapt to dark mode either. -->
+  <rect width="300" height="210" fill="#f5f6f1"/>
+  <g stroke="#22251f" fill="none">
+    <rect x="8" y="8" width="284" height="194" stroke-width="3"/>
+    <path d="M8 100 H118 M118 8 V202" stroke-width="1.5"/>
+    <path d="M118 74 H196 M196 8 V74" stroke-width="1.5"/>
+    <path d="M118 160 H292" stroke-width="1.5"/>
+  </g>
+  <g fill="#22251f" font-family="ui-monospace, Menlo, monospace" font-size="8.5" letter-spacing="0.5">
+    <text x="22" y="50">DORM 1</text>
+    <text x="22" y="62" opacity="0.62">9 m²</text>
+    <text x="22" y="142">DORM 2</text>
+    <text x="22" y="154" opacity="0.62">7 m²</text>
+    <text x="132" y="40">BANHO</text>
+    <text x="210" y="40">COZINHA</text>
+    <text x="132" y="110">SALA</text>
+    <text x="132" y="122" opacity="0.62">14 m²</text>
+    <text x="132" y="182">VARANDA</text>
+  </g>
+</svg>

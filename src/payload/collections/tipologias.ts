@@ -1,5 +1,7 @@
 import type { CollectionConfig } from "payload";
 
+import { somenteAutenticado } from "../access";
+
 /**
  * The floor plan is the primary visual, not a render — a planta is what a couple actually
  * studies at the kitchen table (docs/design-handoff.md §09).
@@ -10,6 +12,7 @@ import type { CollectionConfig } from "payload";
 export const Tipologias: CollectionConfig = {
   slug: "tipologias",
   labels: { singular: "Tipologia", plural: "Tipologias" },
+  access: { read: somenteAutenticado },
   admin: {
     useAsTitle: "nome",
     defaultColumns: ["nome", "empreendimento", "dormitorios", "area_privativa"],

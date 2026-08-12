@@ -22,6 +22,7 @@ Vida the buyer's anxiety is credit approval, not finishes.
 | Design handoff | Complete — `docs/design-handoff.md` |
 | Prototypes | Four working HTML prototypes — `docs/design/prototypes/` |
 | Application | Tokens, signature, nav, footer, OG image, robots, sitemap, `wa.me` builder |
+| Catálogo | Components, INCC projection and publication gate built; the routes wait on Postgres |
 | Content screens | None yet — `/` is a placeholder, and the nav links 404 on purpose |
 | Payload admin | Schema built, **not yet run against a database** |
 | Deployment | None |
@@ -29,9 +30,10 @@ Vida the buyer's anxiety is credit approval, not finishes.
 Adriana has reviewed the pre-qualification and proposal prototypes and approved the direction.
 Corrections pending from her.
 
-Unit 1 of Phase 0 is done (`docs/tasks/TASK-chrome-e-seo.md`). Units 2–5 — empreendimentos,
-contato with LGPD consent, sobre, and the home page — are sequenced in
-`docs/tasks/TASK-fase-0.md`, each with its own task doc before any code.
+Unit 1 of Phase 0 is done (`docs/tasks/TASK-chrome-e-seo.md`). Unit 2 is half built: everything
+in `docs/tasks/TASK-empreendimentos.md` that does not touch the database is in and visible on
+`/sistema`, and the two routes wait on a running Postgres. Units 3–5 — contato with LGPD consent,
+sobre, and the home page — are sequenced in `docs/tasks/TASK-fase-0.md`.
 
 The nav links to `/empreendimentos`, `/sobre` and `/contato` before those pages exist. That is
 deliberate: the sitemap only lists routes flagged `built` in `src/lib/routes.ts`, so each unit
@@ -124,8 +126,10 @@ src/components/ui/      shadcn primitives, rethemed
 src/lib/site-config.ts  BRAND_NAME, BROKER_CRECI and the rest of the identity strings
 src/lib/routes.ts       the public routes, shared by the nav, the footer and the sitemap
 src/lib/signature.ts    the §06 proportions, shared by the component and the OG image
+src/lib/format.ts       money, areas and dates in pt-BR — calendar dates formatted in UTC
+src/lib/incc.ts         the INCC projection; no rate configured means no figure is shown
 src/assets/fonts/       TTFs the OG image needs; never served to a browser
-src/payload/            collections and generated types
+src/payload/            collections, globals, access rules and generated types
 payload.config.ts       Postgres, S3, pt-BR admin
 ```
 

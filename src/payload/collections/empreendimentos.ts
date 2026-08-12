@@ -1,5 +1,7 @@
 import type { CollectionConfig } from "payload";
 
+import { publicadosOuAutenticado } from "../access";
+
 /**
  * `registro_incorporacao` and `cartorio` are required by law in any advertising of a unit
  * under incorporação, which is why they are required fields and not optional notes
@@ -7,15 +9,27 @@ import type { CollectionConfig } from "payload";
  *
  * There is deliberately no "disponível" flag. The sales mirror is the builder's and changes
  * hourly; availability is always "consultar", never asserted here.
+ *
+ * Drafts are the publication gate. Payload skips required-field validation on a draft and
+ * enforces it on publish, so "no registro de incorporação and no cartório, no publish" is not a
+ * policy anyone has to remember — it is the only way the button works. She can start a launch's
+ * page the day she hears about it and simply cannot make it public until the number arrives.
  */
 export const Empreendimentos: CollectionConfig = {
   slug: "empreendimentos",
   labels: { singular: "Empreendimento", plural: "Empreendimentos" },
   admin: {
     useAsTitle: "nome",
-    defaultColumns: ["nome", "status", "entrega_prevista"],
+    defaultColumns: ["nome", "status", "entrega_prevista", "_status"],
     group: "Catálogo",
+    description:
+      "Um empreendimento só vai ao ar com registro de incorporação e cartório preenchidos. Salve como rascunho até tê-los.",
   },
+  versions: {
+    drafts: { autosave: false },
+    maxPerDoc: 10,
+  },
+  access: { read: publicadosOuAutenticado },
   fields: [
     {
       name: "nome",

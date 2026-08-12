@@ -1,5 +1,7 @@
 import type { CollectionConfig } from "payload";
 
+import { somenteAutenticado } from "../access";
+
 /**
  * n = 1 today (Cury), kept as an entity because she has already come from another builder
  * once. The authorisation fields exist because the permission to advertise a builder's
@@ -9,6 +11,7 @@ import type { CollectionConfig } from "payload";
 export const Incorporadoras: CollectionConfig = {
   slug: "incorporadoras",
   labels: { singular: "Incorporadora", plural: "Incorporadoras" },
+  access: { read: somenteAutenticado },
   admin: {
     useAsTitle: "nome",
     defaultColumns: ["nome", "updatedAt"],

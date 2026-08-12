@@ -16,6 +16,34 @@ export const Media: CollectionConfig = {
   },
   upload: {
     mimeTypes: ["image/*", "application/pdf"],
+    /**
+     * Three sizes, and every one of them AVIF. The originals are Cury's renders and floor
+     * plans at print resolution; served raw they would cost a reader on prepaid data more
+     * than the page is worth (docs/design-handoff.md §09).
+     *
+     * `planta` is the largest because the floor plan is the one image on the page people
+     * actually study, and a planta that cannot be read defeats the point of showing it.
+     */
+    imageSizes: [
+      {
+        name: "card",
+        width: 640,
+        withoutEnlargement: true,
+        formatOptions: { format: "avif", options: { quality: 55 } },
+      },
+      {
+        name: "ficha",
+        width: 1280,
+        withoutEnlargement: true,
+        formatOptions: { format: "avif", options: { quality: 55 } },
+      },
+      {
+        name: "planta",
+        width: 1600,
+        withoutEnlargement: true,
+        formatOptions: { format: "avif", options: { quality: 70 } },
+      },
+    ],
   },
   fields: [
     {

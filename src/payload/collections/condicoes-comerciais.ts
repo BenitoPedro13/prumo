@@ -1,5 +1,7 @@
 import type { CollectionConfig } from "payload";
 
+import { somenteAutenticado } from "../access";
+
 /**
  * The one entity in the catalogue that expires.
  *
@@ -15,6 +17,7 @@ import type { CollectionConfig } from "payload";
 export const CondicoesComerciais: CollectionConfig = {
   slug: "condicoes-comerciais",
   labels: { singular: "Condição comercial", plural: "Condições comerciais" },
+  access: { read: somenteAutenticado },
   admin: {
     useAsTitle: "referencia",
     defaultColumns: ["referencia", "tipologia", "validade_da_tabela"],

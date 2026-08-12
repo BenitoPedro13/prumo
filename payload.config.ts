@@ -14,6 +14,7 @@ import { Incorporadoras } from "./src/payload/collections/incorporadoras";
 import { Media } from "./src/payload/collections/media";
 import { Tipologias } from "./src/payload/collections/tipologias";
 import { Users } from "./src/payload/collections/users";
+import { Parametros } from "./src/payload/globals/parametros";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -47,6 +48,7 @@ export default buildConfig({
     Media,
     Users,
   ],
+  globals: [Parametros],
   /** Adriana is not technical and works in Portuguese. The panel is pt-BR, not translated later. */
   i18n: {
     supportedLanguages: { pt },

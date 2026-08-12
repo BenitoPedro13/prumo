@@ -258,7 +258,9 @@ emerges.
   src/app/globals.css        design tokens, ported from design-handoff.md §03-04, §07, §09
   src/components/ui/         shadcn primitives
   src/components/            shared composites — signature (CRECI lockup), site-nav,
-                              site-footer, whatsapp-action, plumb-rail (Phase 1)
+                              site-footer, whatsapp-action; the catálogo pieces
+                              (empreendimento-card, tipologia-card, registro-legal,
+                              condicoes-comerciais, disponibilidade); plumb-rail (Phase 1)
   src/components/prequalificacao/  the six-step flow and its result states
   src/components/proposta/   the shared-link proposal surface
   src/lib/                   cn(); site-config.ts (BRAND_NAME, SITE_URL, CRECI);
@@ -266,10 +268,16 @@ emerges.
                               the OG image); routes.ts (nav + sitemap, one list);
                               metadata.ts (per-page canonical); whatsapp.ts (wa.me builder);
                               og-palette.ts (hex mirror of the tokens, for Satori);
-                              mcmv.ts and incc.ts in Phase 1
+                              format.ts (money, areas, dates — calendar dates in UTC);
+                              catalogo.ts (view types the components take instead of Payload
+                              documents); incc.ts (projection, admin-backed); mcmv.ts in Phase 1
   src/assets/fonts/          TTFs for the OG image only — never served to a browser (§04)
   src/payload/collections/   Incorporadora, Empreendimento, Tipologia, CondicaoComercial,
                               Media, Users — plus Lead, Consentimento, Proposta in Phase 1
+  src/payload/globals/       Parametros — the INCC rate and its revision date. Any number that
+                              policy or the market moves goes here, never in code
+  src/payload/access.ts      what the public REST/GraphQL endpoints may hand out. The site
+                              reads through the Local API, so that surface is closed
   src/payload/payload-types.ts  generated; `pnpm generate:types` after any schema change
   payload.config.ts          root, per Payload's docs. Postgres + S3 adapters, pt-BR admin
   docs/product-definition.md market, product, architecture, phases, risks
