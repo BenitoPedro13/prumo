@@ -19,9 +19,9 @@ const LABEL: Record<Choice, string> = {
 };
 
 /**
- * Scaffold-scope. The three theme states are a token contract (docs/design-handoff.md §03)
- * and this is how they get checked by hand. Whether the finished site offers a theme control
- * at all is a design decision that has not been made.
+ * An instrument on /sistema, not a site feature. The three theme states are a token contract
+ * (docs/design-handoff.md §03) and this is how they get checked by hand. Whether the finished
+ * site offers a theme control at all is a design decision that has not been made.
  */
 export function ThemeToggle() {
   const [choice, setChoice] = useState<Choice>("system");

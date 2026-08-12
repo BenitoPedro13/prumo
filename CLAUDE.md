@@ -217,6 +217,8 @@ subsidy figure shown to a family is the worst failure this product can have.
   architectural decision genuinely changes, and when an open question in §10 gets answered.
 - **`docs/design-handoff.md`** — identity, tokens, voice, screens. Update when a design decision
   genuinely changes, not merely because an implementation differs slightly from a prototype.
+- **`/sistema`** — the design system route (§4). A new shared component, token or state that
+  is not represented there is an unfinished task, not a finished one.
 - **`docs/tasks/`** — keep task docs in sync while work is in progress (§1.2).
 
 ### 3.2 How to apply it
@@ -277,6 +279,22 @@ emerges.
   (`data-theme` on `<html>`), and the unstamped system default. Never define a color only inside
   a media query or a `[data-theme]` block.
 
+- **`/sistema` is the design system, and it is part of the deliverable.** It renders the
+  palette, the states, the type scale, the rethemed primitives and the signature with the real
+  components and the real tokens — so a broken token shows up immediately, which a table in a
+  markdown file never does. Rules:
+
+  - **Every shared component gets a panel there in the same task that introduces it.** Not in a
+    later tidy-up pass. This is the only thing that keeps the page from decaying into a
+    screenshot of what the project looked like in August 2026.
+  - **Hidden, not protected** — unlinked and `noindex`. It holds placeholder copy and public
+    brand decisions, nothing confidential. If that ever changes, so does this.
+  - **It is what gets shown to Adriana** when a design question needs her opinion. Asking
+    whether a colour and a piece of type feel like they are *for her* is a cheaper and better
+    question than asking it about a finished page (`docs/design-handoff.md` §01).
+  - It is a reference surface, not a screen. Nothing on the site links to it, and no screen
+    imports from it.
+
 - **Language.** All user-facing copy is **Brazilian Portuguese**. Code, comments, commit
   messages and docs are English, except where a domain term has no useful translation — keep
   `espelho de vendas`, `tabela`, `faixa`, `entrada`, `repasse`, `INCC`, `CRECI` as-is.
@@ -302,7 +320,7 @@ system. The process should match the size of the problem.
 | **Stack** | Next.js + Tailwind v4 + shadcn/ui + Payload CMS 3 + Postgres + Vercel, pnpm | Single-app repo: `src/app/`, `src/components/`, `docs/tasks/` |
 | **Before** | Write a task document first | `docs/tasks/TASK-<slug>.md`: current scenario, planned changes (file by file), why, affected-files table |
 | **During** | Use CLIs / generators; `[VERIFICAR: ...]` for any MCMV or CRECI rule not confirmed against the source | Canonical output, no guessed policy numbers |
-| **After** | Update `README.md` / `docs/product-definition.md` / `docs/design-handoff.md` / `CLAUDE.md`, then commit | Docs in sync, a commit |
+| **After** | Add any new shared component to `/sistema`; update `README.md` / `docs/product-definition.md` / `docs/design-handoff.md` / `CLAUDE.md`, then commit | Design system current, docs in sync, a commit |
 
 **The loop:** plan → align → build with tooling → document → commit → done.
 
