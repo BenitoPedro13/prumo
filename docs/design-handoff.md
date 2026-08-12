@@ -127,6 +127,18 @@ budget. Body is set **deliberately larger than default**: 17px base, never below
 anything the buyer must read. This audience reads on mid-range Android, often in sunlight,
 sometimes on a cracked screen. Large type is accessibility and respect in equal measure.
 
+### The one exception: the OG image
+
+`next/og` renders the shared-link preview on the server, through Satori, where no system fonts
+exist — so that one surface has to be handed real font files. They are baked into a PNG at build
+time and never reach a browser, so the weight budget in §09 is untouched and the site still ships
+no webfont.
+
+The three faces are the open members of the stacks above rather than new typefaces: **Roboto
+Slab** for the display, **Roboto** for the body, **Roboto Mono** for the utility line. Roboto Slab
+and Roboto are already named in those stacks, so the preview is set in a face the page itself may
+fall back to. Apache 2.0, checked in at `src/assets/fonts/` with the licence.
+
 ### Scale
 
 Tailwind's default scale is rebuilt around the 17px base rather than layered on top of 16px.
@@ -187,6 +199,21 @@ does not, the layout is wrong.
 **Implemented** as `src/components/signature.tsx`, variants `header` · `footer` · `full`. The
 three rules above are computed from the wordmark size by `signatureSizes()` rather than left to
 whoever composes the next screen, so a new surface inherits them instead of re-deriving them.
+The rules themselves live in `src/lib/signature.ts`, apart from the component, because a second
+surface needs them and it is not a page: the OG image renders through Satori with no DOM and no
+stylesheet, and calls `signatureScale()` with its own wordmark size.
+
+**On the OG image** (`src/app/(frontend)/opengraph-image.tsx`, 1200×630): the wordmark at 48px, so
+her name resolves to 30px and the CRECI to 22px — both well clear of the floors. The lockup sits
+at the foot of the piece, under a hairline, with the plumb rail of §07 hanging beside it and the
+bob coming to rest level with her name. It is the first thing most people will see of this
+project, because the site is reached from a WhatsApp message more often than from a search
+result, and it is advertising in the CRECI sense — the signature on it is a legal requirement,
+not a nicety.
+
+**Neither the nav nor the footer belongs to a page.** Both are rendered by
+`src/app/(frontend)/layout.tsx`, so a screen cannot forget the signature: it does not get to
+decide.
 
 The wordmark is currently the brand name set in the display slab, with no mark. A drawn plumb
 glyph waits on the name being settled — a mark for a name that may still change to Chão or

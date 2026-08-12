@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 
 import { Signature } from "@/components/signature";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteNav } from "@/components/site-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { WhatsAppAction } from "@/components/whatsapp-action";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -49,130 +52,166 @@ const TYPE = [
 
 export default function Sistema() {
   return (
-    <>
-      <header className="border-b border-rule">
-        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-4 px-6 py-5">
+    <div className="mx-auto w-full max-w-4xl space-y-14 px-6 py-14">
+      <section className="space-y-4">
+        <p className="font-mono text-xs uppercase tracking-widest text-ink-muted">
+          Página interna
+        </p>
+        <h1 className="font-display text-3xl tracking-tight text-balance">
+          O sistema, desenhado com as próprias peças.
+        </h1>
+        <p className="max-w-prose text-ink-muted">
+          Cor, tipo e componentes como eles saem na tela, não como estão descritos no
+          documento. Serve para conferir que uma peça nova herdou o sistema em vez de
+          reinventá-lo, e para decidir junto com a Adriana o que ainda não está resolvido.
+        </p>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">Paleta</h2>
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {PALETTE.map(({ token, role, className }) => (
+            <li key={token} className="space-y-2">
+              <span
+                aria-hidden
+                className={`block h-14 rounded-lg border border-rule ${className}`}
+              />
+              <span className="block font-mono text-xs text-ink">{token}</span>
+              <span className="block text-xs text-ink-muted">{role}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">Estados</h2>
+        <p className="max-w-prose text-ink-muted">
+          A pré-qualificação precisa de &ldquo;pode seguir&rdquo; e de &ldquo;ainda não&rdquo;,
+          e nenhum dos dois pode ser vermelho. Vermelho fica reservado para erro de sistema.
+        </p>
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {STATES.map(({ token, role, className }) => (
+            <li key={token} className="space-y-2">
+              <span
+                aria-hidden
+                className={`block h-14 rounded-lg border border-rule ${className}`}
+              />
+              <span className="block font-mono text-xs text-ink">{token}</span>
+              <span className="block text-xs text-ink-muted">{role}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">Tipografia</h2>
+        <p className="max-w-prose text-ink-muted">
+          Sem fonte baixada. O corpo é maior que o padrão de propósito: muita gente lê isto num
+          Android intermediário, no sol, às vezes com a tela trincada.
+        </p>
+        <ul className="divide-y divide-rule border-y border-rule">
+          {TYPE.map(({ size, label, family, note }) => (
+            <li
+              key={size}
+              className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4"
+            >
+              <span className={`${size} ${family} tracking-tight`}>Estar no prumo</span>
+              <span className="font-mono text-xs text-ink-muted">
+                {label} · {size} · {note}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">Componentes</h2>
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-display font-normal tracking-tight">
+              Primitivos retematizados
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="renda">Renda familiar bruta</Label>
+              <Input id="renda" inputMode="numeric" placeholder="R$ 4.200" />
+              <p className="text-sm text-ink-muted">
+                Campo de exemplo. A pré-qualificação de verdade é da fase 1.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Button>Ver empreendimentos</Button>
+              <Button variant="outline">Baixar a planta</Button>
+              <Button variant="ghost">Como funciona</Button>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">Assinatura</h2>
+        <p className="max-w-prose text-ink-muted">
+          Três variantes, com as proporções calculadas em src/lib/signature.ts. Qualquer captura de
+          qualquer tela precisa conter a assinatura completa.
+        </p>
+        <div className="space-y-8 rounded-lg border border-rule bg-sheet p-6">
           <Signature variant="header" />
+          <Signature variant="footer" />
+          <Signature variant="full" />
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">Ação de WhatsApp</h2>
+        <p className="max-w-prose text-ink-muted">
+          A única ação do site. Cada tela passa de onde a pessoa está escrevendo, e isso entra
+          no texto que ela envia — a Adriana abre a conversa já sabendo. Maior que o padrão do
+          shadcn de propósito: 44px é o piso de alvo de toque.
+        </p>
+        <div className="flex flex-wrap items-center gap-3 rounded-lg border border-rule bg-sheet p-6">
+          <WhatsAppAction context={{ origem: "na página do sistema" }} />
+          <WhatsAppAction
+            context={{
+              origem: "na página do sistema",
+              empreendimento: "Cury Pixinguinha",
+              tipologia: "2 quartos, 42 m²",
+            }}
+            variant="outline"
+            label="Falar sobre um empreendimento"
+          />
+        </div>
+        <p className="max-w-prose text-xs text-ink-muted">
+          O número em src/lib/site-config.ts ainda é placeholder, então os links abrem uma
+          conversa que não existe.
+        </p>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">Cabeçalho e rodapé</h2>
+        <p className="max-w-prose text-ink-muted">
+          Os mesmos componentes que o layout renderiza em toda página — é por isso que nenhuma
+          tela precisa lembrar da assinatura. Aqui aparecem dentro de uma moldura; no site eles
+          ocupam a largura inteira.
+        </p>
+        <div className="overflow-hidden rounded-lg border border-rule">
+          <SiteNav />
+        </div>
+        <div className="overflow-hidden rounded-lg border border-rule">
+          <SiteFooter />
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">Tema</h2>
+        <p className="max-w-prose text-ink-muted">
+          Instrumento desta página, não recurso do site. Os três estados — claro, escuro e o
+          padrão do sistema — são um contrato de tokens, e este botão é como ele se confere.
+        </p>
+        <div className="rounded-lg border border-rule bg-sheet p-6">
           <ThemeToggle />
         </div>
-      </header>
-
-      <main className="mx-auto w-full max-w-3xl flex-1 space-y-14 px-6 py-14">
-        <section className="space-y-4">
-          <p className="font-mono text-xs uppercase tracking-widest text-ink-muted">
-            Página interna
-          </p>
-          <h1 className="font-display text-3xl tracking-tight text-balance">
-            O sistema, desenhado com as próprias peças.
-          </h1>
-          <p className="max-w-prose text-ink-muted">
-            Cor, tipo e componentes como eles saem na tela, não como estão descritos no
-            documento. Serve para conferir que uma peça nova herdou o sistema em vez de
-            reinventá-lo, e para decidir junto com a Adriana o que ainda não está resolvido.
-          </p>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="font-display text-xl tracking-tight">Paleta</h2>
-          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {PALETTE.map(({ token, role, className }) => (
-              <li key={token} className="space-y-2">
-                <span
-                  aria-hidden
-                  className={`block h-14 rounded-lg border border-rule ${className}`}
-                />
-                <span className="block font-mono text-xs text-ink">{token}</span>
-                <span className="block text-xs text-ink-muted">{role}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="font-display text-xl tracking-tight">Estados</h2>
-          <p className="max-w-prose text-ink-muted">
-            A pré-qualificação precisa de &ldquo;pode seguir&rdquo; e de &ldquo;ainda não&rdquo;,
-            e nenhum dos dois pode ser vermelho. Vermelho fica reservado para erro de sistema.
-          </p>
-          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {STATES.map(({ token, role, className }) => (
-              <li key={token} className="space-y-2">
-                <span
-                  aria-hidden
-                  className={`block h-14 rounded-lg border border-rule ${className}`}
-                />
-                <span className="block font-mono text-xs text-ink">{token}</span>
-                <span className="block text-xs text-ink-muted">{role}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="font-display text-xl tracking-tight">Tipografia</h2>
-          <p className="max-w-prose text-ink-muted">
-            Sem fonte baixada. O corpo é maior que o padrão de propósito: muita gente lê isto num
-            Android intermediário, no sol, às vezes com a tela trincada.
-          </p>
-          <ul className="divide-y divide-rule border-y border-rule">
-            {TYPE.map(({ size, label, family, note }) => (
-              <li
-                key={size}
-                className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4"
-              >
-                <span className={`${size} ${family} tracking-tight`}>Estar no prumo</span>
-                <span className="font-mono text-xs text-ink-muted">
-                  {label} · {size} · {note}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="font-display text-xl tracking-tight">Componentes</h2>
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-display font-normal tracking-tight">
-                Primitivos retematizados
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="space-y-2">
-                <Label htmlFor="renda">Renda familiar bruta</Label>
-                <Input id="renda" inputMode="numeric" placeholder="R$ 4.200" />
-                <p className="text-sm text-ink-muted">
-                  Campo de exemplo. A pré-qualificação de verdade é da fase 1.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <Button>Ver empreendimentos</Button>
-                <Button variant="outline">Falar no WhatsApp</Button>
-                <Button variant="ghost">Como funciona</Button>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="font-display text-xl tracking-tight">Assinatura</h2>
-          <p className="max-w-prose text-ink-muted">
-            Três variantes, com as proporções calculadas pelo componente. Qualquer captura de
-            qualquer tela precisa conter a assinatura completa.
-          </p>
-          <div className="space-y-8 rounded-lg border border-rule bg-sheet p-6">
-            <Signature variant="header" />
-            <Signature variant="footer" />
-            <Signature variant="full" />
-          </div>
-        </section>
-      </main>
-
-      <footer className="border-t border-rule">
-        <div className="mx-auto max-w-3xl px-6 py-8">
-          <Signature variant="footer" />
-        </div>
-      </footer>
-    </>
+      </section>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 # TASK — Phase 0, the real site pages
 
-> Status: **plan, awaiting approval.** No code written.
+> Status: **in progress.** Unit 1 is built; units 2–5 are commissioned below and drafted when
+> reached.
 >
 > This is a roadmap, not a unit of work. It sequences Phase 0 into five task docs and records
 > the order and the reasons. Each unit gets its own document with the four sections required by
@@ -43,13 +44,14 @@ The parts of Phase 0 that are **not** commodity, and where care is warranted:
 
 ## 2. Planned changes — five units, in order
 
-### 1. `TASK-chrome-e-seo.md` — the envelope · **written, ready to build**
+### 1. `TASK-chrome-e-seo.md` — the envelope · **built**
 
 Site navigation, footer, the metadata and social envelope, and the `wa.me` link builder. Moves
 the chrome into `(frontend)/layout.tsx` so every page inherits the signature structurally rather
 than by discipline.
 
-Depends on nothing. Buildable today, without a database.
+Depended on nothing and needed no database. Done — see §7 of that document for where the build
+departed from its plan, and §8 for what it left blocked.
 
 ### 2. `TASK-empreendimentos.md` — the catalogue
 

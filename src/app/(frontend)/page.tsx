@@ -1,33 +1,29 @@
-import { Signature } from "@/components/signature";
+import type { Metadata } from "next";
+
+import { WhatsAppAction } from "@/components/whatsapp-action";
+import { pageMetadata } from "@/lib/metadata";
 
 /**
- * Placeholder. The real home arrives with the Phase 0 tasks — see
- * docs/tasks/TASK-fase-0.md. The design system that used to live here moved to /sistema.
+ * Placeholder. The real home is the last unit of Phase 0 — see docs/tasks/TASK-fase-0.md —
+ * because it composes from the pages the earlier units build. The chrome, and with it the
+ * signature, now comes from the layout.
  */
+export const metadata: Metadata = pageMetadata({ path: "/" });
+
 export default function Home() {
   return (
-    <>
-      <header className="border-b border-rule">
-        <div className="mx-auto flex max-w-3xl items-center px-6 py-5">
-          <Signature variant="header" />
-        </div>
-      </header>
-
-      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center gap-4 px-6 py-20">
-        <h1 className="font-display text-3xl tracking-tight text-balance">
-          Apartamentos da Cury no Rio, explicados por inteiro.
-        </h1>
-        <p className="max-w-prose text-ink-muted">
-          O site está sendo construído. Enquanto isso, a conversa continua onde ela já
-          acontece.
-        </p>
-      </main>
-
-      <footer className="border-t border-rule">
-        <div className="mx-auto max-w-3xl px-6 py-8">
-          <Signature variant="footer" />
-        </div>
-      </footer>
-    </>
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-6 py-20">
+      <h1 className="max-w-prose font-display text-3xl tracking-tight text-balance">
+        Apartamentos da Cury no Rio, explicados por inteiro.
+      </h1>
+      <p className="max-w-prose text-ink-muted">
+        O site está sendo construído. Enquanto isso, a conversa continua onde ela já
+        acontece, e a primeira pergunta é sempre a mesma: quanto cabe no seu orçamento hoje,
+        antes de olhar apartamento.
+      </p>
+      <div className="flex">
+        <WhatsAppAction context={{ origem: "na página inicial" }} />
+      </div>
+    </div>
   );
 }

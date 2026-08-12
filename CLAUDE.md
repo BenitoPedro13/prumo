@@ -12,11 +12,13 @@
 
 ## 0. Project context — Prumo
 
-**Status: scaffolded. Themed shell and admin schema in place, no screens yet.** The product,
+**Status: site chrome and metadata envelope built; content screens next.** The product,
 market, architecture and phasing live in `docs/product-definition.md`. The visual identity,
 tokens, voice and screen inventory live in `docs/design-handoff.md`. Four working HTML
 prototypes live in `docs/design/prototypes/`. The scaffold is done
-(`docs/tasks/TASK-scaffold-nextjs.md`); Phase 0 screens are next, each with its own task doc.
+(`docs/tasks/TASK-scaffold-nextjs.md`), and so is unit 1 of Phase 0 — nav, footer, OG image,
+icon, robots, sitemap and the `wa.me` builder (`docs/tasks/TASK-chrome-e-seo.md`). Units 2–5 of
+`docs/tasks/TASK-fase-0.md` are next, each with its own task doc.
 
 `docs/product-definition.md` and `docs/design-handoff.md` are the source of truth for *what
 to build*; this file covers *how to work*. The root `README.md` is the implementation README
@@ -244,19 +246,28 @@ emerges.
 
   ```
   src/app/(frontend)/        App Router routes — /, /empreendimentos/[slug], /simulador,
-                              /p/[token] (proposta), /sobre, /contato; icon.tsx,
-                              opengraph-image.tsx, robots.ts, sitemap.ts
+                              /p/[token] (proposta), /sobre, /contato; layout.tsx renders the
+                              nav and footer so a page cannot forget the signature; icon.tsx,
+                              opengraph-image.tsx, sitemap.ts
+  src/app/robots.ts          the one file directly under src/app/. Next matches `robots` and
+                              `manifest` with a regex anchored at the app root, so inside a
+                              route group /robots.txt silently 404s. It is a route handler,
+                              not a layout, so Payload's admin is unaffected
   src/app/(payload)/         Payload admin and REST/GraphQL API, pt-BR. Generated —
                               regenerate rather than hand-edit
   src/app/globals.css        design tokens, ported from design-handoff.md §03-04, §07, §09
   src/components/ui/         shadcn primitives
-  src/components/            shared composites — signature (CRECI lockup), plumb-rail,
-                              site-nav, site-footer
+  src/components/            shared composites — signature (CRECI lockup), site-nav,
+                              site-footer, whatsapp-action, plumb-rail (Phase 1)
   src/components/prequalificacao/  the six-step flow and its result states
   src/components/proposta/   the shared-link proposal surface
-  src/lib/                   cn(); mcmv.ts (faixas, rates, subsidy — admin-backed);
-                              incc.ts (projection); site-config.ts (BRAND_NAME, SITE_URL,
-                              CRECI); whatsapp.ts (wa.me link builder)
+  src/lib/                   cn(); site-config.ts (BRAND_NAME, SITE_URL, CRECI);
+                              signature.ts (the §06 proportions, shared by the component and
+                              the OG image); routes.ts (nav + sitemap, one list);
+                              metadata.ts (per-page canonical); whatsapp.ts (wa.me builder);
+                              og-palette.ts (hex mirror of the tokens, for Satori);
+                              mcmv.ts and incc.ts in Phase 1
+  src/assets/fonts/          TTFs for the OG image only — never served to a browser (§04)
   src/payload/collections/   Incorporadora, Empreendimento, Tipologia, CondicaoComercial,
                               Media, Users — plus Lead, Consentimento, Proposta in Phase 1
   src/payload/payload-types.ts  generated; `pnpm generate:types` after any schema change
@@ -267,9 +278,11 @@ emerges.
   docs/tasks/                task docs (§1)
   ```
 
-- **Two route groups, and nothing at the top of `src/app/`.** Payload's admin ships its own
-  root layout, so the site needs its own alongside it. A file added directly under `src/app/`
-  breaks the admin.
+- **Two route groups, and almost nothing at the top of `src/app/`.** Payload's admin ships its
+  own root layout, so the site needs its own alongside it. A *page or layout* added directly
+  under `src/app/` breaks the admin. The single exception is `robots.ts`, which Next only
+  recognises at the app root and which is a route handler, not a layout — see the layout note
+  above.
 
 - **The palette is available under its own names** — `bg-verde`, `text-ink-muted`, `border-rule`
   — as well as through the shadcn semantic tokens they feed. Screens should read the way

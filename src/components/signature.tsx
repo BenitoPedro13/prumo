@@ -1,6 +1,10 @@
 import Image from "next/image";
 
 import {
+  signatureSizes,
+  type SignatureVariant,
+} from "@/lib/signature";
+import {
   BRAND_NAME,
   BROKER_CRECI,
   BROKER_NAME,
@@ -13,54 +17,13 @@ import { cn } from "@/lib/utils";
 /**
  * The CRECI signature — docs/design-handoff.md §06.
  *
- * This is the repo's central legal constraint, so the proportions are computed here rather
- * than left to whoever composes the next screen. Any screenshot of any surface must contain
- * the complete lockup: her real name, the role, and the registration. If it does not, the
- * layout is wrong.
+ * This is the repo's central legal constraint, so the proportions are computed in
+ * `src/lib/signature.ts` rather than left to whoever composes the next screen, and the OG
+ * image derives from the same file. Any screenshot of any surface must contain the complete
+ * lockup: her real name, the role, and the registration. If it does not, the layout is wrong.
  */
 
-/** Her name, as a fraction of the wordmark on the same piece. Our standard, stricter than required. */
-const MIN_NAME_RATIO = 0.5;
-
-/** CRECI, as a fraction of the largest name on the piece — the wordmark, not her name. */
-const MIN_CRECI_RATIO = 0.25;
-
-/**
- * Absolute floor in px. 25% of a small wordmark would be illegible, so the ratio alone is
- * not enough: this is a legal minimum, not a design target.
- */
-const MIN_CRECI_PX = 11;
-
-export type SignatureVariant = "header" | "footer" | "full";
-
-const VARIANTS = {
-  header: { wordmark: 20, nameRatio: 0.65, creciRatio: 0.55 },
-  footer: { wordmark: 24, nameRatio: 0.625, creciRatio: 0.5 },
-  full: { wordmark: 32, nameRatio: 0.625, creciRatio: 0.4 },
-} as const satisfies Record<
-  SignatureVariant,
-  { wordmark: number; nameRatio: number; creciRatio: number }
->;
-
-/**
- * Resolves a variant to px sizes with the §06 floors applied. Exported so the rules can be
- * asserted directly instead of eyeballed in a screenshot.
- */
-export function signatureSizes(variant: SignatureVariant) {
-  const { wordmark, nameRatio, creciRatio } = VARIANTS[variant];
-
-  return {
-    wordmark,
-    name: Math.round(wordmark * Math.max(nameRatio, MIN_NAME_RATIO)),
-    creci: Math.round(
-      Math.max(
-        wordmark * creciRatio,
-        wordmark * MIN_CRECI_RATIO,
-        MIN_CRECI_PX,
-      ),
-    ),
-  };
-}
+export type { SignatureVariant };
 
 type SignatureProps = {
   variant?: SignatureVariant;

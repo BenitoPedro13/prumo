@@ -1,6 +1,7 @@
 # TASK — Site chrome and the metadata envelope
 
-> Status: **plan, awaiting approval.** No code written.
+> Status: **built.** `pnpm build` and `pnpm lint` pass. §7 records where the build departed
+> from this plan.
 >
 > Unit 1 of five in `TASK-fase-0.md`. Depends on nothing and needs no database.
 
@@ -122,18 +123,25 @@ commits to page structure, and every later unit inherits it.
 
 | File | Change type | Notes |
 |---|---|---|
-| `src/app/(frontend)/layout.tsx` | edit | renders nav and footer; canonical + OG metadata |
+| `src/app/(frontend)/layout.tsx` | edit | renders nav and footer; OG and Twitter metadata |
 | `src/components/site-nav.tsx` | new | signature, links, WhatsApp action; no JS |
 | `src/components/site-footer.tsx` | new | signature, links, incorporação and pricing notices |
+| `src/components/whatsapp-action.tsx` | new | the one action, at a 44px touch target |
 | `src/app/(frontend)/icon.tsx` | new | provisional, blocked on the brand name |
-| `src/app/(frontend)/opengraph-image.tsx` | new | complete signature at §06 proportions; embeds a font |
-| `src/app/(frontend)/robots.ts` | new | disallow `/admin`, `/api`, `/sistema`, `/p/` |
-| `src/app/(frontend)/sitemap.ts` | new | static routes; unit 2 adds empreendimentos |
+| `src/app/(frontend)/opengraph-image.tsx` | new | complete signature at §06 proportions; plumb rail; embeds fonts |
+| `src/app/robots.ts` | new | app root, not the route group — see §7. Disallows `/admin`, `/api`, `/sistema`, `/p/` |
+| `src/app/(frontend)/sitemap.ts` | new | built routes only; unit 2 adds empreendimentos |
+| `src/lib/routes.ts` | new | the public routes, shared by nav, footer and sitemap |
 | `src/lib/whatsapp.ts` | new | `wa.me` builder with pre-filled context |
-| `src/app/(frontend)/page.tsx` | edit | drops its hand-rolled chrome |
-| `src/app/(frontend)/sistema/page.tsx` | edit | drops its chrome; gains nav/footer/CTA panels |
-| `src/lib/site-config.ts` | edit | site description and OG strings, if any are missing |
-| `docs/design-handoff.md` | edit | §04 records the OG font; §06 records the OG lockup |
+| `src/lib/metadata.ts` | new | `pageMetadata()` — per-page canonical and OG url |
+| `src/lib/signature.ts` | new | the §06 proportions, extracted from the component |
+| `src/lib/og-palette.ts` | new | the light palette in hex, for Satori |
+| `src/components/signature.tsx` | edit | renders only; the rules moved to `src/lib/signature.ts` |
+| `src/assets/fonts/` | new | three TTFs and the Apache licence, for the OG image only |
+| `src/app/(frontend)/page.tsx` | edit | drops its hand-rolled chrome; gains the WhatsApp action |
+| `src/app/(frontend)/sistema/page.tsx` | edit | drops its chrome; gains nav, footer, action and theme panels |
+| `src/lib/site-config.ts` | edit | `SITE_DESCRIPTION` |
+| `docs/design-handoff.md` | edit | §04 records the OG fonts; §06 records the OG lockup and the layout rule |
 | `README.md`, `CLAUDE.md` | edit | per `CLAUDE.md` §3 |
 
 ## 5. Done when
@@ -158,3 +166,62 @@ links point at routes that will 404 until then. That is intentional and better t
 stubs that have to be thrown away.
 
 Also out: the privacy policy page (unit 3), any analytics, and the real icon.
+
+---
+
+## 7. What changed while building
+
+Six departures from the plan above, all recorded here rather than silently absorbed.
+
+**Canonical URLs moved out of the layout.** The plan put `alternates.canonical` in
+`(frontend)/layout.tsx`. Metadata is inherited, so that would have had every page in the site
+declare itself the home page — an SEO error worse than having no canonical at all. Instead
+`src/lib/metadata.ts` exports `pageMetadata({ path, title, description })`, which returns the
+canonical and the OG url together, and pages call it. Everything else in the envelope stayed in
+the layout, where it should be.
+
+**`robots.ts` lives at `src/app/robots.ts`, not in the route group.** Next matches `robots` and
+`manifest` with a regex anchored at the app root; inside `(frontend)` the file is silently not a
+metadata route and `/robots.txt` returns 404 with no warning at build time. `sitemap`, `icon` and
+`opengraph-image` are matched unanchored, which is why they sit with the rest of the frontend.
+This is an exception to `CLAUDE.md` §4, and both that file and the README now say so — it is a
+route handler rather than a layout, so Payload's admin is untouched.
+
+**A route registry appeared: `src/lib/routes.ts`.** The nav, the footer and the sitemap all need
+the same list, and the sitemap needs a subset of it — a sitemap that advertises the 404s the nav
+deliberately links to is a real error. Each route carries a `built` flag; the nav renders all of
+them, the sitemap renders the built ones, and units 2 to 4 each flip one boolean.
+
+**The §06 proportions moved to `src/lib/signature.ts`.** The OG image has to compute the same
+lockup at its own scale, and it renders through Satori with no DOM and no stylesheet, so it
+cannot import a React component that reaches for `next/image`. The rules — the two ratios and the
+11px floor — now sit in a file both surfaces call, and the component is only the rendering.
+
+**The OG fonts: Roboto Slab, Roboto and Roboto Mono, checked in at `src/assets/fonts/`.** Chosen
+because they are already the open members of the stacks in `design-handoff.md` §04, so the shared
+preview is set in a face the page itself may fall back to rather than in something invented for
+the server. Apache 2.0, licence included, roughly 280 KB that never reaches a browser. §04 of the
+handoff now records the exception.
+
+**The plumb rail is drawn on the OG image, as an SVG.** The plan did not call for it. It is the
+identity's mechanism (§07) in its static form, and it earns its place by doing something: the
+thread runs the full height of the piece and the bob comes to rest level with her name, so the
+instrument settles on the signature. Assembling it from boxes was tried first and abandoned — a
+bob tapers to a point, and a point is not a shape a `div` makes.
+
+Two smaller notes. The WhatsApp action became its own component rather than an inline `Button`,
+because every later screen needs it with different context, and it is sized to a 44px touch
+target rather than the shadcn default of 32 — this audience is on a phone, often outdoors. And
+`/sistema` gained four panels rather than three: nav, footer, the WhatsApp action in both its
+states, and the theme toggle, which had been living in that page's hand-rolled header and needed
+somewhere to go.
+
+## 8. Still blocked
+
+Unchanged by this unit, and both belong to `product-definition.md` §10:
+
+- `BROKER_CRECI` is still `00.000-F`, and it is now baked into the OG image as well as the pages.
+- `WHATSAPP_NUMBER` is a placeholder, so every `wa.me` link on the site currently opens a
+  conversation with a number that does not exist.
+- `NEXT_PUBLIC_SITE_URL` is unset locally, so `robots.txt` and `sitemap.xml` currently emit
+  `http://localhost:3000`. It must be set in the deployment environment before anything ships.

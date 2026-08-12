@@ -18,6 +18,14 @@ export const SITE_URL =
 export const SITE_LOCALE = "pt-BR";
 
 /**
+ * One sentence, used as the meta description, the OG description and the fallback subtitle.
+ * It states the order the product insists on — credit first, apartment second — because that
+ * order is the whole differentiation (docs/product-definition.md §01).
+ */
+export const SITE_DESCRIPTION =
+  "Apartamentos da Cury no Rio de Janeiro, com o custo total à vista e uma orientação honesta sobre crédito antes de escolher o apartamento.";
+
+/**
  * She is pessoa física, so the project name is only permitted as a pseudonym while her real
  * name appears clearly and prominently alongside it. Dropping this to tidy a layout is a
  * legal regression, not a design improvement.
