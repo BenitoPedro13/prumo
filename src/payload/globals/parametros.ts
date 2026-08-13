@@ -1,5 +1,7 @@
 import type { GlobalConfig } from "payload";
 
+import { revalidateParametros } from "../revalidate";
+
 /**
  * The numbers that policy and the market move, in the admin rather than in the code —
  * CLAUDE.md §0: configurable, never hardcoded, and always shown with the date of last revision.
@@ -11,6 +13,13 @@ import type { GlobalConfig } from "payload";
 export const Parametros: GlobalConfig = {
   slug: "parametros",
   label: "Parâmetros do mercado",
+  hooks: {
+    afterChange: [
+      ({ req }) => {
+        revalidateParametros(req.context);
+      },
+    ],
+  },
   admin: {
     group: "Sistema",
     description:
@@ -123,6 +132,16 @@ export const Parametros: GlobalConfig = {
               max: 100,
             },
           ],
+        },
+        {
+          name: "valores_sugeridos",
+          type: "checkbox",
+          label: "Alguns números ainda são sugestões",
+          defaultValue: true,
+          admin: {
+            description:
+              "Marcado, significa que taxas, subsídios, percentuais e o teto do Rio ainda não foram conferidos na Caixa — são estimativas para a página ter o que mostrar. Enquanto estiver marcado, toda página que exibe um número daqui avisa o visitante disso. Desmarque só depois de conferir na fonte.",
+          },
         },
         {
           name: "data_revisao",

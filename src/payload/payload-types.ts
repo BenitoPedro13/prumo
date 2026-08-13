@@ -829,6 +829,10 @@ export interface Parametro {
         }[]
       | null;
     /**
+     * Marcado, significa que taxas, subsídios, percentuais e o teto do Rio ainda não foram conferidos na Caixa — são estimativas para a página ter o que mostrar. Enquanto estiver marcado, toda página que exibe um número daqui avisa o visitante disso. Desmarque só depois de conferir na fonte.
+     */
+    valores_sugeridos?: boolean | null;
+    /**
      * Quando estes números foram conferidos na fonte. Aparece ao lado de cada valor.
      */
     data_revisao?: string | null;
@@ -868,6 +872,7 @@ export interface ParametrosSelect<T extends boolean = true> {
               percentual_financiado?: T;
               id?: T;
             };
+        valores_sugeridos?: T;
         data_revisao?: T;
         fonte?: T;
         portaria?: T;

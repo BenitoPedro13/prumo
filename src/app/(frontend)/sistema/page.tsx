@@ -11,6 +11,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TipologiaCard } from "@/components/tipologia-card";
+import { ValoresIlustrativos } from "@/components/valores-ilustrativos";
 import { WhatsAppAction } from "@/components/whatsapp-action";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,6 +24,7 @@ import type { FaixaMcmv } from "@/lib/mcmv";
 import { payload } from "@/lib/payload";
 
 import { PlumbRailDemo } from "./plumb-rail-demo";
+import { PreQualificacaoDemo } from "./prequalificacao-demo";
 
 /**
  * The design system, rendered with the real components and the real tokens.
@@ -162,6 +164,7 @@ async function faixasConfiguradas() {
     dataRevisao: mcmv?.data_revisao,
     fonte: mcmv?.fonte,
     portaria: mcmv?.portaria,
+    valoresSugeridos: Boolean(mcmv?.valores_sugeridos),
   };
 }
 
@@ -378,9 +381,10 @@ export default async function Sistema() {
       <section className="space-y-4">
         <h2 className="font-display text-xl tracking-tight">Faixas do MCMV</h2>
         <p className="max-w-prose text-ink-muted">
-          Lido do admin, não de um exemplo. Os limites de renda e os dois tetos nacionais estão
-          confirmados na fonte; o que aparece como não confirmado é o que ainda não foi checado —
-          e enquanto estiver assim, nenhum desses números vai para uma tela de comprador.
+          Lido do admin, não de um exemplo. Os limites de renda, os dois tetos nacionais e a taxa
+          da Classe Média estão confirmados na portaria. O resto é sugestão: preenchido para a
+          pré-qualificação ter o que mostrar, e marcado como tal na própria linha. A Adriana
+          corrige quatro campos e desmarca uma caixa; nenhum código muda.
         </p>
 
         {mcmv.faixas.length > 0 ? (
@@ -435,6 +439,10 @@ export default async function Sistema() {
           </p>
         )}
 
+        {mcmv.valoresSugeridos ? (
+          <ValoresIlustrativos fonte={mcmv.fonte} dataRevisao={mcmv.dataRevisao} />
+        ) : null}
+
         <dl className="space-y-1 text-xs text-ink-muted">
           <div className="flex gap-2">
             <dt>Revisado em:</dt>
@@ -451,6 +459,17 @@ export default async function Sistema() {
             <dd>{mcmv.portaria ?? "—"}</dd>
           </div>
         </dl>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">Pré-qualificação</h2>
+        <p className="max-w-prose text-ink-muted">
+          Um passo do fluxo, os dois controles de resposta, e as cinco saídas lado a lado. A
+          segunda — hoje_ainda_nao — é a que justifica a tela: dizer a alguém com restrição o que
+          mudar primeiro, em vez de recusar sem explicar. A última mostra o gate: sem faixas no
+          admin, a tela se recusa a estimar.
+        </p>
+        <PreQualificacaoDemo />
       </section>
 
       <section className="space-y-4">

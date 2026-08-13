@@ -39,12 +39,23 @@ remove the inline marker and the row here together.
 
 Re-verify before launch regardless of age: these moved in 2026 and will move again.
 
+**These four changed state on 13 August 2026 and are now more dangerous, not less.** They used
+to be stored empty, which meant they rendered nowhere. They are now filled with **flagged
+suggestions** so `/simulador` has numbers to show while Adriana reviews the flow
+(`TASK-pre-qualificacao.md` §2.4) — so they are on screen, carrying a visible "estimativas
+ilustrativas" strip, driven by `Parametros.mcmv.valores_sugeridos`. Each is an interpolation
+inside a confirmed band, never an invention outside one, and each is argued for in
+`src/payload/seed.ts`.
+
+Closing an item means editing the field in the admin. When all four are confirmed, untick
+`valores_sugeridos` and the strip disappears from every page at once. No code changes.
+
 | Item | Where | Blocks |
 |---|---|---|
-| **Which property ceiling applies in Rio for Faixas 1 and 2** | `Parametros.mcmv`, stored empty; `product-definition.md` §04 | **Chase this first.** The R$ 210–275 mil range varies by locality and Cury's Rio product starts around R$ 210 mil, so this number decides whether her cheapest units are Faixa 2 or Faixa 3 business |
-| **The full per-faixa interest rate table** | `Parametros.mcmv.faixas[].taxa_juros_anual`, empty except Classe Média | Quoting any installment in the pre-qualification. Only the 4,00–10,00% a.a. band and two endpoints are confirmed |
-| **Subsidy amounts per faixa** | `Parametros.mcmv.faixas[].subsidio_maximo`, all empty | The "roughly how much subsidy fits" half of the pre-qualification's answer |
-| **Financing percentage / LTV per faixa** | `Parametros.mcmv.faixas[].percentual_financiado`, all empty | The entrada and repasse arithmetic |
+| **Which property ceiling applies in Rio for Faixas 1 and 2** | `Parametros.mcmv`, **suggested R$ 275 mil** (top of the confirmed R$ 210–275 mil locality range); `product-definition.md` §04 | **Chase this first.** Cury's Rio product starts around R$ 210 mil, so this number decides whether her cheapest units are Faixa 2 or Faixa 3 business |
+| **The full per-faixa interest rate table** | `Parametros.mcmv.faixas[].taxa_juros_anual`, **suggested 4,25 / 6,00 / 8,16%**; Classe Média's 10,00% is confirmed | Quoting any installment. Only the 4,00–10,00% a.a. band and its two endpoints are confirmed; Faixas 1–3 are interpolated between them |
+| **Subsidy amounts per faixa** | `Parametros.mcmv.faixas[].subsidio_maximo`, **suggested R$ 55 mil / R$ 25 mil / R$ 0 / R$ 0** | The "roughly how much subsidy fits" half of the answer. The taper's shape is confirmed; the magnitudes are the guess |
+| **Financing percentage / LTV per faixa** | `Parametros.mcmv.faixas[].percentual_financiado`, **suggested 80 / 80 / 80 / 70%** | The entrada and repasse arithmetic. Taken from `product-definition.md` §04's own unreconfirmed claim |
 | **FGTS cotista eligibility** — contribution time, prior use of the programme | not modelled yet | "What causes rejection", one of the most valuable pages on the site |
 | **The real INCC** | `src/payload/globals/parametros.ts` seeded at 8,12% as illustrative; `seed.ts` and `/sistema` both mark it | Every projected installment. The gate holds — with no rate, neither figure renders |
 

@@ -25,8 +25,23 @@ export const HOME: SiteRoute = {
   priority: 1,
 };
 
-/** The nav, in the order the buyer needs them: what she sells, who she is, how to reach her. */
+/**
+ * The nav, in the order the buyer needs them: whether they can buy at all, what she sells, who
+ * she is, how to reach her.
+ *
+ * `/simulador` comes first and outranks the catalogue in the sitemap because the product's
+ * whole claim is that "eu consigo?" is answered before "qual apartamento?"
+ * (docs/product-definition.md §03). A nav that opened with the listings would argue the
+ * opposite of the site it belongs to.
+ */
 export const PRIMARY_ROUTES: SiteRoute[] = [
+  {
+    href: "/simulador",
+    label: "Você consegue?",
+    built: true,
+    changeFrequency: "monthly",
+    priority: 0.9,
+  },
   {
     href: "/empreendimentos",
     label: "Empreendimentos",

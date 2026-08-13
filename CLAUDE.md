@@ -12,7 +12,7 @@
 
 ## 0. Project context — Prumo
 
-**Status: Phase 0 is built; Phase 1 has started with the MCMV parameters.** The product,
+**Status: Phase 0 is built. Phase 1 has the plumb apparatus, the MCMV parameters and the pré-qualificação.** The product,
 market, architecture and phasing live in `docs/product-definition.md`. The visual identity,
 tokens, voice and screen inventory live in `docs/design-handoff.md`. Four working HTML
 prototypes live in `docs/design/prototypes/`. The scaffold is done
@@ -41,8 +41,28 @@ flow changes.
 `docs/tasks/TASK-mcmv-parametros.md` put the MCMV faixas in the admin and the
 enquadramento arithmetic in `src/lib/mcmv.ts`, with no policy number written into code. The
 income brackets moved by portaria in March 2026 and this repo's own table was already stale when
-it was checked — which is the argument for the whole arrangement. Rates, subsidies and the Rio
-locality ceiling are still unconfirmed and are stored empty, so they render nowhere.
+it was checked — which is the argument for the whole arrangement.
+
+`docs/tasks/TASK-pre-qualificacao.md` built `/simulador`, the surface the project is justified
+by: six steps, the plumb rail as progress and then verdict, and five exits rather than two —
+"fora do programa" and "acima das faixas" are different honest answers from "hoje ainda não".
+Blockers are returned as a list, so someone with a restriction *and* a prior MCMV purchase hears
+both the first time instead of fixing one and returning to a second no. **Nothing is persisted:**
+the six answers describe someone's income and their debts, they live in component state for the
+length of the visit, and no Server Action, fetch or storage touches them — which is why this
+screen adds no LGPD surface to the one `/contato` deliberately accepted.
+
+That unit also changed how unconfirmed policy numbers are handled, and the change is worth
+knowing about. Rates, subsidies and the Rio locality ceiling used to be **stored empty**, which
+gated them off every surface. They are now **flagged suggestions**: filled in the admin so the
+flow has numbers to show, each interpolated inside a confirmed band and argued for in
+`src/payload/seed.ts`, and marked by `Parametros.mcmv.valores_sugeridos` — a checkbox that puts a
+visible "estimativas ilustrativas" strip on every page printing one of them. The flag is the gate
+now. Adriana replaces four fields and unticks one box; no code changes. Until she does, none of
+it may reach a real buyer (`docs/pending-verifications.md`).
+
+Editing `Parametros` revalidates the site (`src/payload/revalidate.ts`). It did not before, so a
+corrected faixa saved in the admin would have been saved and then not served.
 
 `docs/product-definition.md` and `docs/design-handoff.md` are the source of truth for *what
 to build*; this file covers *how to work*. The root `README.md` is the implementation README
@@ -290,7 +310,9 @@ emerges.
                               (empreendimento-card, tipologia-card, registro-legal,
                               condicoes-comerciais, disponibilidade); plumb-rail — the §07
                               apparatus, a simulated rope and the site's only interactive piece
-  src/components/prequalificacao/  the six-step flow and its result states
+  src/components/prequalificacao/  the six-step flow and its five result states; also
+                              valores-ilustrativos.tsx, the strip that marks a figure the admin
+                              has flagged as not yet confirmed
   src/components/proposta/   the shared-link proposal surface
   src/lib/                   cn(); site-config.ts (BRAND_NAME, SITE_URL, CRECI);
                               signature.ts (the §06 proportions, shared by the component and
@@ -298,6 +320,9 @@ emerges.
                               metadata.ts (per-page canonical); whatsapp.ts (wa.me builder);
                               og-palette.ts (hex mirror of the tokens, for Satori);
                               format.ts (money, areas, dates — calendar dates in UTC);
+                              prequalificacao.ts (the flow's own outcomes; the 30% ceiling, which
+                              is a banking convention rather than a policy number, so it may live
+                              in code where the faixas may not);
                               catalogo.ts (view types the components take instead of Payload
                               documents); incc.ts (projection, admin-backed); lgpd.ts (the
                               consent copy and version, shared by the form and the Server

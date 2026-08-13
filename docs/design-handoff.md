@@ -286,8 +286,12 @@ Built — `src/components/plumb-rail.tsx`, `docs/tasks/TASK-plumb-rail.md`, pane
 
 In order of value.
 
-1. **Pré-qualificação** — six steps, the plumb rail, both honest exits. Design this first; it
-   sets the tone for everything.
+1. **Pré-qualificação** — six steps, the plumb rail, both honest exits. **Built** —
+   `/simulador`, `docs/tasks/TASK-pre-qualificacao.md`. Five exits rather than two: "fora do
+   programa" and "acima das faixas" are different honest answers from "hoje ainda não", and
+   flattening them into one no would lose the distinction the screen exists to draw. Nothing is
+   persisted — the answers live in component state and are never sent anywhere. Rates, subsidies
+   and the Rio ceiling are flagged suggestions until Caixa confirms them, and say so on screen.
 2. **Proposta compartilhada** — a personal letter, floor plans, the payment timeline, the three
    things that could go wrong, one action.
 3. **Ficha do empreendimento** — address, surroundings, transport, typologies, commercial terms,
@@ -324,7 +328,10 @@ cheapest high-return item in the project.
 - MCMV faixas, rates and subsidy bands are hardcoded illustrative values. They belong in the
   admin (`product-definition.md` §04).
 - Both prototypes carry a visible "Protótipo · valores ilustrativos" strip. Keep it until the
-  numbers are real.
+  numbers are real. On the live `/simulador` that device is `src/components/valores-ilustrativos.tsx`,
+  driven by `Parametros.mcmv.valores_sugeridos` rather than written into the page — so it
+  disappears from every surface at once when Adriana unticks the box, and cannot go stale in the
+  meantime.
 
 ---
 

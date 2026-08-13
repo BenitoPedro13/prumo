@@ -183,12 +183,19 @@ Média, and 4,00% (Norte/Nordeste) or 4,25% (elsewhere) for FGTS cotistas earnin
 
 `[VERIFICAR: the full per-faixa rate table, subsidy amounts, and the financing percentage per
 faixa. Caixa's own pages could not be read automatically — the MCMV page redirect-loops and the
-newsroom returns 401 — so these are unconfirmed and are stored empty, which keeps them off every
-surface.]`
+newsroom returns 401.]`
 
 `[VERIFICAR: which ceiling applies in Rio de Janeiro. The R$ 210–275 mil range for Faixas 1 and
 2 varies by locality, and Cury's Rio product starts around R$ 210 mil — so this single number
 decides whether her cheapest units are Faixa 2 or Faixa 3 business. Chase this one first.]`
+
+**These four were stored empty until 13 August 2026 and are now flagged suggestions.** They were
+filled so `/simulador` has numbers to show while Adriana reviews the flow, each interpolated
+inside a confirmed band and argued for in `src/payload/seed.ts`. They are visible on screen and
+carry an "estimativas ilustrativas" strip driven by `Parametros.mcmv.valores_sugeridos`. That
+flag is the gate now — replacing the empty-value gate — and it must stay set until Caixa
+confirms all four. See `docs/tasks/TASK-pre-qualificacao.md` §2.4 and
+`docs/pending-verifications.md` §3.
 
 Rural faixas are set on annual income and are irrelevant here — she sells urban Rio.
 
