@@ -12,7 +12,7 @@
 
 ## 0. Project context — Prumo
 
-**Status: Phase 0 is built except for the page that needs a photograph.** The product,
+**Status: Phase 0 is built. What remains is content she has to supply, not code.** The product,
 market, architecture and phasing live in `docs/product-definition.md`. The visual identity,
 tokens, voice and screen inventory live in `docs/design-handoff.md`. Four working HTML
 prototypes live in `docs/design/prototypes/`. The scaffold is done
@@ -23,9 +23,12 @@ gate verified end to end (`docs/tasks/TASK-empreendimentos.md`); `/contato` +
 `/privacidade`, with `Lead` and `Consentimento` writing through a Server Action, never a public
 endpoint (`docs/tasks/TASK-contato-lgpd.md`); and `/`, which composes the catálogo, the WhatsApp
 action and the signature, and is the one surface that states the credit-before-apartment order
-in words (`docs/tasks/TASK-home.md`), built and rendered against a running Postgres. Unit 4 of
-`docs/tasks/TASK-fase-0.md` — `/sobre` — is all that remains of the phase, and it is blocked on
-a real photograph of her.
+in words (`docs/tasks/TASK-home.md`), built and rendered against a running Postgres; and
+`/sobre` (`docs/tasks/TASK-sobre.md`), which uses the signature's 180×179 stand-in rather than
+waiting on a photograph. That last page ships with its story half as a marked `[VERIFICAR:]`
+placeholder: the repo holds no biographical facts about her, and inventing a career history for
+a real person on a public page is a COFECI exposure as much as a copy failure. Four questions,
+listed in `TASK-sobre.md` §6, close it.
 
 `docs/product-definition.md` and `docs/design-handoff.md` are the source of truth for *what
 to build*; this file covers *how to work*. The root `README.md` is the implementation README

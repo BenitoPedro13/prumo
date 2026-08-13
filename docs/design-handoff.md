@@ -263,7 +263,10 @@ In order of value.
    things that could go wrong, one action.
 3. **Ficha do empreendimento** — address, surroundings, transport, typologies, commercial terms,
    total cost. **Built** — `/empreendimentos/[slug]`, `docs/tasks/TASK-empreendimentos.md`.
-4. **Sobre ela** — face and story inside the project brand. Trust is the product.
+4. **Sobre ela** — face and story inside the project brand. Trust is the product. **Built** —
+   `/sobre`, `docs/tasks/TASK-sobre.md`. The face is the low-resolution stand-in and the story
+   is a marked placeholder: the repo holds no biographical facts about her, and inventing them
+   is a COFECI exposure as well as a copy failure.
 5. **Home and admin** — deliberately simple. The home is **built** — `/`,
    `docs/tasks/TASK-home.md`; the admin is Payload, rethemed but not yet given its
    validation rules.

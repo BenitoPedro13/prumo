@@ -235,9 +235,9 @@ database (`TASK-fase-0.md` §6).
 
 ### Left for later
 
-- **The portrait is a 50×50 placeholder** displayed at 72px, so it is upscaled and soft. It is
-  the same missing asset that blocks `/sobre` (`TASK-fase-0.md` unit 4): a real photograph of
-  her replaces both.
+- **The portrait is a 180×179 stand-in** displayed at 72px, so it is not upscaled at 2×, but it
+  is the low-resolution file `design-handoff.md` flags. It caps any larger portrait at about
+  90px — see `TASK-sobre.md` §1. A real photograph of her replaces it.
 - **The CRECI number is still `00.000-F`** on every surface, as it is everywhere else in the
   repo — `docs/product-definition.md` §10.
 - **The catálogo section shows one card**, because the seed publishes one development. The

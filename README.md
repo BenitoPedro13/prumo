@@ -14,7 +14,7 @@ Vida the buyer's anxiety is credit approval, not finishes.
 
 ## Status
 
-**Phase 0 is built except for the page that needs a photograph.**
+**Phase 0 is built. What remains is content she has to supply, not code.**
 
 | Area | State |
 |---|---|
@@ -25,23 +25,25 @@ Vida the buyer's anxiety is credit approval, not finishes.
 | Catálogo | `/empreendimentos` and `/empreendimentos/[slug]` built and verified against Postgres; publication gate exercised end to end |
 | Contato & LGPD | `/contato` and `/privacidade` built; `Lead` and `Consentimento` write through a Server Action, never a public endpoint |
 | Home | `/` built and verified — composes the catálogo, the WhatsApp action and the signature; states the credit-before-apartment order in words. Lint, typecheck and `pnpm build` clean; rendered and read at 390px, empty state exercised |
-| Content screens | `/sobre` not yet built — the nav link 404s on purpose, blocked on a real photograph |
+| Sobre | `/sobre` built and verified — uses the signature's 180×179 stand-in, so no hero portrait. Her professional history ships as a marked `[VERIFICAR:]` placeholder; four questions in `docs/tasks/TASK-sobre.md` §6 close it |
 | Payload admin | Schema built and run against a local Postgres (Docker); no deployment database yet |
 | Deployment | None |
 
 Adriana has reviewed the pre-qualification and proposal prototypes and approved the direction.
 Corrections pending from her.
 
-Units 1–3 and 5 of Phase 0 are done (`docs/tasks/TASK-chrome-e-seo.md`,
+All five units of Phase 0 are done (`docs/tasks/TASK-chrome-e-seo.md`,
 `docs/tasks/TASK-empreendimentos.md`, `docs/tasks/TASK-contato-lgpd.md`,
-`docs/tasks/TASK-home.md`) — the catalogue's seed uses one real Rio development (Cury's
-Residencial Pixinguinha in Santo Cristo) for everything Cury publishes, and marks everything it
-does not — registro de incorporação, cartório, payment schedule — as placeholder. Unit 4,
-`/sobre`, is the last one and is blocked on a photograph of her; it is sequenced in
-`docs/tasks/TASK-fase-0.md`.
+`docs/tasks/TASK-home.md`, `docs/tasks/TASK-sobre.md`) — the catalogue's seed uses one real Rio
+development (Cury's Residencial Pixinguinha in Santo Cristo) for everything Cury publishes, and
+marks everything it does not — registro de incorporação, cartório, payment schedule — as
+placeholder. What still blocks going live is hers to supply, not ours to build: her real CRECI
+number, her WhatsApp number, a photograph, her professional history, and real Cury data. These
+are tracked in `docs/tasks/TASK-fase-0.md` §6.
 
-The nav links to `/sobre` before that page exists. That is deliberate: the sitemap only lists
-routes flagged `built` in `src/lib/routes.ts`, so each unit flips one boolean.
+Every route in the nav now exists. The mechanism that made that safe stays: the sitemap lists
+only routes flagged `built` in `src/lib/routes.ts`, so a route can be linked before it is
+finished without ever advertising a 404. All five booleans are now `true`.
 
 ---
 

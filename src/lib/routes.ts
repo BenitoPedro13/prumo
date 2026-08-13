@@ -37,7 +37,7 @@ export const PRIMARY_ROUTES: SiteRoute[] = [
   {
     href: "/sobre",
     label: "Sobre Adriana",
-    built: false,
+    built: true,
     changeFrequency: "monthly",
     priority: 0.6,
   },

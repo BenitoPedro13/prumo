@@ -3,8 +3,9 @@
 > Status: **in progress, one unit left.** Unit 1 is built; unit 2 (the catalogue) is built and
 > verified against a running Postgres — see `TASK-empreendimentos.md`. Unit 3 (`/contato`,
 > `/privacidade`, `Lead` and `Consentimento`) is built — see `TASK-contato-lgpd.md`. Unit 5 (the
-> home) is built out of order, because unit 4 is blocked on a photograph and the home only needed
-> the units below it — see `TASK-home.md`. Unit 4 is all that remains.
+> home) was built out of order, because unit 4 was then blocked on a photograph and the home only
+> needed the units below it — see `TASK-home.md`. Unit 4 is now built too, against the
+> signature's stand-in photograph — see `TASK-sobre.md`. **All five units are done.**
 >
 > This is a roadmap, not a unit of work. It sequences Phase 0 into five task docs and records
 > the order and the reasons. Each unit gets its own document with the four sections required by
@@ -81,14 +82,21 @@ Independent of unit 2. Carries the real legal weight of the phase, so it got its
 Built: the form writes through a Server Action rather than a public endpoint, and consent is
 stored with its text, version, timestamp and origin. See `TASK-contato-lgpd.md`.
 
-### 4. `TASK-sobre.md` — the person · **blocked**
+### 4. `TASK-sobre.md` — the person · **built**
 
 `/sobre`. Her face, her story, the signature in its `full` variant. Trust is the product, and
 this is the page where the pseudonym route either reads as a serious professional with a brand
 or as a brand hiding a person.
 
-Blocked on a real photograph. `product-definition.md` and `design-handoff.md` §08 both flag an
-hour with a photographer as the cheapest high-return item in the project.
+Was blocked on a real photograph; unblocked by decision to use the signature's stand-in for now.
+At 180×179 that file caps the portrait at about 90px, so the page has no hero portrait and
+`Signature variant="full"` carries the face at 72px — which is what §06 requires here anyway.
+
+**The story half is still missing and is deliberately not invented.** The repo holds no
+biographical facts about her, so the page is built from what the product already asserts — what
+she controls, what she does not, how she works — and the personal history is a `[VERIFICAR:]`
+block holding four questions for her. A photographer is still the cheapest high-return item in
+the project, and one conversation answers the rest. See `TASK-sobre.md` §6.
 
 ### 5. `TASK-home.md` — the front door · **built**
 
@@ -97,8 +105,9 @@ Last in value, because it composes from everything above and has almost nothing 
 and the life there, not with an installment figure.
 
 Built ahead of unit 4 rather than after it: it depends on units 1–3, which are done, and unit 4
-is blocked on a photograph that may take weeks. Its one link to `/sobre` is gated on that route's
-`built` flag, so unit 4 landing lights it up with no edit to the home.
+was at the time blocked on a photograph that looked like it might take weeks. Its one link to
+`/sobre` was gated on that route's `built` flag — and when unit 4 landed, that boolean lit the
+link and the sitemap entry with no edit to the home. The gate worked exactly as designed.
 
 Built, rendered and verified: `pnpm build` clean, read at 390px, empty state exercised, weight
 inside the §09 budget. `/` is now a database-dependent route — it was the last page that could
@@ -181,7 +190,8 @@ Carried from `product-definition.md` §10, mapped to what each one stops.
 | **Adriana's real CRECI-RJ number** | shipping anything publicly | `BROKER_CRECI` is `00.000-F`. The one legally load-bearing element still fake |
 | **A provisioned Postgres for deployment** | going live, not unit 2 anymore | Local dev runs on Docker now; Neon or Supabase still needed for Vercel |
 | **Real Cury data** — registro numbers, price tables | going live, not unit 2 anymore | The seed's address, station, delivery and one price are real (§10 of `TASK-empreendimentos.md`); the registro de incorporação, cartório and payment schedule are still invented and must never reach a buyer |
-| **A real photograph of her** | unit 4 | An hour with a photographer, per §08 |
+| **A real photograph of her** | no longer unit 4 | The 180×179 stand-in is in use; a real one unlocks a proper portrait and lifts the ~90px cap |
+| **Her professional history** | the story half of `/sobre` | Four questions in `TASK-sobre.md` §6. The page ships a marked placeholder until she answers |
 | **Her WhatsApp number** | unit 1's CTA being real | `WHATSAPP_NUMBER` is a placeholder |
 | **The brand name** | the wordmark, the icon, the domain | Prumo, Chão, Soleira, Raiz or Boa Praça. `BRAND_NAME` is one edit; a drawn mark is not |
 | **How many of ten buyers she loses at credit analysis** | nothing in Phase 0 | Sizes Phase 1, which is the phase that justifies the project |
