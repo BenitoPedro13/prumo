@@ -147,16 +147,39 @@ reverts to the PDF and Phase 1 dies.
 
 All of these age. They belong in the admin with a visible last-reviewed date, never in code.
 
-### MCMV faixas — 2026
+### MCMV faixas — checked 13 August 2026
 
-| Faixa | Gross monthly income | Property ceiling | Notes |
-|---|---|---|---|
-| 1 and 2 | up to R$ 4.700 | R$ 210–275 mil | Ceiling varies by locality. Finances up to 80%. Larger subsidy |
-| 3 | up to R$ 9.600 | up to R$ 400 mil | Finances up to 80%. With Faixa 2, ~70% of Cury's product |
-| 4 | R$ 9.600,01 – 13.000 | up to R$ 600 mil | No subsidy. ~10–10,5% a.a. LTV ~60–70% |
+Set by **Portaria MCID nº 333, de 30 de março de 2026** (DOU 01/04/2026); Caixa began operating
+the new conditions on 22 April 2026. Income limits and the two nationwide ceilings below are
+confirmed against the Ministério das Cidades. **These live in the admin
+(`Parametros.mcmv`), not here and not in code** — this table is documentation of a check, not a
+source. See `docs/tasks/TASK-mcmv-parametros.md`.
 
-`[VERIFICAR: revised in 2026 by the Conselho Curador do FGTS and will change again. Reconfirm
-against Caixa before launch.]`
+| Faixa (urbana) | Gross monthly family income | Property ceiling |
+|---|---|---|
+| 1 | até R$ 3.200 | `[VERIFICAR]` — R$ 210–275 mil, varies by locality |
+| 2 | R$ 3.200,01 – R$ 5.000 | `[VERIFICAR]` — R$ 210–275 mil, varies by locality |
+| 3 | R$ 5.000,01 – R$ 9.600 | até R$ 400 mil, nationwide |
+| 4 — Classe Média | R$ 9.600,01 – R$ 13.000 | até R$ 600 mil, nationwide |
+
+The previous version of this table said Faixas 1 and 2 ran "up to R$ 4.700" and merged them into
+one row. Both were wrong by the time they were read: Faixa 2 now ends at R$ 5.000, Faixa 3's
+ceiling moved from R$ 8.600 to R$ 9.600, and the two brackets have different subsidy treatment
+and cannot share a row.
+
+Rates: a nominal band of **4,00% to 10,00% a.a.** by family income, **10,00% a.a.** for Classe
+Média, and 4,00% (Norte/Nordeste) or 4,25% (elsewhere) for FGTS cotistas earning up to R$ 2 mil.
+
+`[VERIFICAR: the full per-faixa rate table, subsidy amounts, and the financing percentage per
+faixa. Caixa's own pages could not be read automatically — the MCMV page redirect-loops and the
+newsroom returns 401 — so these are unconfirmed and are stored empty, which keeps them off every
+surface.]`
+
+`[VERIFICAR: which ceiling applies in Rio de Janeiro. The R$ 210–275 mil range for Faixas 1 and
+2 varies by locality, and Cury's Rio product starts around R$ 210 mil — so this single number
+decides whether her cheapest units are Faixa 2 or Faixa 3 business. Chase this one first.]`
+
+Rural faixas are set on annual income and are irrelevant here — she sells urban Rio.
 
 ### What actually causes rejection
 

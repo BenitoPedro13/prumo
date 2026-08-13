@@ -170,7 +170,17 @@ await payload.create({
   },
 });
 
-/** [VERIFICAR: INCC real na FGV] — illustrative only, so the commercial block has both figures to show in dev. */
+/**
+ * `incc`: [VERIFICAR: INCC real na FGV] — illustrative only, so the commercial block has both
+ * figures to show in dev.
+ *
+ * `mcmv`: the opposite discipline. Income brackets and the two nationwide ceilings are the real
+ * confirmed figures (Portaria MCID nº 333/2026, Ministério das Cidades). Everything that could
+ * not be confirmed against the source is left empty on purpose — the ceilings of Faixas 1 and 2,
+ * which vary by locality and whose Rio figure is still unknown, and every rate but Classe
+ * Média's. Empty means nothing renders, which is the correct outcome rather than a degraded one
+ * (docs/tasks/TASK-mcmv-parametros.md §1).
+ */
 await payload.updateGlobal({
   slug: "parametros",
   data: {
@@ -178,6 +188,23 @@ await payload.updateGlobal({
       taxa_anual: 8.12,
       data_revisao: "2026-08-01",
       fonte: "INCC-DI/FGV, acumulado em 12 meses — valor ilustrativo de desenvolvimento",
+    },
+    mcmv: {
+      faixas: [
+        { nome: "Faixa 1", renda_min: 0, renda_max: 3200 },
+        { nome: "Faixa 2", renda_min: 3200.01, renda_max: 5000 },
+        { nome: "Faixa 3", renda_min: 5000.01, renda_max: 9600, teto_imovel: 400000 },
+        {
+          nome: "Faixa 4 — Classe Média",
+          renda_min: 9600.01,
+          renda_max: 13000,
+          teto_imovel: 600000,
+          taxa_juros_anual: 10,
+        },
+      ],
+      data_revisao: "2026-08-13",
+      fonte: "Ministério das Cidades — programa Minha Casa, Minha Vida",
+      portaria: "Portaria MCID nº 333, de 30 de março de 2026 (DOU 01/04/2026)",
     },
   },
 });

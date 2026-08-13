@@ -14,7 +14,7 @@ Vida the buyer's anxiety is credit approval, not finishes.
 
 ## Status
 
-**Phase 0 is built. What remains is content she has to supply, not code.**
+**Phase 0 is built; Phase 1 has started with the MCMV parameters.**
 
 | Area | State |
 |---|---|
@@ -26,7 +26,8 @@ Vida the buyer's anxiety is credit approval, not finishes.
 | Contato & LGPD | `/contato` and `/privacidade` built; `Lead` and `Consentimento` write through a Server Action, never a public endpoint |
 | Home | `/` built and verified — composes the catálogo, the WhatsApp action and the signature; states the credit-before-apartment order in words. Lint, typecheck and `pnpm build` clean; rendered and read at 390px, empty state exercised |
 | Sobre | `/sobre` built and verified — uses the signature's 180×179 stand-in, so no hero portrait. Her professional history ships as a marked `[VERIFICAR:]` placeholder; four questions in `docs/tasks/TASK-sobre.md` §6 close it |
-| Payload admin | Schema built and run against a local Postgres (Docker); no deployment database yet |
+| Payload admin | Schema built and run against a local Postgres (Docker); publication gate live; `Parametros` holds the INCC and the MCMV faixas. No deployment database yet |
+| MCMV (Phase 1) | Faixas in the admin, enquadramento arithmetic in `src/lib/mcmv.ts`, panel on `/sistema`. Income limits and the two nationwide ceilings confirmed against the Ministério das Cidades; rates, subsidies and the Rio locality ceiling unconfirmed and stored empty, so they render nowhere. `docs/tasks/TASK-mcmv-parametros.md` |
 | Deployment | None |
 
 Adriana has reviewed the pre-qualification and proposal prototypes and approved the direction.

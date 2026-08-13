@@ -12,7 +12,7 @@
 
 ## 0. Project context — Prumo
 
-**Status: Phase 0 is built. What remains is content she has to supply, not code.** The product,
+**Status: Phase 0 is built; Phase 1 has started with the MCMV parameters.** The product,
 market, architecture and phasing live in `docs/product-definition.md`. The visual identity,
 tokens, voice and screen inventory live in `docs/design-handoff.md`. Four working HTML
 prototypes live in `docs/design/prototypes/`. The scaffold is done
@@ -29,6 +29,12 @@ waiting on a photograph. That last page ships with its story half as a marked `[
 placeholder: the repo holds no biographical facts about her, and inventing a career history for
 a real person on a public page is a COFECI exposure as much as a copy failure. Four questions,
 listed in `TASK-sobre.md` §6, close it.
+
+Phase 1 has begun. `docs/tasks/TASK-mcmv-parametros.md` put the MCMV faixas in the admin and the
+enquadramento arithmetic in `src/lib/mcmv.ts`, with no policy number written into code. The
+income brackets moved by portaria in March 2026 and this repo's own table was already stale when
+it was checked — which is the argument for the whole arrangement. Rates, subsidies and the Rio
+locality ceiling are still unconfirmed and are stored empty, so they render nowhere.
 
 `docs/product-definition.md` and `docs/design-handoff.md` are the source of truth for *what
 to build*; this file covers *how to work*. The root `README.md` is the implementation README
@@ -62,7 +68,7 @@ a single config constant so a rename is one edit.
 |---|---|---|
 | Framework | **Next.js** (App Router, TypeScript, `src/` dir, `@/*` alias) — always the latest stable major, never a pinned number (see §2.0) | installed, 16.3.0 · React 19.2.8 · React Compiler on |
 | Styling / components | **Tailwind CSS v4 + shadcn/ui**, CSS-first config, retheming to the tokens in `docs/design-handoff.md` | installed, Tailwind 4.3.3 · shadcn on Radix primitives, `nova` preset, rethemed |
-| Content + admin | **Payload CMS 3**, embedded in the Next app. Chosen because Adriana is non-technical and the value is *validation* (blocking an expired price table, a missing CRECI) more than editing | installed, 3.87.1 · admin pt-BR · schema only, no validation rules yet |
+| Content + admin | **Payload CMS 3**, embedded in the Next app. Chosen because Adriana is non-technical and the value is *validation* (blocking an expired price table, a missing CRECI) more than editing | installed, 3.87.1 · admin pt-BR · publication gate live (registro + cartório required to publish); `Parametros` holds the INCC and the MCMV faixas |
 | Data + files | Managed **Postgres** (Neon or Supabase) + S3-compatible storage (R2). Renders and floor plans are heavy — the image pipeline matters more than the database | adapters wired, **local dev runs on Postgres in Docker; no deployment database provisioned yet** |
 | Messaging | `wa.me` deep links with pre-filled context. **Not** the WhatsApp Business API — at her volume the per-message cost buys nothing. See `docs/product-definition.md` §05 | not built |
 | Credit analysis | Hand off to **Cury's existing broker link**. Never rebuild | n/a |

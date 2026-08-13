@@ -16,7 +16,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { CondicaoComercialResumo, EmpreendimentoResumo, TipologiaResumo } from "@/lib/catalogo";
+import { formatBRL, formatDate, formatPercent } from "@/lib/format";
 import type { ProjecaoIndice } from "@/lib/incc";
+import type { FaixaMcmv } from "@/lib/mcmv";
+import { payload } from "@/lib/payload";
 
 /**
  * The design system, rendered with the real components and the real tokens.
@@ -119,7 +122,62 @@ const PROJECAO: ProjecaoIndice = {
   fonte: "INCC-DI/FGV, acumulado em 12 meses",
 };
 
-export default function Sistema() {
+/**
+ * Reads the real global rather than a fixture, unlike every other panel here.
+ *
+ * That is the point: a faixa whose ceiling or rate nobody has confirmed yet has to be visible
+ * as unconfirmed on a page somebody looks at. A fixture would always look complete, which is
+ * exactly the decay `/sistema` exists to prevent (CLAUDE.md §4).
+ */
+async function faixasConfiguradas() {
+  const client = await payload();
+  const parametros = await client.findGlobal({ slug: "parametros" });
+  const mcmv = parametros.mcmv;
+
+  return {
+    faixas: (mcmv?.faixas ?? []).map(
+      (faixa): FaixaMcmv => ({
+        nome: faixa.nome,
+        rendaMin: faixa.renda_min,
+        rendaMax: faixa.renda_max,
+        tetoImovel: faixa.teto_imovel,
+        taxaJurosAnual: faixa.taxa_juros_anual,
+        subsidioMaximo: faixa.subsidio_maximo,
+        percentualFinanciado: faixa.percentual_financiado,
+      }),
+    ),
+    dataRevisao: mcmv?.data_revisao,
+    fonte: mcmv?.fonte,
+    portaria: mcmv?.portaria,
+  };
+}
+
+/**
+ * Income brackets, unlike prices, need their centavo.
+ *
+ * `formatBRL` is whole-reais on purpose, but Faixa 2 starts at R$ 3.200,01 where Faixa 1 ends at
+ * R$ 3.200 — rounded, the two rows print the same boundary twice and the table reads as though
+ * the brackets overlap. Local to this panel: prices elsewhere should stay whole.
+ */
+function formatRenda(value: number): string {
+  const casas = Number.isInteger(value) ? 0 : 2;
+
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: casas,
+    maximumFractionDigits: casas,
+  }).format(value);
+}
+
+/** Not a dash — a dash reads like a value. An unconfirmed number says so in words. */
+function NaoConfirmado() {
+  return <span className="font-mono text-xs text-latao">não confirmado</span>;
+}
+
+export default async function Sistema() {
+  const mcmv = await faixasConfiguradas();
+
   return (
     <div className="mx-auto w-full max-w-4xl space-y-14 px-6 py-14">
       <section className="space-y-4">
@@ -272,6 +330,84 @@ export default function Sistema() {
           entregaPrevista={EMPREENDIMENTO.entregaPrevista}
           hoje={HOJE}
         />
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">Faixas do MCMV</h2>
+        <p className="max-w-prose text-ink-muted">
+          Lido do admin, não de um exemplo. Os limites de renda e os dois tetos nacionais estão
+          confirmados na fonte; o que aparece como não confirmado é o que ainda não foi checado —
+          e enquanto estiver assim, nenhum desses números vai para uma tela de comprador.
+        </p>
+
+        {mcmv.faixas.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[36rem] border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-rule text-left">
+                  <th className="py-2 pr-4 font-normal text-ink-muted">Faixa</th>
+                  <th className="py-2 pr-4 font-normal text-ink-muted">Renda bruta familiar</th>
+                  <th className="py-2 pr-4 font-normal text-ink-muted">Teto do imóvel</th>
+                  <th className="py-2 pr-4 font-normal text-ink-muted">Juros</th>
+                  <th className="py-2 font-normal text-ink-muted">Subsídio</th>
+                </tr>
+              </thead>
+              <tbody>
+                {mcmv.faixas.map((faixa) => (
+                  <tr key={faixa.nome} className="border-b border-rule align-top">
+                    <td className="py-3 pr-4 text-ink">{faixa.nome}</td>
+                    <td className="py-3 pr-4 text-ink-muted">
+                      {formatRenda(faixa.rendaMin)} – {formatRenda(faixa.rendaMax)}
+                    </td>
+                    <td className="py-3 pr-4 text-ink-muted">
+                      {typeof faixa.tetoImovel === "number" ? (
+                        formatBRL(faixa.tetoImovel)
+                      ) : (
+                        <NaoConfirmado />
+                      )}
+                    </td>
+                    <td className="py-3 pr-4 text-ink-muted">
+                      {typeof faixa.taxaJurosAnual === "number" ? (
+                        `${formatPercent(faixa.taxaJurosAnual / 100)} a.a.`
+                      ) : (
+                        <NaoConfirmado />
+                      )}
+                    </td>
+                    <td className="py-3 text-ink-muted">
+                      {typeof faixa.subsidioMaximo === "number" ? (
+                        formatBRL(faixa.subsidioMaximo)
+                      ) : (
+                        <NaoConfirmado />
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="max-w-prose text-sm text-ink-muted">
+            Nenhuma faixa configurada. Enquanto estiver assim, a pré-qualificação não enquadra
+            ninguém — ela responde que não há parâmetros, e não um valor qualquer.
+          </p>
+        )}
+
+        <dl className="space-y-1 text-xs text-ink-muted">
+          <div className="flex gap-2">
+            <dt>Revisado em:</dt>
+            <dd className="font-mono">
+              {mcmv.dataRevisao ? formatDate(mcmv.dataRevisao) : "—"}
+            </dd>
+          </div>
+          <div className="flex gap-2">
+            <dt>Fonte:</dt>
+            <dd>{mcmv.fonte ?? "—"}</dd>
+          </div>
+          <div className="flex gap-2">
+            <dt>Portaria:</dt>
+            <dd>{mcmv.portaria ?? "—"}</dd>
+          </div>
+        </dl>
       </section>
 
       <section className="space-y-4">

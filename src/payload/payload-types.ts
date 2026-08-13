@@ -800,6 +800,44 @@ export interface Parametro {
     data_revisao?: string | null;
     fonte?: string | null;
   };
+  /**
+   * Faixas urbanas, na ordem em que o programa as define. Um campo vazio não é zero: enquanto o teto ou a taxa de uma faixa estiverem em branco, nenhum número dela é exibido no site. É melhor não mostrar do que mostrar errado.
+   */
+  mcmv?: {
+    /**
+     * Uma linha por faixa. Se uma portaria criar, unir ou remover faixas, isso se resolve aqui — não no código.
+     */
+    faixas?:
+      | {
+          /**
+           * Como o programa a chama. Ex.: Faixa 3.
+           */
+          nome: string;
+          renda_min: number;
+          renda_max: number;
+          /**
+           * Nas Faixas 1 e 2 o teto varia conforme a localidade. Deixe vazio até confirmar o valor que vale no Rio de Janeiro.
+           */
+          teto_imovel?: number | null;
+          /**
+           * Confirme na Caixa antes de preencher. Vazio significa que nada é exibido.
+           */
+          taxa_juros_anual?: number | null;
+          subsidio_maximo?: number | null;
+          percentual_financiado?: number | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Quando estes números foram conferidos na fonte. Aparece ao lado de cada valor.
+     */
+    data_revisao?: string | null;
+    fonte?: string | null;
+    /**
+     * A norma que fixou estes limites. Ex.: Portaria MCID nº 333, de 30 de março de 2026.
+     */
+    portaria?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -814,6 +852,25 @@ export interface ParametrosSelect<T extends boolean = true> {
         taxa_anual?: T;
         data_revisao?: T;
         fonte?: T;
+      };
+  mcmv?:
+    | T
+    | {
+        faixas?:
+          | T
+          | {
+              nome?: T;
+              renda_min?: T;
+              renda_max?: T;
+              teto_imovel?: T;
+              taxa_juros_anual?: T;
+              subsidio_maximo?: T;
+              percentual_financiado?: T;
+              id?: T;
+            };
+        data_revisao?: T;
+        fonte?: T;
+        portaria?: T;
       };
   updatedAt?: T;
   createdAt?: T;
