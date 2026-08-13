@@ -1,9 +1,10 @@
 # TASK — Phase 0, the real site pages
 
-> Status: **in progress.** Unit 1 is built; unit 2 (the catalogue) is built and verified against
-> a running Postgres — see `TASK-empreendimentos.md`. Unit 3 (`/contato`, `/privacidade`, `Lead`
-> and `Consentimento`) is built — see `TASK-contato-lgpd.md`. Units 4–5 are commissioned below
-> and drafted when reached.
+> Status: **in progress, one unit left.** Unit 1 is built; unit 2 (the catalogue) is built and
+> verified against a running Postgres — see `TASK-empreendimentos.md`. Unit 3 (`/contato`,
+> `/privacidade`, `Lead` and `Consentimento`) is built — see `TASK-contato-lgpd.md`. Unit 5 (the
+> home) is built out of order, because unit 4 is blocked on a photograph and the home only needed
+> the units below it — see `TASK-home.md`. Unit 4 is all that remains.
 >
 > This is a roadmap, not a unit of work. It sequences Phase 0 into five task docs and records
 > the order and the reasons. Each unit gets its own document with the four sections required by
@@ -70,16 +71,17 @@ placeholder. The largest unit of the phase and the one where the "must not break
 most work. Still open: a Supabase connection string for deployment, and the real registro data
 per development. See `TASK-empreendimentos.md` §7 and §10.
 
-### 3. `TASK-contato-lgpd.md` — the way in · **planned**
+### 3. `TASK-contato-lgpd.md` — the way in · **built**
 
 `/contato`, the `wa.me` CTA everywhere, and the `Lead` and `Consentimento` collections with the
 consent text versioned and stored with its timestamp and origin. Includes the `retomar_em`
 field — the one that turns "hoje não" into pipeline rather than a lost lead.
 
-Independent of unit 2. Carries the real legal weight of the phase, so it gets its own review —
-drafted in full in `TASK-contato-lgpd.md`, not started.
+Independent of unit 2. Carries the real legal weight of the phase, so it got its own review.
+Built: the form writes through a Server Action rather than a public endpoint, and consent is
+stored with its text, version, timestamp and origin. See `TASK-contato-lgpd.md`.
 
-### 4. `TASK-sobre.md` — the person
+### 4. `TASK-sobre.md` — the person · **blocked**
 
 `/sobre`. Her face, her story, the signature in its `full` variant. Trust is the product, and
 this is the page where the pseudonym route either reads as a serious professional with a brand
@@ -88,17 +90,29 @@ or as a brand hiding a person.
 Blocked on a real photograph. `product-definition.md` and `design-handoff.md` §08 both flag an
 hour with a photographer as the cheapest high-return item in the project.
 
-### 5. `TASK-home.md` — the front door
+### 5. `TASK-home.md` — the front door · **built**
 
-Last, because it composes from everything above and has almost nothing of its own.
-`design-handoff.md` §08 puts it fifth in value and calls it deliberately simple. Opens with the
-address and the life there, not with an installment figure.
+Last in value, because it composes from everything above and has almost nothing of its own.
+`design-handoff.md` §08 puts it fifth and calls it deliberately simple. Opens with the address
+and the life there, not with an installment figure.
+
+Built ahead of unit 4 rather than after it: it depends on units 1–3, which are done, and unit 4
+is blocked on a photograph that may take weeks. Its one link to `/sobre` is gated on that route's
+`built` flag, so unit 4 landing lights it up with no edit to the home.
+
+Built, rendered and verified: `pnpm build` clean, read at 390px, empty state exercised, weight
+inside the §09 budget. `/` is now a database-dependent route — it was the last page that could
+render without one. See `TASK-home.md` §8.
 
 ### Ordering, and what can move
 
-1 is first because everything inherits it. 5 is last because it composes the others. 2, 3 and 4
-are independent of one another and can be reordered around whatever unblocks first — most
-likely 3, since it needs neither a photograph nor Cury's data.
+1 is first because everything inherits it. 5 is last in value because it composes the others.
+2, 3 and 4 are independent of one another and can be reordered around whatever unblocks first —
+most likely 3, since it needs neither a photograph nor Cury's data.
+
+**What actually happened:** 1, 2, 3, then 5. Unit 3 went as predicted. Unit 5 jumped ahead of 4
+once 4's photograph turned out to be the phase's longest pole — the home needed nothing from
+`/sobre` except a link, and a link is cheap to gate.
 
 **Alternatives considered and rejected:**
 
@@ -136,10 +150,10 @@ Per-unit tables live in each unit's own document. At the roadmap level:
 | File | Change type | Notes |
 |---|---|---|
 | `docs/tasks/TASK-chrome-e-seo.md` | new | written alongside this doc |
-| `docs/tasks/TASK-empreendimentos.md` | new | drafted when unit 2 starts |
-| `docs/tasks/TASK-contato-lgpd.md` | new | drafted when unit 3 starts |
+| `docs/tasks/TASK-empreendimentos.md` | new | written |
+| `docs/tasks/TASK-contato-lgpd.md` | new | written |
 | `docs/tasks/TASK-sobre.md` | new | drafted when unit 4 starts |
-| `docs/tasks/TASK-home.md` | new | drafted when unit 5 starts |
+| `docs/tasks/TASK-home.md` | new | written |
 | `docs/product-definition.md` | edit | §10 open questions, as each is answered |
 | `README.md`, `CLAUDE.md` | edit | status, per `CLAUDE.md` §3, at each unit |
 

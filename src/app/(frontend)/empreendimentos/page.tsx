@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 
 import { EmpreendimentoCard } from "@/components/empreendimento-card";
-import type { StatusObra } from "@/lib/catalogo";
 import { pageMetadata } from "@/lib/metadata";
-import { payload } from "@/lib/payload";
-import type { Empreendimento } from "@/payload/payload-types";
 
-import { toEmpreendimentoResumo } from "./mapping";
+import { listarEmpreendimentosPublicados } from "./query";
 
 export const metadata: Metadata = pageMetadata({
   path: "/empreendimentos",
@@ -14,50 +11,8 @@ export const metadata: Metadata = pageMetadata({
   description: "Lançamentos da Cury no Rio de Janeiro, com o custo total à vista.",
 });
 
-/** Fewer than ten developments; a filter bar would be furniture (§2.3). */
-const ORDEM_STATUS: Record<StatusObra, number> = {
-  lancamento: 0,
-  em_obras: 1,
-  entregue: 2,
-};
-
-function porStatusEEntrega(a: Empreendimento, b: Empreendimento) {
-  const statusDiff = ORDEM_STATUS[a.status_obra] - ORDEM_STATUS[b.status_obra];
-  if (statusDiff !== 0) return statusDiff;
-
-  if (!a.entrega_prevista) return 1;
-  if (!b.entrega_prevista) return -1;
-
-  return new Date(a.entrega_prevista).getTime() - new Date(b.entrega_prevista).getTime();
-}
-
 export default async function Empreendimentos() {
-  const client = await payload();
-
-  const { docs: empreendimentos } = await client.find({
-    collection: "empreendimentos",
-    where: { _status: { equals: "published" } },
-    depth: 0,
-    limit: 100,
-  });
-
-  const { docs: tipologias } = await client.find({
-    collection: "tipologias",
-    depth: 0,
-    limit: 500,
-  });
-
-  const tipologiasPorEmpreendimento = new Map<number, typeof tipologias>();
-  for (const tipologia of tipologias) {
-    const id = typeof tipologia.empreendimento === "object"
-      ? tipologia.empreendimento.id
-      : tipologia.empreendimento;
-    const lista = tipologiasPorEmpreendimento.get(id) ?? [];
-    lista.push(tipologia);
-    tipologiasPorEmpreendimento.set(id, lista);
-  }
-
-  const ordenados = [...empreendimentos].sort(porStatusEEntrega);
+  const empreendimentos = await listarEmpreendimentosPublicados();
 
   return (
     <div className="mx-auto w-full max-w-4xl px-6 py-14">
@@ -73,16 +28,11 @@ export default async function Empreendimentos() {
         antes da escolha do apartamento.
       </p>
 
-      {ordenados.length > 0 ? (
+      {empreendimentos.length > 0 ? (
         <ul className="mt-10 grid gap-4 sm:grid-cols-2">
-          {ordenados.map((empreendimento) => (
-            <li key={empreendimento.id}>
-              <EmpreendimentoCard
-                empreendimento={toEmpreendimentoResumo(
-                  empreendimento,
-                  tipologiasPorEmpreendimento.get(empreendimento.id) ?? [],
-                )}
-              />
+          {empreendimentos.map((empreendimento) => (
+            <li key={empreendimento.slug}>
+              <EmpreendimentoCard empreendimento={empreendimento} />
             </li>
           ))}
         </ul>

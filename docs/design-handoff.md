@@ -264,7 +264,9 @@ In order of value.
 3. **Ficha do empreendimento** — address, surroundings, transport, typologies, commercial terms,
    total cost. **Built** — `/empreendimentos/[slug]`, `docs/tasks/TASK-empreendimentos.md`.
 4. **Sobre ela** — face and story inside the project brand. Trust is the product.
-5. **Home and admin** — deliberately simple.
+5. **Home and admin** — deliberately simple. The home is **built** — `/`,
+   `docs/tasks/TASK-home.md`; the admin is Payload, rethemed but not yet given its
+   validation rules.
 
 ### Prototypes
 

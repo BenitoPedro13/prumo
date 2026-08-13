@@ -14,7 +14,7 @@ Vida the buyer's anxiety is credit approval, not finishes.
 
 ## Status
 
-**The catalogue and the way in are live. The person comes next.**
+**Phase 0 is built except for the page that needs a photograph.**
 
 | Area | State |
 |---|---|
@@ -24,18 +24,20 @@ Vida the buyer's anxiety is credit approval, not finishes.
 | Application | Tokens, signature, nav, footer, OG image, robots, sitemap, `wa.me` builder |
 | Catálogo | `/empreendimentos` and `/empreendimentos/[slug]` built and verified against Postgres; publication gate exercised end to end |
 | Contato & LGPD | `/contato` and `/privacidade` built; `Lead` and `Consentimento` write through a Server Action, never a public endpoint |
-| Content screens | `/sobre` and the home page not yet built — the nav links 404 on purpose |
+| Home | `/` built and verified — composes the catálogo, the WhatsApp action and the signature; states the credit-before-apartment order in words. Lint, typecheck and `pnpm build` clean; rendered and read at 390px, empty state exercised |
+| Content screens | `/sobre` not yet built — the nav link 404s on purpose, blocked on a real photograph |
 | Payload admin | Schema built and run against a local Postgres (Docker); no deployment database yet |
 | Deployment | None |
 
 Adriana has reviewed the pre-qualification and proposal prototypes and approved the direction.
 Corrections pending from her.
 
-Units 1–3 of Phase 0 are done (`docs/tasks/TASK-chrome-e-seo.md`,
-`docs/tasks/TASK-empreendimentos.md`, `docs/tasks/TASK-contato-lgpd.md`) — the catalogue's seed
-uses one real Rio development (Cury's Residencial Pixinguinha in Santo Cristo) for everything
-Cury publishes, and marks everything it does not — registro de incorporação, cartório, payment
-schedule — as placeholder. Units 4–5 — sobre and the home page — are sequenced in
+Units 1–3 and 5 of Phase 0 are done (`docs/tasks/TASK-chrome-e-seo.md`,
+`docs/tasks/TASK-empreendimentos.md`, `docs/tasks/TASK-contato-lgpd.md`,
+`docs/tasks/TASK-home.md`) — the catalogue's seed uses one real Rio development (Cury's
+Residencial Pixinguinha in Santo Cristo) for everything Cury publishes, and marks everything it
+does not — registro de incorporação, cartório, payment schedule — as placeholder. Unit 4,
+`/sobre`, is the last one and is blocked on a photograph of her; it is sequenced in
 `docs/tasks/TASK-fase-0.md`.
 
 The nav links to `/sobre` before that page exists. That is deliberate: the sitemap only lists

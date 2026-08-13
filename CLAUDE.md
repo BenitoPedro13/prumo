@@ -12,17 +12,20 @@
 
 ## 0. Project context — Prumo
 
-**Status: the catalogue is live; the way in is built, the person comes next.** The product,
+**Status: Phase 0 is built except for the page that needs a photograph.** The product,
 market, architecture and phasing live in `docs/product-definition.md`. The visual identity,
 tokens, voice and screen inventory live in `docs/design-handoff.md`. Four working HTML
 prototypes live in `docs/design/prototypes/`. The scaffold is done
-(`docs/tasks/TASK-scaffold-nextjs.md`), and so are units 1–3 of Phase 0 — nav, footer, OG
+(`docs/tasks/TASK-scaffold-nextjs.md`), and so are units 1–3 and 5 of Phase 0 — nav, footer, OG
 image, icon, robots, sitemap and the `wa.me` builder (`docs/tasks/TASK-chrome-e-seo.md`);
 `/empreendimentos` + `/empreendimentos/[slug]` against a running Postgres, with the publication
-gate verified end to end (`docs/tasks/TASK-empreendimentos.md`); and `/contato` +
+gate verified end to end (`docs/tasks/TASK-empreendimentos.md`); `/contato` +
 `/privacidade`, with `Lead` and `Consentimento` writing through a Server Action, never a public
-endpoint (`docs/tasks/TASK-contato-lgpd.md`). Units 4–5 of `docs/tasks/TASK-fase-0.md` — sobre
-and the home page — are next, each with its own task doc.
+endpoint (`docs/tasks/TASK-contato-lgpd.md`); and `/`, which composes the catálogo, the WhatsApp
+action and the signature, and is the one surface that states the credit-before-apartment order
+in words (`docs/tasks/TASK-home.md`), built and rendered against a running Postgres. Unit 4 of
+`docs/tasks/TASK-fase-0.md` — `/sobre` — is all that remains of the phase, and it is blocked on
+a real photograph of her.
 
 `docs/product-definition.md` and `docs/design-handoff.md` are the source of truth for *what
 to build*; this file covers *how to work*. The root `README.md` is the implementation README
