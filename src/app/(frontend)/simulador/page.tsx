@@ -54,9 +54,11 @@ async function parametrosMcmv(): Promise<{
 export default async function Simulador() {
   const { parametros, valoresSugeridos } = await parametrosMcmv();
 
-  return (
-    <div className="mx-auto w-full max-w-3xl px-6 py-14">
-      <Fluxo parametros={parametros} valoresSugeridos={valoresSugeridos} />
-    </div>
-  );
+  /*
+    Full-bleed, and the only screen on the site that is. The layout's `main` carries no
+    container precisely for this one. The rail runs the height of the viewport at the left edge
+    rather than sitting inside a centred column, so the content column does its own centring
+    beside it (`fluxo.tsx`).
+  */
+  return <Fluxo parametros={parametros} valoresSugeridos={valoresSugeridos} />;
 }

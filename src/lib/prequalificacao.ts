@@ -182,3 +182,35 @@ export function avaliarPreQualificacao(
     podeUsarFgts: respostas.tempoCarteira === "3_anos_ou_mais",
   };
 }
+
+/**
+ * Round income values to offer as one-tap answers, derived from the configured faixas.
+ *
+ * Typing a number on a phone keypad is the most expensive interaction in the flow and the one
+ * most likely to end it. These give a person something to tap instead — and the field stays
+ * editable, so anyone who knows their number to the real digit can still enter it.
+ *
+ * Derived rather than listed, for the same reason nothing else here is listed: the brackets
+ * move by portaria. One value per faixa, at the middle of the bracket and rounded to the
+ * nearest hundred, so the suggestions follow the programme without a policy number appearing in
+ * this file. The middle and not the edges — a bracket boundary is the worst possible place to
+ * put an estimate, because a hundred reais either way changes the answer.
+ */
+export function rendasSugeridas(faixas: FaixaMcmv[]): number[] {
+  return faixas
+    .map((faixa) => Math.round((faixa.rendaMin + faixa.rendaMax) / 2 / 100) * 100)
+    .filter((valor, indice, todos) => valor > 0 && todos.indexOf(valor) === indice);
+}
+
+/**
+ * Installments to offer at the last step, from the ceiling downwards.
+ *
+ * The ceiling is what the bank allows, not what a family should spend, so the two cheaper steps
+ * are the useful ones — and offering them is the closest this screen comes to giving advice.
+ */
+export function parcelasSugeridas(rendaBruta: number): number[] {
+  const teto = tetoComprometimento(rendaBruta);
+  if (teto <= 0) return [];
+
+  return [0.6, 0.8, 1].map((parte) => Math.round((teto * parte) / 10) * 10);
+}

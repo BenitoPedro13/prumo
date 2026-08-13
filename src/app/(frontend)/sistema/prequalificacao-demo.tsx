@@ -16,6 +16,10 @@ import type { ResultadoPreQualificacao } from "@/lib/prequalificacao";
  * Client-side because the controls and the exits take callbacks. The exits are built as literal
  * `ResultadoPreQualificacao` values rather than by running the flow, so all five can be seen at
  * once — including `sem_parametros`, which a working database never produces.
+ *
+ * The rail is not here: on `/simulador` it is a viewport-tall sticky column and a panel-sized
+ * copy of it would misrepresent the one thing about it that matters. Its own panel is above.
+ * The suggestion chips are hardcoded here and derived from the faixas on the real screen.
  */
 
 const FAIXA_COMPLETA: FaixaMcmv = {
@@ -94,7 +98,12 @@ export function PreQualificacaoDemo() {
           ajuda="Some tudo que entra na casa, de todo mundo que vai entrar no financiamento. Pode ser aproximado."
           onVoltar={() => undefined}
         >
-          <CampoRenda label="Renda bruta da família" value={renda} onChange={setRenda} />
+          <CampoRenda
+            label="Renda bruta da família"
+            value={renda}
+            onChange={setRenda}
+            sugestoes={[1600, 4100, 7300, 11300]}
+          />
         </Passo>
       </div>
 

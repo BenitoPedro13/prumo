@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { PlumbRail, type PlumbState } from "@/components/plumb-rail";
 import { CampoRenda } from "@/components/prequalificacao/campo-renda";
@@ -8,10 +8,14 @@ import { Escolha, EscolhaSimNao } from "@/components/prequalificacao/escolha";
 import { Passo } from "@/components/prequalificacao/passo";
 import { Resultado } from "@/components/prequalificacao/resultado";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { avaliarEnquadramento, type ParametrosMcmv } from "@/lib/mcmv";
 import {
   avaliarPreQualificacao,
+  parcelasSugeridas,
+  rendasSugeridas,
   TETO_COMPROMETIMENTO,
+  tetoComprometimento,
   type Respostas,
   type TempoCarteira,
 } from "@/lib/prequalificacao";
@@ -42,6 +46,28 @@ type Passos = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 const TOTAL_PERGUNTAS = 6;
 
+/**
+ * The five questions after the income open on an answer already chosen, so the flow moves at
+ * the pace of reading rather than the pace of tapping and every step's "Continuar" is live.
+ *
+ * Each default is the most common answer, which together describe the unobstructed path. That
+ * choice has a cost worth stating: someone who taps straight through reaches "vale conversar"
+ * without having told us anything about themselves, and never sees the screen this product
+ * exists for. It errs in the safer direction — the flow never invents an impediment nobody
+ * reported — and the questions are five words long and one tap to change. The income is the one
+ * field with no default, because a guessed income produces a real faixa and that would be a
+ * fabricated answer rather than a fast one.
+ */
+const PADRAO = {
+  tempoCarteira: "3_anos_ou_mais",
+  imovelNoNome: false,
+  jaUsouMcmv: false,
+  nomeLimpo: true,
+} satisfies Pick<
+  Respostas,
+  "tempoCarteira" | "imovelNoNome" | "jaUsouMcmv" | "nomeLimpo"
+>;
+
 const CARTEIRA: { value: TempoCarteira; label: string; nota?: string }[] = [
   {
     value: "3_anos_ou_mais",
@@ -61,34 +87,64 @@ export function Fluxo({
 }) {
   const [passo, setPasso] = useState<Passos>(0);
   const [rendaBruta, setRendaBruta] = useState<number | null>(null);
-  const [tempoCarteira, setTempoCarteira] = useState<TempoCarteira | null>(null);
-  const [imovelNoNome, setImovelNoNome] = useState<boolean | null>(null);
-  const [jaUsouMcmv, setJaUsouMcmv] = useState<boolean | null>(null);
-  const [nomeLimpo, setNomeLimpo] = useState<boolean | null>(null);
+  const [tempoCarteira, setTempoCarteira] = useState<TempoCarteira>(PADRAO.tempoCarteira);
+  const [imovelNoNome, setImovelNoNome] = useState<boolean>(PADRAO.imovelNoNome);
+  const [jaUsouMcmv, setJaUsouMcmv] = useState<boolean>(PADRAO.jaUsouMcmv);
+  const [nomeLimpo, setNomeLimpo] = useState<boolean>(PADRAO.nomeLimpo);
   const [parcelaConfortavel, setParcelaConfortavel] = useState<number | null>(null);
+
+  const topo = useRef<HTMLDivElement>(null);
+
+  /**
+   * Bring each step into view as it arrives.
+   *
+   * The rail is a viewport tall, so the page is always taller than the screen and the browser
+   * keeps the scroll position it had — which put the next question above the fold and left the
+   * person looking at the middle of a form they had not read. Skipped on the opening screen,
+   * which is already at the top, and instant rather than smooth under reduced motion.
+   */
+  useEffect(() => {
+    if (passo === 0 || !topo.current) return;
+
+    const suave = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    topo.current.scrollIntoView({ behavior: suave ? "smooth" : "auto", block: "start" });
+  }, [passo]);
 
   const avancar = () => setPasso((atual) => (atual + 1) as Passos);
   const voltar = () => setPasso((atual) => (atual - 1) as Passos);
 
   const recomecar = () => {
     setRendaBruta(null);
-    setTempoCarteira(null);
-    setImovelNoNome(null);
-    setJaUsouMcmv(null);
-    setNomeLimpo(null);
+    setTempoCarteira(PADRAO.tempoCarteira);
+    setImovelNoNome(PADRAO.imovelNoNome);
+    setJaUsouMcmv(PADRAO.jaUsouMcmv);
+    setNomeLimpo(PADRAO.nomeLimpo);
     setParcelaConfortavel(null);
     setPasso(0);
   };
 
+  /**
+   * Step 6 opens on the ceiling rather than on an empty field. The flow already falls back to
+   * it when the question is skipped, so pre-filling it changes no arithmetic — it just shows
+   * the number instead of hiding it, which is the one figure on this screen most people have
+   * never been told.
+   */
+  const irParaParcela = () => {
+    if (parcelaConfortavel === null && rendaBruta !== null) {
+      setParcelaConfortavel(Math.round(tetoComprometimento(rendaBruta) / 10) * 10);
+    }
+    avancar();
+  };
+
   const resultado =
-    passo === 7 && rendaBruta !== null && tempoCarteira !== null
+    passo === 7 && rendaBruta !== null
       ? avaliarPreQualificacao(
           {
             rendaBruta,
             tempoCarteira,
-            imovelNoNome: imovelNoNome ?? false,
-            jaUsouMcmv: jaUsouMcmv ?? false,
-            nomeLimpo: nomeLimpo ?? true,
+            imovelNoNome,
+            jaUsouMcmv,
+            nomeLimpo,
             parcelaConfortavel,
           } satisfies Respostas,
           avaliarEnquadramento({ rendaBruta }, parametros),
@@ -108,16 +164,42 @@ export function Fluxo({
   const notch = Math.min(Math.max(passo - 1, 0), TOTAL_PERGUNTAS - 1);
 
   return (
-    <div className="flex gap-6 sm:gap-10">
-      <PlumbRail
-        notches={TOTAL_PERGUNTAS}
-        current={notch}
-        state={estado}
-        label="Progresso das perguntas"
-        className="shrink-0"
-      />
+    <div ref={topo} className="flex min-h-dvh scroll-mt-0 items-stretch">
+      {/*
+        A fixed left rail, always visible (design-handoff.md §07): the apparatus is the page's
+        mechanism, not an indicator placed beside it, and an instrument that scrolls out of
+        view is a picture of one.
 
-      <div className="min-w-0 flex-1 pb-4">
+        Sticky rather than `position: fixed` — fixed would take the rail out of flow and slide
+        it under the header's signature, which is the one element no surface may cover. Sticky
+        keeps it in the column, so it starts at the top of the flow and then holds at the top of
+        the viewport for the rest of the page, which is the same reading with the header intact.
+
+        `h-dvh`, not `h-screen`: on a phone `100vh` is the address bar's height too, so the bob
+        would hang below the fold — on the exact device this screen was designed for.
+      */}
+      <div className="sticky top-0 h-dvh shrink-0 self-start">
+        <PlumbRail
+          notches={TOTAL_PERGUNTAS}
+          current={notch}
+          state={estado}
+          label="Progresso das perguntas"
+          className="h-full w-12 sm:w-16"
+        />
+      </div>
+
+      {/*
+        The six questions centre themselves against the rail — each one is short, and a single
+        question floating at the top of a viewport-tall column reads as a page that failed to
+        load. The result is long and scrolls, so it starts at the top like any other page.
+      */}
+      <div
+        className={cn(
+          "min-w-0 flex-1 px-6 py-12 sm:px-10 lg:px-14",
+          resultado ? null : "flex flex-col justify-center",
+        )}
+      >
+        <div className="w-full max-w-2xl">
         {passo === 0 ? (
           <div className="space-y-6">
             <div className="space-y-3">
@@ -161,6 +243,7 @@ export function Fluxo({
               label="Renda bruta da família"
               value={rendaBruta}
               onChange={setRendaBruta}
+              sugestoes={rendasSugeridas(parametros.faixas)}
             />
             <Avancar onClick={avancar} disabled={rendaBruta === null || rendaBruta <= 0} />
           </Passo>
@@ -173,7 +256,7 @@ export function Fluxo({
             onVoltar={voltar}
           >
             <Escolha opcoes={CARTEIRA} value={tempoCarteira} onChange={setTempoCarteira} />
-            <Avancar onClick={avancar} disabled={tempoCarteira === null} />
+            <Avancar onClick={avancar} />
           </Passo>
         ) : null}
 
@@ -184,7 +267,7 @@ export function Fluxo({
             onVoltar={voltar}
           >
             <EscolhaSimNao value={imovelNoNome} onChange={setImovelNoNome} />
-            <Avancar onClick={avancar} disabled={imovelNoNome === null} />
+            <Avancar onClick={avancar} />
           </Passo>
         ) : null}
 
@@ -195,7 +278,7 @@ export function Fluxo({
             onVoltar={voltar}
           >
             <EscolhaSimNao value={jaUsouMcmv} onChange={setJaUsouMcmv} />
-            <Avancar onClick={avancar} disabled={jaUsouMcmv === null} />
+            <Avancar onClick={avancar} />
           </Passo>
         ) : null}
 
@@ -212,22 +295,23 @@ export function Fluxo({
               nao="Tenho alguma restrição"
               notaNao="Responder isso aqui não tira você do processo. Muda só a ordem das coisas."
             />
-            <Avancar onClick={avancar} disabled={nomeLimpo === null} />
+            <Avancar onClick={irParaParcela} />
           </Passo>
         ) : null}
 
         {passo === 6 ? (
           <Passo
             pergunta="Quanto cabe no seu mês, com folga?"
-            ajuda={`Pense no que dá pra pagar sem apertar. Se não souber, pode deixar em branco — a gente usa ${Math.round(
+            ajuda={`O campo já vem no teto que o banco aceita para a sua renda, ${Math.round(
               TETO_COMPROMETIMENTO * 100,
-            )}% da renda, que é o teto que o banco aceita.`}
+            )}% dela. Se cabe menos que isso no seu mês, baixe — é uma conta que você paga por muitos anos.`}
             onVoltar={voltar}
           >
             <CampoRenda
               label="Parcela confortável por mês"
               value={parcelaConfortavel}
               onChange={setParcelaConfortavel}
+              sugestoes={rendaBruta === null ? [] : parcelasSugeridas(rendaBruta)}
             />
             <Avancar onClick={avancar} label="Ver o resultado" />
           </Passo>
@@ -242,6 +326,7 @@ export function Fluxo({
             onRecomecar={recomecar}
           />
         ) : null}
+        </div>
       </div>
     </div>
   );

@@ -237,7 +237,11 @@ The plumb line is not a logo applied to a page; it is the page's mechanism.
 - **In the pre-qualification** it is a fixed left rail on a deep green ground. A line with a
   weighted bob that *drops* to the next notch as you answer, and swings and settles the way a
   real plumb bob does. Always visible, so the whole app becomes the instrument it is named
-  after.
+  after. **Built** — a sticky, viewport-tall column at the left edge of a full-bleed
+  `/simulador`. Sticky rather than `position: fixed`: fixed leaves the flow and slides the rail
+  under the header, and the header carries the signature, which nothing may cover. The first
+  build got this wrong — an inline block that scrolled away with the content — and the
+  correction is recorded in `docs/tasks/TASK-pre-qualificacao.md` §8.1.
 - **At the result** the metaphor pays off. Qualifying: the line hangs dead true over the mark
   and covers it, verdict **"No prumo."** Blocked: the same true line, in brass, beside a mark
   that leans away from it — **"Ainda fora do prumo."** *Ainda* does the work: nothing is broken,

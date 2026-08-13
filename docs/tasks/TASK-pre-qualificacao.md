@@ -300,3 +300,68 @@ wrapper the panels need because the exits take callbacks.
 - **Not verified in a browser.** The Chrome extension was not connected in this session, so the
   step-to-step interaction, the rail's drop between notches and the 390px layout were not seen
   running. The logic and the render are verified; the motion is not.
+
+---
+
+## 8. Revision — 13 August 2026, after the first review
+
+Reviewed against a screen recording (`videos/review-simulador.mov`). Three changes.
+
+### 8.1 The rail was built wrong, and the handoff already said so
+
+`design-handoff.md` §07 specifies **"a fixed left rail… always visible, so the whole app becomes
+the instrument it is named after."** It shipped as an inline block in the content column, about
+500px tall, scrolling out of view with everything else — an indicator placed beside the page
+rather than the page's mechanism. The layout's own comment ("`main` carries no container: the
+pre-qualification is full-bleed on a deep green ground") had been anticipating the right thing
+since Phase 0.
+
+Now: `/simulador` is full-bleed, and the rail is a **sticky, viewport-tall left column**.
+
+- **Sticky, not `fixed`.** Fixed takes it out of flow and slides it under the header, and the
+  header carries the signature — the one element no surface may cover (CLAUDE.md §0). Sticky
+  keeps it in the column: it starts at the top of the flow and holds at the top of the viewport
+  after that, which is the same reading with the signature intact.
+- **`h-dvh`, not `h-screen`.** On a phone `100vh` includes the address bar, so the bob would hang
+  below the fold on the exact device this screen was designed for.
+- The six questions centre themselves against the rail; the result starts at the top and scrolls.
+
+That change exposed a second defect: with a viewport-tall rail the page is always taller than the
+screen, so advancing a step left the browser at its old scroll offset and the next question
+opened above the fold — measured at scrollY 607 on a 846px viewport. Each step now scrolls itself
+into view, instantly under `prefers-reduced-motion`.
+
+### 8.2 The five questions after the income open on an answer
+
+Every step used to start blank with "Continuar" disabled, so six taps bought nothing. The
+questions after the income now open on their most common answer — together, the unobstructed
+path — and every step's button is live.
+
+**The cost, stated plainly:** someone who taps straight through reaches "vale conversar" without
+having told us anything, and never sees the screen this product exists for. It errs in the safer
+direction — the flow never invents an impediment nobody reported — and each question is one tap
+to change. The income has no default: a guessed income produces a real faixa, which would be a
+fabricated answer rather than a fast one.
+
+### 8.3 The money fields have one-tap values
+
+The review's actual complaint: typing on a phone keypad is where people leave. Both money fields
+now carry a row of one-tap chips and stay editable.
+
+- **Income** — one value per faixa, at the middle of the bracket, rounded to the nearest hundred
+  (`rendasSugeridas`). Derived, not listed, so they follow a portaria without a policy number
+  entering the code. The middle and never the edges: a bracket boundary is the worst place to put
+  an estimate, because a hundred reais either way changes the answer.
+- **Installment** — 60%, 80% and 100% of the ceiling (`parcelasSugeridas`), with the field
+  pre-filled at the ceiling, which is what the flow already used when the question was skipped.
+  The step's help text changed to match: it no longer offers to leave the field blank.
+
+An empty money field also used to render `R$ 0`, which reads as a balance of zero rather than an
+unanswered question. The placeholder is gone.
+
+### 8.4 Verified
+
+At 390×846 and 1280×900, driven through all six steps to the result: each step lands in view
+(scrollY 192, the header's height, at every step), no horizontal overflow, and under
+`prefers-reduced-motion` the rope simulation never starts. One thing the first pass reported as a
+defect was not one — "Continuar" appeared disabled in a frame where it was live.

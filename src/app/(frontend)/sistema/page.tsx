@@ -469,6 +469,11 @@ export default async function Sistema() {
           mudar primeiro, em vez de recusar sem explicar. A última mostra o gate: sem faixas no
           admin, a tela se recusa a estimar.
         </p>
+        <p className="max-w-prose text-ink-muted">
+          Os campos de dinheiro abrem com valores de um toque, tirados das próprias faixas: digitar
+          num teclado de celular é a interação mais cara do fluxo e a que mais perde gente. O campo
+          continua editável para quem sabe o próprio número.
+        </p>
         <PreQualificacaoDemo />
       </section>
 
