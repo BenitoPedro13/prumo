@@ -14,6 +14,15 @@ export const Media: CollectionConfig = {
   admin: {
     group: "Sistema",
   },
+  /**
+   * Public read, unlike every sibling collection in `../access.ts`. These files are rendered
+   * on public pages, so gating them is a bug, not a safeguard — and without this, Payload's
+   * unset-`access` default (`Boolean(user)`) blocks anonymous reads. That default is invisible
+   * in local dev, where unconfigured storage falls back to serving straight off disk; the S3
+   * and Vercel Blob plugins both proxy file reads through this same collection access check,
+   * so it only surfaces once object storage is actually configured.
+   */
+  access: { read: () => true },
   upload: {
     mimeTypes: ["image/*", "application/pdf"],
     /**

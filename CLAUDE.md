@@ -97,10 +97,10 @@ a single config constant so a rename is one edit.
 | Framework | **Next.js** (App Router, TypeScript, `src/` dir, `@/*` alias) — always the latest stable major, never a pinned number (see §2.0) | installed, 16.3.0 · React 19.2.8 · React Compiler on |
 | Styling / components | **Tailwind CSS v4 + shadcn/ui**, CSS-first config, retheming to the tokens in `docs/design-handoff.md` | installed, Tailwind 4.3.3 · shadcn on Radix primitives, `nova` preset, rethemed |
 | Content + admin | **Payload CMS 3**, embedded in the Next app. Chosen because Adriana is non-technical and the value is *validation* (blocking an expired price table, a missing CRECI) more than editing | installed, 3.87.1 · admin pt-BR · publication gate live (registro + cartório required to publish); `Parametros` holds the INCC and the MCMV faixas |
-| Data + files | Managed **Postgres** (Neon or Supabase) + S3-compatible storage (R2). Renders and floor plans are heavy — the image pipeline matters more than the database | adapters wired, **local dev runs on Postgres in Docker; no deployment database provisioned yet** |
+| Data + files | Managed **Postgres** (Neon) + object storage. Renders and floor plans are heavy — the image pipeline matters more than the database | **Neon Postgres, via the Vercel integration — same database for local dev, Preview and Production.** Files go through **Vercel Blob** for now, not the documented Cloudflare R2, because R2 isn't reachable through Vercel's Marketplace CLI without a separate Cloudflare account; both adapters stay wired in `payload.config.ts`, so moving to R2 later is an env var change. `docs/tasks/TASK-deploy.md` |
 | Messaging | `wa.me` deep links with pre-filled context. **Not** the WhatsApp Business API — at her volume the per-message cost buys nothing. See `docs/product-definition.md` §05 | not built |
 | Credit analysis | Hand off to **Cury's existing broker link**. Never rebuild | n/a |
-| Hosting | **Vercel**, São Paulo edge | not deployed |
+| Hosting | **Vercel**, São Paulo edge | **live** — [prumo-drab-three.vercel.app](https://prumo-drab-three.vercel.app), a private preview per `docs/tasks/TASK-deploy.md`, not a public launch |
 | Package manager | **pnpm** — decided here, never mixed | pnpm 11.21.0 |
 
 **Version numbers written anywhere in this repo are a snapshot, not a pin.** See §2.0 before
