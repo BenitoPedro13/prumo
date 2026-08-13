@@ -16,6 +16,7 @@ dist/
 # payload
 media/
 .payload/
+videos/
 
 # misc
 .DS_Store

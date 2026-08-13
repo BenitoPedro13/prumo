@@ -234,22 +234,51 @@ The one place boldness is spent. Everything around it stays quiet.
 
 The plumb line is not a logo applied to a page; it is the page's mechanism.
 
-- **In the pre-qualification** it is a fixed left rail on a deep green ground. A thread with a
-  weighted bob that *drops* to the next notch as you answer and **swings, then damps out**, the
-  way a real plumb bob does. Always visible, so the whole app becomes the instrument it is named
+- **In the pre-qualification** it is a fixed left rail on a deep green ground. A line with a
+  weighted bob that *drops* to the next notch as you answer, and swings and settles the way a
+  real plumb bob does. Always visible, so the whole app becomes the instrument it is named
   after.
-- **At the result** the metaphor pays off. Qualifying: the bob settles dead centre, thread taut,
-  verdict **"No prumo."** Blocked: it hangs visibly crooked in brass, **"Ainda fora do prumo."**
-  *Ainda* does the work — nothing is broken, it is simply not aligned yet.
+- **At the result** the metaphor pays off. Qualifying: the line hangs dead true over the mark
+  and covers it, verdict **"No prumo."** Blocked: the same true line, in brass, beside a mark
+  that leans away from it — **"Ainda fora do prumo."** *Ainda* does the work: nothing is broken,
+  it is simply not aligned yet.
 - **In the proposal** the same line becomes the payment timeline, descending through the
   construction period with milestones hanging off it and the bob at *chaves na mão*. It is
   simultaneously the mark, the time axis, and the payment schedule.
 
+### What is out of true is never the plumb
+
+The prototype tilts the thread nine degrees for the blocked result. **Built, it does not**, and
+this is a correction to the prototype rather than a deviation from it. A plumb line cannot hang
+at an angle: gravity holding it vertical is the entire reason the instrument works, and a
+drawing of a crooked one is a drawing of a thing that does not exist — on the one screen whose
+whole claim is that it tells the truth.
+
+What a plumb reports is that a **surface** is out of true, read as the gap that opens between
+the line and the face on the way down. So the line stays vertical and centred in every state,
+and the mark leans. Two parallel lines side by side would say nothing at all: a plumb hung
+somewhere else is not a measurement.
+
 ### Motion
 
-CSS transforms and opacity only, on `cubic-bezier(0.16, 1, 0.3, 1)`; the bob's drop uses a
-slight overshoot. No animation library. Everything disabled under `prefers-reduced-motion`.
-One orchestrated moment per screen beats scattered effects.
+**A simulation, not an animation.** The rail runs a rope — sixteen points, Verlet-integrated,
+held by distance constraints, pinned at the anchor and weighted at the bob. Nothing about it is
+keyframed, which is what buys the things a keyframe cannot: the swing slowing down as the line
+lengthens, a wave travelling down the rope instead of the whole line pivoting as a rigid piece,
+slack that bellies out when the line is gathered in, and a rope that will not stretch.
+
+It is also **the only thing on the site that can be touched.** The bob can be picked up, pulled,
+lifted until the line goes slack, and thrown; brushing past the line makes it ripple from the
+point touched. None of it reads or reports state — the instrument simply behaves like one.
+
+Still no animation library: a general physics engine would be some ninety kilobytes to do this
+worse than sixty lines of Verlet, and the weight budget in §09 is an ethical constraint. Outside
+the rail, CSS transforms and opacity only, on `cubic-bezier(0.16, 1, 0.3, 1)`, with a slight
+overshoot reserved for the bob's drop. **Everything stops dead under `prefers-reduced-motion`:**
+the simulation never starts and CSS places the bob on its notch. One orchestrated moment per
+screen beats scattered effects.
+
+Built — `src/components/plumb-rail.tsx`, `docs/tasks/TASK-plumb-rail.md`, panel on `/sistema`.
 
 ---
 

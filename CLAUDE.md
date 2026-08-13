@@ -30,7 +30,15 @@ placeholder: the repo holds no biographical facts about her, and inventing a car
 a real person on a public page is a COFECI exposure as much as a copy failure. Four questions,
 listed in `TASK-sobre.md` §6, close it.
 
-Phase 1 has begun. `docs/tasks/TASK-mcmv-parametros.md` put the MCMV faixas in the admin and the
+Phase 1 has begun. `docs/tasks/TASK-plumb-rail.md` built the §07 plumb apparatus —
+`src/components/plumb-rail.tsx`, with a panel on `/sistema`. It is a rope simulation rather than
+an animation, and the only interactive thing on the site. Two of its decisions are corrections
+to the prototype and are recorded in `docs/design-handoff.md` §07: the line never hangs crooked,
+because a plumb line cannot, so the *mark* leans instead; and the motion is integrated rather
+than keyframed, because a pendulum's period grows with its length and the length is what the
+flow changes.
+
+`docs/tasks/TASK-mcmv-parametros.md` put the MCMV faixas in the admin and the
 enquadramento arithmetic in `src/lib/mcmv.ts`, with no policy number written into code. The
 income brackets moved by portaria in March 2026 and this repo's own table was already stale when
 it was checked — which is the argument for the whole arrangement. Rates, subsidies and the Rio
@@ -280,7 +288,8 @@ emerges.
   src/components/            shared composites — signature (CRECI lockup), site-nav,
                               site-footer, whatsapp-action, contato-form; the catálogo pieces
                               (empreendimento-card, tipologia-card, registro-legal,
-                              condicoes-comerciais, disponibilidade); plumb-rail (Phase 1)
+                              condicoes-comerciais, disponibilidade); plumb-rail — the §07
+                              apparatus, a simulated rope and the site's only interactive piece
   src/components/prequalificacao/  the six-step flow and its result states
   src/components/proposta/   the shared-link proposal surface
   src/lib/                   cn(); site-config.ts (BRAND_NAME, SITE_URL, CRECI);

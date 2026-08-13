@@ -4,6 +4,7 @@ import { CondicoesComerciais } from "@/components/condicoes-comerciais";
 import { ContatoForm } from "@/components/contato-form";
 import { Disponibilidade } from "@/components/disponibilidade";
 import { EmpreendimentoCard } from "@/components/empreendimento-card";
+import { PlumbRail, type PlumbState } from "@/components/plumb-rail";
 import { RegistroLegal } from "@/components/registro-legal";
 import { Signature } from "@/components/signature";
 import { SiteFooter } from "@/components/site-footer";
@@ -20,6 +21,8 @@ import { formatBRL, formatDate, formatPercent } from "@/lib/format";
 import type { ProjecaoIndice } from "@/lib/incc";
 import type { FaixaMcmv } from "@/lib/mcmv";
 import { payload } from "@/lib/payload";
+
+import { PlumbRailDemo } from "./plumb-rail-demo";
 
 /**
  * The design system, rendered with the real components and the real tokens.
@@ -50,6 +53,16 @@ const STATES = [
   { token: "--state-ok", role: "No prumo", className: "bg-state-ok" },
   { token: "--state-wait", role: "Ainda fora do prumo", className: "bg-state-wait" },
   { token: "--state-error", role: "Erro de sistema, nunca um resultado", className: "bg-state-error" },
+];
+
+/**
+ * Three readings of the apparatus, side by side. The middle and the right are the two honest
+ * exits of the pré-qualificação: aligned, and not aligned yet.
+ */
+const PLUMB: { state: PlumbState; current: number; caption: string }[] = [
+  { state: "hanging", current: 2, caption: "Descendo" },
+  { state: "aligned", current: 7, caption: "No prumo" },
+  { state: "crooked", current: 7, caption: "Ainda fora do prumo" },
 ];
 
 const TYPE = [
@@ -228,6 +241,36 @@ export default async function Sistema() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">O prumo</h2>
+        <p className="max-w-prose text-ink-muted">
+          A peça que dá nome ao projeto, e o único lugar onde o desenho levanta a voz. Não é um
+          símbolo aplicado na página: é o mecanismo dela. Na pré-qualificação marca onde a pessoa
+          está; no fim, marca o resultado. Na proposta, a mesma linha vira a linha do tempo do
+          pagamento.
+        </p>
+        <div className="flex flex-wrap items-start gap-6">
+          {PLUMB.map(({ state, current, caption }) => (
+            <figure key={caption} className="space-y-2">
+              <PlumbRail
+                notches={8}
+                current={current}
+                state={state}
+                label={caption}
+                className="h-[26rem]"
+              />
+              <figcaption className="font-mono text-xs text-ink-muted">{caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+        <p className="max-w-prose text-ink-muted">
+          O componente recebe um estado, nunca uma frase. &ldquo;No prumo&rdquo; e &ldquo;Ainda
+          fora do prumo&rdquo; são palavras da tela de pré-qualificação — e são a parte que uma
+          troca de nome obriga a reescrever.
+        </p>
+        <PlumbRailDemo />
       </section>
 
       <section className="space-y-4">

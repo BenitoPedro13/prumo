@@ -29,16 +29,29 @@
 :root {
   --verde: #2e4a3c;
   --verde-deep: #22392e;
+  --verde-soft: #dde5de;
   --latao: #9c7b3f;
+  --latao-soft: #efe8d8;
   --paper: #e8e9e3;
   --sheet: #f5f6f1;
   --ink: #22251f;
   --ink-muted: #5b6157;
+  --ink-faint: #878d82;
   --rule: #cdd0c6;
+  --rule-soft: #dee0d8;
 
   /* Text that sits on a filled verde/latao surface. */
   --on-verde: #f5f6f1;
   --on-latao: #f5f6f1;
+
+  /*
+    The plumb rail's ground is --verde-deep, which is dark in both themes, so what sits on
+    it does not flip with the theme. --verde-ink is the thread and the settled bob;
+    --latao-ink is the brass of a crooked one, and it is the bright brass in every theme —
+    the light palette's --latao is a dark bronze that all but disappears on the green (§07).
+  */
+  --verde-ink: #f5f6f1;
+  --latao-ink: #c9a464;
 
   /*
     Pre-qualification states. "Ainda fora do prumo" renders in brass, never red —
@@ -55,15 +68,21 @@
   :root:not([data-theme="light"]) {
     --verde: #82b598;
     --verde-deep: #0f1a15;
+    --verde-soft: #1b2921;
     --latao: #c9a464;
+    --latao-soft: #2a2417;
     --paper: #131613;
     --sheet: #1c201b;
     --ink: #e7e9e2;
     --ink-muted: #a3a99d;
+    --ink-faint: #767c71;
     --rule: #333930;
+    --rule-soft: #262b25;
 
     --on-verde: #0f1a15;
     --on-latao: #131613;
+
+    --verde-ink: #eef3ef;
 
     --state-error: #e2887a;
 
@@ -74,15 +93,21 @@
 :root[data-theme="dark"] {
   --verde: #82b598;
   --verde-deep: #0f1a15;
+  --verde-soft: #1b2921;
   --latao: #c9a464;
+  --latao-soft: #2a2417;
   --paper: #131613;
   --sheet: #1c201b;
   --ink: #e7e9e2;
   --ink-muted: #a3a99d;
+  --ink-faint: #767c71;
   --rule: #333930;
+  --rule-soft: #262b25;
 
   --on-verde: #0f1a15;
   --on-latao: #131613;
+
+  --verde-ink: #eef3ef;
 
   --state-error: #e2887a;
 
@@ -106,6 +131,7 @@
 
   /* §07: one easing, with a slight overshoot reserved for the bob's drop. */
   --ease-prumo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-drop: cubic-bezier(0.34, 1.32, 0.5, 1);
 }
 
 /* ---- Semantic tokens consumed by shadcn primitives ---- */
@@ -187,6 +213,12 @@
   --color-ink: var(--ink);
   --color-ink-muted: var(--ink-muted);
   --color-rule: var(--rule);
+  --color-verde-soft: var(--verde-soft);
+  --color-verde-ink: var(--verde-ink);
+  --color-latao-soft: var(--latao-soft);
+  --color-latao-ink: var(--latao-ink);
+  --color-ink-faint: var(--ink-faint);
+  --color-rule-soft: var(--rule-soft);
   --color-on-verde: var(--on-verde);
   --color-on-latao: var(--on-latao);
   --color-state-ok: var(--state-ok);
@@ -198,6 +230,7 @@
   --font-mono: var(--font-mono);
 
   --ease-prumo: var(--ease-prumo);
+  --ease-drop: var(--ease-drop);
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -207,6 +240,15 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 }
+
+/*
+  §07's swing is not here. It is a damped pendulum integrated per frame in
+  src/components/plumb-rail.tsx, because a plumb bob's period grows with the length of its
+  line and the line lengthens as the flow advances — one keyframe cannot be both the short
+  quick swing of the first answer and the long heavy one of the last.
+
+  What stays in CSS is the drop: --ease-drop's overshoot is the line going taut.
+*/
 
 /*
   §04: body is set deliberately larger than default — 17px base, and nothing the buyer

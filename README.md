@@ -28,6 +28,7 @@ Vida the buyer's anxiety is credit approval, not finishes.
 | Sobre | `/sobre` built and verified — uses the signature's 180×179 stand-in, so no hero portrait. Her professional history ships as a marked `[VERIFICAR:]` placeholder; four questions in `docs/tasks/TASK-sobre.md` §6 close it |
 | Payload admin | Schema built and run against a local Postgres (Docker); publication gate live; `Parametros` holds the INCC and the MCMV faixas. No deployment database yet |
 | MCMV (Phase 1) | Faixas in the admin, enquadramento arithmetic in `src/lib/mcmv.ts`, panel on `/sistema`. Income limits and the two nationwide ceilings confirmed against the Ministério das Cidades; rates, subsidies and the Rio locality ceiling unconfirmed and stored empty, so they render nowhere. `docs/tasks/TASK-mcmv-parametros.md` |
+| Prumo (Phase 1) | The §07 apparatus built as a rope simulation — `src/components/plumb-rail.tsx`, panel on `/sistema`. Verified by computed style and media emulation: six new tokens in all three theme states, the rope does not stretch, slack renders, reduced motion never starts it, nothing clipped at 390px. `docs/tasks/TASK-plumb-rail.md` |
 | Deployment | None |
 
 Adriana has reviewed the pre-qualification and proposal prototypes and approved the direction.
