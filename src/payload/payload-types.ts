@@ -74,6 +74,7 @@ export interface Config {
     media: Media;
     leads: Lead;
     consentimentos: Consentimento;
+    propostas: Proposta;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -89,6 +90,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     leads: LeadsSelect<false> | LeadsSelect<true>;
     consentimentos: ConsentimentosSelect<false> | ConsentimentosSelect<true>;
+    propostas: PropostasSelect<false> | PropostasSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -399,6 +401,93 @@ export interface Consentimento {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "propostas".
+ */
+export interface Proposta {
+  id: number;
+  lead: number | Lead;
+  /**
+   * Como a carta começa. Por exemplo "Juliana e Marcos" — pode ser um casal, o Lead é uma pessoa só.
+   */
+  saudacao: string;
+  carta: {
+    /**
+     * A frase de abertura, escrita como ela fala. Por exemplo "Separei duas, e uma delas eu acho melhor."
+     */
+    titulo: string;
+    /**
+     * O porquê destas opções — o que ficou de fora e por quê.
+     */
+    paragrafo_principal: string;
+    /**
+     * Opcional. Comparação entre as opções, ou o que vale a pena elas conversarem antes de decidir.
+     */
+    paragrafo_contexto?: string | null;
+  };
+  /**
+   * Uma ou duas unidades. A tabela comercial de cada uma precisa estar dentro da validade — uma tabela vencida bloqueia o salvamento.
+   */
+  tipologias?:
+    | {
+        tipologia: number | Tipologia;
+        condicao_comercial: number | CondicoesComerciai;
+        destaque?: boolean | null;
+        /**
+         * Curta, opcional. Por exemplo "é duas quadras do VLT".
+         */
+        nota?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Copiado automaticamente das condições comerciais no momento em que a proposta é criada. Editar a tabela depois não muda o que está aqui.
+   */
+  premissas?:
+    | {
+        tipologia_nome?: string | null;
+        referencia_tabela?: string | null;
+        entrada_percentual?: number | null;
+        parcelas_obra?: {
+          quantidade?: number | null;
+          valor?: number | null;
+        };
+        baloes?:
+          | {
+              mes?: number | null;
+              valor?: number | null;
+              id?: string | null;
+            }[]
+          | null;
+        valor_nas_chaves?: number | null;
+        indice_reajuste?: string | null;
+        incc_taxa_anual?: number | null;
+        incc_data_revisao?: string | null;
+        entrega_prevista?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Depois desta data a página mostra que a proposta venceu, com o WhatsApp dela, em vez de continuar exibindo os números.
+   */
+  expira_em: string;
+  /**
+   * Gerado uma vez na criação. A URL compartilhada é /p/<token>.
+   */
+  token_publico?: string | null;
+  /**
+   * Preenchido pela própria página a cada visita — "ela vê quando foi aberta, e quantas vezes".
+   */
+  eventos_de_abertura?:
+    | {
+        aberto_em?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -474,6 +563,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'consentimentos';
         value: number | Consentimento;
+      } | null)
+    | ({
+        relationTo: 'propostas';
+        value: number | Proposta;
       } | null)
     | ({
         relationTo: 'users';
@@ -715,6 +808,66 @@ export interface ConsentimentosSelect<T extends boolean = true> {
   texto_versao?: T;
   ip?: T;
   revogado_em?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "propostas_select".
+ */
+export interface PropostasSelect<T extends boolean = true> {
+  lead?: T;
+  saudacao?: T;
+  carta?:
+    | T
+    | {
+        titulo?: T;
+        paragrafo_principal?: T;
+        paragrafo_contexto?: T;
+      };
+  tipologias?:
+    | T
+    | {
+        tipologia?: T;
+        condicao_comercial?: T;
+        destaque?: T;
+        nota?: T;
+        id?: T;
+      };
+  premissas?:
+    | T
+    | {
+        tipologia_nome?: T;
+        referencia_tabela?: T;
+        entrada_percentual?: T;
+        parcelas_obra?:
+          | T
+          | {
+              quantidade?: T;
+              valor?: T;
+            };
+        baloes?:
+          | T
+          | {
+              mes?: T;
+              valor?: T;
+              id?: T;
+            };
+        valor_nas_chaves?: T;
+        indice_reajuste?: T;
+        incc_taxa_anual?: T;
+        incc_data_revisao?: T;
+        entrega_prevista?: T;
+        id?: T;
+      };
+  expira_em?: T;
+  token_publico?: T;
+  eventos_de_abertura?:
+    | T
+    | {
+        aberto_em?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

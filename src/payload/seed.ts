@@ -258,7 +258,7 @@ emSessentaDias.setDate(emSessentaDias.getDate() + 60);
  * Cury does not publish a payment schedule on its marketing pages, so this table is invented —
  * roughly consistent with the real R$ 349.649,15 starting price above, nothing more.
  */
-await payload.create({
+const condicaoMenor = await payload.create({
   collection: "condicoes-comerciais",
   ...semRevalidacao,
   data: {
@@ -273,6 +273,52 @@ await payload.create({
   },
 });
 
-console.log("Semeado: 1 incorporadora, 1 empreendimento, 2 tipologias, 1 condição comercial.");
+/**
+ * A `Proposta` fixture — `docs/tasks/TASK-proposta.md` — so `/sistema`'s panel and a real
+ * `/p/[token]` visit both have something to show without anyone building one by hand first.
+ * `emQuarentaDias` sits inside `condicaoMenor`'s own validity, same as a real one would need to.
+ */
+const lead = await payload.create({
+  collection: "leads",
+  ...semRevalidacao,
+  data: {
+    nome: "Juliana Ramos",
+    telefone: "5521900000001",
+    origem: "[SEED] fixture de desenvolvimento",
+    estagio: "em_conversa",
+  },
+});
+
+const emQuarentaDias = new Date();
+emQuarentaDias.setDate(emQuarentaDias.getDate() + 40);
+
+await payload.create({
+  collection: "propostas",
+  ...semRevalidacao,
+  data: {
+    lead: lead.id,
+    saudacao: "Juliana",
+    carta: {
+      titulo: "Separei esta, e acho que ela cabe no que você me contou.",
+      paragrafo_principal:
+        "Depois da nossa conversa, fiquei com o Studio do Pixinguinha — é o que mais se aproxima do que você me disse que cabe sem apertar, e fica a dois minutos a pé do VLT.",
+      paragrafo_contexto:
+        "Coloquei a conta inteira aqui embaixo, incluindo a parte que sobe durante a obra. Leia com calma e me chame com qualquer dúvida, mesmo que pareça boba.",
+    },
+    tipologias: [
+      {
+        tipologia: tipologiaMenor.id,
+        condicao_comercial: condicaoMenor.id,
+        destaque: true,
+        nota: "[SEED] dois minutos a pé do VLT Praia Formosa",
+      },
+    ],
+    expira_em: emQuarentaDias.toISOString(),
+  },
+});
+
+console.log(
+  "Semeado: 1 incorporadora, 1 empreendimento, 2 tipologias, 1 condição comercial, 1 lead, 1 proposta.",
+);
 await payload.destroy();
 process.exit(0);

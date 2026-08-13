@@ -14,7 +14,7 @@ Vida the buyer's anxiety is credit approval, not finishes.
 
 ## Status
 
-**Phase 0 is built. Phase 1 has the plumb apparatus, the MCMV parameters and the pré-qualificação.**
+**Phase 0 is built. Phase 1 has the plumb apparatus, the MCMV parameters, the pré-qualificação, the shared proposal and a first Vercel deployment.**
 
 | Area | State |
 |---|---|
@@ -30,6 +30,7 @@ Vida the buyer's anxiety is credit approval, not finishes.
 | MCMV (Phase 1) | Faixas in the admin, enquadramento arithmetic in `src/lib/mcmv.ts`, panel on `/sistema`. Income limits, the two nationwide ceilings and Classe Média's rate confirmed against the Ministério das Cidades. Rates, subsidies and the Rio locality ceiling are **flagged suggestions** — filled so `/simulador` has numbers to show, marked by `Parametros.mcmv.valores_sugeridos`, and shown behind a visible "estimativas ilustrativas" strip until Caixa confirms them. `docs/tasks/TASK-mcmv-parametros.md`, `TASK-pre-qualificacao.md` §2.4 |
 | Prumo (Phase 1) | The §07 apparatus built as a rope simulation — `src/components/plumb-rail.tsx`, panel on `/sistema`. Verified by computed style and media emulation: six new tokens in all three theme states, the rope does not stretch, slack renders, reduced motion never starts it, nothing clipped at 390px. `docs/tasks/TASK-plumb-rail.md` |
 | Pré-qualificação (Phase 1) | `/simulador` built and reviewed — six steps, five exits, and the plumb apparatus as a sticky viewport-tall left rail per `design-handoff.md` §07. Nothing persisted: the answers stay in component state and no Server Action, fetch or storage touches them. The five questions after the income open pre-answered and both money fields carry one-tap values derived from the faixas. Editing `Parametros` now revalidates the site, which it did not before. Logic exercised across eleven cases; driven end to end at 390×846 and 1280×900 with reduced motion checked. `docs/tasks/TASK-pre-qualificacao.md` |
+| Proposta (Phase 1) | `/p/[token]` built and verified against a real token end to end — letter, compared options, INCC-paired payment timeline, three fixed honest risks, one WhatsApp CTA. Freezes its commercial numbers into the document at creation and blocks generation outright on an expired price table (`Propostas`'s `beforeValidate` hook). Logs its own view count on each visit. Past `expira_em` it shows an honest expired state, not a 404. Panel on `/sistema`, both live and expired. `docs/tasks/TASK-proposta.md` |
 | Deployment | Live at [prumo-drab-three.vercel.app](https://prumo-drab-three.vercel.app) — a private preview, not a public launch; the placeholder data in `docs/pending-verifications.md` is still on every page. Database is Neon Postgres via the Vercel integration, seeded from the local Docker instance. Media is Vercel Blob for now, not the documented Cloudflare R2 — `docs/tasks/TASK-deploy.md` |
 
 Adriana has reviewed the pre-qualification and proposal prototypes and approved the direction.

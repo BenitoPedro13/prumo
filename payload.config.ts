@@ -15,6 +15,7 @@ import { Empreendimentos } from "./src/payload/collections/empreendimentos";
 import { Incorporadoras } from "./src/payload/collections/incorporadoras";
 import { Leads } from "./src/payload/collections/leads";
 import { Media } from "./src/payload/collections/media";
+import { Propostas } from "./src/payload/collections/propostas";
 import { Tipologias } from "./src/payload/collections/tipologias";
 import { Users } from "./src/payload/collections/users";
 import { Parametros } from "./src/payload/globals/parametros";
@@ -57,6 +58,7 @@ export default buildConfig({
     Media,
     Leads,
     Consentimentos,
+    Propostas,
     Users,
   ],
   globals: [Parametros],

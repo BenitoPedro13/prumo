@@ -5,6 +5,8 @@ import { ContatoForm } from "@/components/contato-form";
 import { Disponibilidade } from "@/components/disponibilidade";
 import { EmpreendimentoCard } from "@/components/empreendimento-card";
 import { PlumbRail, type PlumbState } from "@/components/plumb-rail";
+import { PropostaExpirada } from "@/components/proposta/proposta-expirada";
+import { PropostaSheet } from "@/components/proposta/proposta-sheet";
 import { RegistroLegal } from "@/components/registro-legal";
 import { Signature } from "@/components/signature";
 import { SiteFooter } from "@/components/site-footer";
@@ -17,7 +19,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { CondicaoComercialResumo, EmpreendimentoResumo, TipologiaResumo } from "@/lib/catalogo";
+import type {
+  CondicaoComercialResumo,
+  EmpreendimentoResumo,
+  PropostaResumo,
+  TipologiaResumo,
+} from "@/lib/catalogo";
 import { formatBRL, formatDate, formatPercent } from "@/lib/format";
 import type { ProjecaoIndice } from "@/lib/incc";
 import type { FaixaMcmv } from "@/lib/mcmv";
@@ -135,6 +142,39 @@ const PROJECAO: ProjecaoIndice = {
   taxaAnual: 0.0812,
   dataRevisao: "2026-08-01",
   fonte: "INCC-DI/FGV, acumulado em 12 meses",
+};
+
+/** Reuses TIPOLOGIA/CONDICAO/PROJECAO/EMPREENDIMENTO above — a proposal is built from exactly
+ * this kind of data, just frozen. See `docs/tasks/TASK-proposta.md`. */
+const PROPOSTA: PropostaResumo = {
+  saudacao: "Juliana e Marcos",
+  cartaTitulo: "Separei duas, e uma delas eu acho melhor.",
+  cartaPrincipal:
+    "Depois da nossa conversa, tirei as opções que não fechavam com a entrada de vocês e sobrou esta. Ela cabe no que vocês me disseram que dá pra pagar sem apertar.",
+  cartaContexto:
+    "Coloquei a conta inteira aqui embaixo, incluindo a parte que sobe durante a obra. Leiam com calma e me chamem com qualquer dúvida, mesmo que pareça boba.",
+  opcoes: [
+    {
+      tipologia: TIPOLOGIA,
+      empreendimentoNome: EMPREENDIMENTO.nome,
+      destaque: true,
+      nota: "Fica a seis minutos a pé da estação, o que resolve o trajeto todo dia.",
+      premissa: {
+        tipologiaNome: TIPOLOGIA.nome,
+        referenciaTabela: CONDICAO.referencia,
+        entradaPercentual: CONDICAO.entradaPercentual,
+        parcelasObra: CONDICAO.parcelasObra,
+        baloes: CONDICAO.baloes,
+        valorNasChaves: CONDICAO.valorNasChaves,
+        indiceReajuste: CONDICAO.indiceReajuste,
+        projecaoIncc: { taxaAnual: PROJECAO.taxaAnual, dataRevisao: PROJECAO.dataRevisao },
+        entregaPrevista: EMPREENDIMENTO.entregaPrevista,
+      },
+    },
+  ],
+  expiraEm: "2026-09-11",
+  criadaEm: "2026-08-12T12:00:00Z",
+  numeroAberturas: 3,
 };
 
 /**
@@ -376,6 +416,27 @@ export default async function Sistema() {
           entregaPrevista={EMPREENDIMENTO.entregaPrevista}
           hoje={HOJE}
         />
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl tracking-tight">Proposta compartilhada</h2>
+        <p className="max-w-prose text-ink-muted">
+          O que chega em <code className="font-mono text-sm">/p/&lt;token&gt;</code> — a carta, a
+          opção comparada, a linha do tempo e os três riscos honestos, todos compostos pelo mesmo{" "}
+          <code className="font-mono text-sm">PropostaResumo</code> que a rota real usa. Abaixo, o
+          estado vencido: mesma saudação, sem números.
+        </p>
+
+        <div className="overflow-hidden rounded-lg border border-rule">
+          <PropostaSheet proposta={PROPOSTA} hoje={HOJE} />
+        </div>
+
+        <p className="font-mono text-xs uppercase tracking-widest text-ink-muted">
+          Proposta vencida
+        </p>
+        <div className="overflow-hidden rounded-lg border border-rule">
+          <PropostaExpirada saudacao={PROPOSTA.saudacao} expiraEm="2026-07-01" />
+        </div>
       </section>
 
       <section className="space-y-4">

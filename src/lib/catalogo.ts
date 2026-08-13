@@ -91,3 +91,43 @@ export const INDICE_LABEL: Record<CondicaoComercialResumo["indiceReajuste"], str
   ipca: "IPCA",
   igpm: "IGP-M",
 };
+
+/**
+ * A proposal's frozen commercial numbers — copied out of `CondicaoComercial` at creation time
+ * by `src/payload/collections/propostas.ts`'s `beforeValidate` hook, never read live from it
+ * again. Shaped like `CondicaoComercialResumo` on purpose (same fields `ValorPar`-style
+ * components already know how to render), plus the INCC rate that was active the day the
+ * proposal was made, since that also must not drift with a later admin edit.
+ */
+export type PremissaCongelada = {
+  tipologiaNome: string;
+  referenciaTabela: string;
+  entradaPercentual?: number | null;
+  parcelasObra?: { quantidade?: number | null; valor?: number | null } | null;
+  baloes: { mes?: number | null; valor?: number | null }[];
+  valorNasChaves?: number | null;
+  indiceReajuste: CondicaoComercialResumo["indiceReajuste"];
+  projecaoIncc?: { taxaAnual: number; dataRevisao: string } | null;
+  entregaPrevista?: string | null;
+};
+
+/** One compared unit on the proposal: live physical facts, frozen commercial terms. */
+export type OpcaoProposta = {
+  tipologia: TipologiaResumo;
+  /** For the WhatsApp CTA's message — a `TipologiaResumo` doesn't carry its parent's name. */
+  empreendimentoNome: string;
+  destaque: boolean;
+  nota?: string | null;
+  premissa: PremissaCongelada;
+};
+
+export type PropostaResumo = {
+  saudacao: string;
+  cartaTitulo: string;
+  cartaPrincipal: string;
+  cartaContexto?: string | null;
+  opcoes: OpcaoProposta[];
+  expiraEm: string;
+  criadaEm: string;
+  numeroAberturas: number;
+};

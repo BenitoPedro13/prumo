@@ -12,7 +12,7 @@
 
 ## 0. Project context — Prumo
 
-**Status: Phase 0 is built. Phase 1 has the plumb apparatus, the MCMV parameters and the pré-qualificação.** The product,
+**Status: Phase 0 is built. Phase 1 has the plumb apparatus, the MCMV parameters, the pré-qualificação, the shared proposal and a first Vercel deployment.** The product,
 market, architecture and phasing live in `docs/product-definition.md`. The visual identity,
 tokens, voice and screen inventory live in `docs/design-handoff.md`. Four working HTML
 prototypes live in `docs/design/prototypes/`. The scaffold is done
@@ -63,6 +63,23 @@ it may reach a real buyer (`docs/pending-verifications.md`).
 
 Editing `Parametros` revalidates the site (`src/payload/revalidate.ts`). It did not before, so a
 corrected faixa saved in the admin would have been saved and then not served.
+
+`docs/tasks/TASK-proposta.md` built `/p/[token]`, the shared proposal — a personal letter, one or
+two compared units, a payment timeline, three fixed honest risks and one WhatsApp CTA. Two things
+worth knowing: a proposal **freezes its assumptions** at creation — `Propostas`'s
+`beforeValidate` hook copies the commercial numbers into the document itself rather than
+referencing `CondicaoComercial` live, so a later edit to the source table never retroactively
+changes a proposal already sent — and the same hook **blocks the save outright** if any selected
+table is past its `validade_da_tabela`, the direct enforcement of "an expired price table blocks
+proposal generation." The route logs its own view count by writing through the Local API during
+a plain page render rather than a Server Action — a first for this codebase, and worth watching
+if it becomes a pattern. Past `expira_em` the page shows an honest expired state, not a 404 and
+not stale numbers.
+
+`docs/tasks/TASK-deploy.md` shipped the first deployment — Neon Postgres via the Vercel
+integration, Vercel Blob for media (not the documented R2; see that task doc for why), live at
+[prumo-drab-three.vercel.app](https://prumo-drab-three.vercel.app) as a private preview, not a
+public launch. Local dev now points at the same Neon database and Blob store as Preview/Production.
 
 `docs/product-definition.md` and `docs/design-handoff.md` are the source of truth for *what
 to build*; this file covers *how to work*. The root `README.md` is the implementation README
