@@ -106,7 +106,18 @@ opposite of what the sector does, generates disproportionate trust, and creates 
 instead of a permanent no. She gains a list of people who come back.
 
 **Boundary:** this is orientation, not credit analysis. No bureau queries, no document uploads,
-no promise of approval. When the person is ready, hand off to Cury's official analysis link.
+no promise of approval. When the person is ready, hand off to Cury's official analysis.
+
+**How that handoff actually works** (checked against Cury's broker page, 13 August 2026): it is
+**broker-initiated and cannot be deep-linked.** Adriana submits her name, e-mail and the
+empreendimento; Cury e-mails *her* a unique link; she forwards it to the buyer, who uploads
+documents through it and whose files stay accessible to her. There is no login, no per-broker
+referral code, and no stable URL carrying her identifier.
+
+So the flow's last step is **not** a button pointing at `cury.net`. It ends in WhatsApp with
+context pre-filled, and she pastes the link into the conversation. That keeps "WhatsApp is the
+runtime" true, keeps the orientation boundary intact, and means our site never transmits buyer
+data to Cury — the buyer uploads it themselves, which leaves the LGPD position unchanged.
 
 ### Surface 2 — Proposta pessoal *(private link)*
 
@@ -372,7 +383,9 @@ Blocking Phase 1, not Phase 0.
    sizes the entire project. If it is the majority — as it usually is in MCMV — the thesis holds.
 3. **What exactly does the Cury Corretor app provide** — espelho, tabela, reservation, materials,
    commission? Can anything be exported? Cury's public pages are silent; 15 minutes of screen
-   share answers it.
+   share answers it. **Partially answered:** the credit-analysis half is broker-initiated and
+   produces a per-request link by e-mail, with no stable URL or referral code — see §03. What the
+   app itself exposes is still open.
 4. **Where do her leads come from today** — Cury, referral, Instagram, plantão? If Cury
    distributes them, the site is about conversion and Phase 0 shifts emphasis.
 5. **Which developments and neighbourhoods** she currently represents, and a sample tabela to

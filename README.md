@@ -38,9 +38,11 @@ All five units of Phase 0 are done (`docs/tasks/TASK-chrome-e-seo.md`,
 `docs/tasks/TASK-home.md`, `docs/tasks/TASK-sobre.md`) — the catalogue's seed uses one real Rio
 development (Cury's Residencial Pixinguinha in Santo Cristo) for everything Cury publishes, and
 marks everything it does not — registro de incorporação, cartório, payment schedule — as
-placeholder. What still blocks going live is hers to supply, not ours to build: her real CRECI
-number, her WhatsApp number, a photograph, her professional history, and real Cury data. These
-are tracked in `docs/tasks/TASK-fase-0.md` §6.
+placeholder. What still blocks going live is mostly hers to supply, not ours to build: her real
+CRECI number, her WhatsApp number, a photograph, her professional history, and real Cury data.
+**Everything unconfirmed, placeholder or invented is indexed in
+`docs/pending-verifications.md`**, grouped by who can answer it — most of it closes in two
+conversations. Nothing on that list may reach a real buyer while it is still on it.
 
 Every route in the nav now exists. The mechanism that made that safe stays: the sitemap lists
 only routes flagged `built` in `src/lib/routes.ts`, so a route can be linked before it is

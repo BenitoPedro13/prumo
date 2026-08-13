@@ -121,6 +121,8 @@ or a promise made to the user.
    the real reference, not mockups.
 4. `docs/tasks/` — task docs. `TASK-scaffold-nextjs.md` is done; read it for what the
    scaffold does and does not include.
+5. `docs/pending-verifications.md` — everything unconfirmed, placeholder or invented, by who
+   can answer it. Read before showing anything to a real buyer.
 
 ### Open questions blocking Phase 1
 
@@ -194,7 +196,9 @@ housing policy**. Before scaffolding or writing framework-specific code:
 4. **Take the current major version as authoritative** over anything written in this file, and
    update the stack table to match (§3.1).
 5. **MCMV faixas, income ceilings, property caps, rates and subsidy rules must be re-verified
-   against Caixa before they are shown to any real user.** They were revised in 2026 by the
+   against Caixa before they are shown to any real user.** Every open item of this kind is
+   indexed in `docs/pending-verifications.md`, grouped by who can answer it — add to it and
+   remove from it as markers appear and are resolved. They were revised in 2026 by the
    Conselho Curador do FGTS. Anything unconfirmed gets `[VERIFICAR: ...]` inline rather than a
    guess. The same applies to CRECI/COFECI advertising rules, which vary by regional.
 
