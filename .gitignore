@@ -26,6 +26,11 @@ videos/
 next-env.d.ts
 tsconfig.tsbuildinfo
 
+# claude code tooling (local skill cache, session locks)
+.agents/
+.claude/
+skills-lock.json
+
 # logs
 npm-debug.log*
 yarn-debug.log*
