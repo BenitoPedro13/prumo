@@ -1,5 +1,3 @@
-import { cache } from "react";
-
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -7,7 +5,7 @@ import { PropostaExpirada } from "@/components/proposta/proposta-expirada";
 import { PropostaSheet } from "@/components/proposta/proposta-sheet";
 import { payload } from "@/lib/payload";
 
-import { toPropostaResumo } from "../mapping";
+import { buscarProposta, toPropostaResumo } from "../mapping";
 
 /**
  * The shared proposal — `docs/tasks/TASK-proposta.md`. Never cached: `expira_em` is checked
@@ -17,27 +15,15 @@ import { toPropostaResumo } from "../mapping";
 export const dynamic = "force-dynamic";
 
 /**
- * Looked up by `token_publico`, not by id — the token is the only thing the URL carries, and it
- * is deliberately not the document's primary key. `cache()` dedupes this against the second call
- * `generateMetadata` and the page component each make for the same request.
- */
-const buscarProposta = cache(async (token: string) => {
-  const client = await payload();
-  const { docs } = await client.find({
-    collection: "propostas",
-    where: { token_publico: { equals: token } },
-    depth: 2,
-    limit: 1,
-  });
-
-  return docs[0] ?? null;
-});
-
-/**
  * A private link, not a page anyone should find by searching — `robots: { index: false }`
  * mirrors `/sistema`'s posture, for a different reason: that page is hidden because it is
- * internal, this one because it carries one family's real numbers. No canonical, no OG url:
- * `pageMetadata()` assumes a stable public path, which this route deliberately isn't.
+ * internal, this one because it carries one family's real numbers.
+ *
+ * Sets its own `openGraph` rather than going through `pageMetadata()` — this is the page most
+ * likely to actually be shared (product-definition.md §08: WhatsApp, far more than search), and
+ * the one addressed to a specific person by name, so the generic site preview is the wrong
+ * default here more than anywhere else (`docs/tasks/TASK-seo-metadata-og.md`). The image comes
+ * from `opengraph-image.tsx` in this same segment, so nothing needs to reference it manually.
  */
 export async function generateMetadata({
   params,
@@ -46,10 +32,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { token } = await params;
   const doc = await buscarProposta(token);
+  const titulo = doc ? `Proposta para ${doc.saudacao}` : "Proposta";
 
   return {
-    title: doc ? `Proposta para ${doc.saudacao}` : "Proposta",
+    title: titulo,
     robots: { index: false, follow: false },
+    openGraph: { title: titulo, description: "Uma proposta feita para você, com a conta inteira." },
+    twitter: { card: "summary_large_image", title: titulo },
   };
 }
 

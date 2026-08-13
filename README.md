@@ -22,6 +22,7 @@ Vida the buyer's anxiety is credit approval, not finishes.
 | Design handoff | Complete — `docs/design-handoff.md` |
 | Prototypes | Four working HTML prototypes — `docs/design/prototypes/` |
 | Application | Tokens, signature, nav, footer, OG image, robots, sitemap, `wa.me` builder |
+| SEO / metadata | Every route has a correct, page-specific `og:image` and Twitter Card, via a shared `src/lib/og-image.tsx` renderer — `/simulador`, `/sobre`, `/contato`, `/privacidade`, `/empreendimentos` and `/p/[token]` previously had none at all (`pageMetadata()` was replacing, not merging, the inherited image — Next's own documented "shallow merge" behavior). A branded `not-found.tsx` now catches every in-app `notFound()`; a genuinely unmatched URL still falls through to Next's default, which needs an experimental flag this app doesn't opt into yet. `docs/tasks/TASK-seo-metadata-og.md`, `TASK-404.md` |
 | Catálogo | `/empreendimentos` and `/empreendimentos/[slug]` built and verified against Postgres; publication gate exercised end to end |
 | Contato & LGPD | `/contato` and `/privacidade` built; `Lead` and `Consentimento` write through a Server Action, never a public endpoint |
 | Home | `/` built and verified — composes the catálogo, the WhatsApp action and the signature; states the credit-before-apartment order in words. Lint, typecheck and `pnpm build` clean; rendered and read at 390px, empty state exercised |

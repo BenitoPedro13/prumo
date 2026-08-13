@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 
+import { OG_CONTENT_TYPE, OG_SIZE, loadFonts } from "@/lib/og-image";
 import { OG } from "@/lib/og-palette";
 import { signatureScale } from "@/lib/signature";
 import {
@@ -38,18 +37,12 @@ import {
  * The plumb rail on the left is the identity's mechanism (§07) in its static form — the same
  * thread and bob that will drop through the pre-qualification, here hanging still.
  */
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+export const size = OG_SIZE;
+export const contentType = OG_CONTENT_TYPE;
 
 export const alt = `${BRAND_NAME} · ${BROKER_NAME}, ${BROKER_ROLE}, ${BROKER_CRECI}. Apartamentos da Cury no Rio de Janeiro.`;
 
-const fontPath = (file: string) => join(process.cwd(), "src/assets/fonts", file);
-
-const [slab, sans, mono] = await Promise.all([
-  readFile(fontPath("RobotoSlab-Regular.ttf")),
-  readFile(fontPath("Roboto-Regular.ttf")),
-  readFile(fontPath("RobotoMono-Regular.ttf")),
-]);
+const fonts = await loadFonts();
 
 /** Wordmark size for this piece; her name and the CRECI follow from it, per §06. */
 const lockup = signatureScale(48, { nameRatio: 0.62, creciRatio: 0.46 });
@@ -154,13 +147,6 @@ export default function OpenGraphImage() {
         </div>
       </div>
     ),
-    {
-      ...size,
-      fonts: [
-        { name: "Roboto Slab", data: slab, style: "normal", weight: 400 },
-        { name: "Roboto", data: sans, style: "normal", weight: 400 },
-        { name: "Roboto Mono", data: mono, style: "normal", weight: 400 },
-      ],
-    },
+    { ...size, fonts },
   );
 }

@@ -1,11 +1,33 @@
+import { cache } from "react";
+
 import type {
   CondicaoComercialResumo,
   OpcaoProposta,
   PropostaResumo,
 } from "@/lib/catalogo";
+import { payload } from "@/lib/payload";
 import type { Proposta } from "@/payload/payload-types";
 
 import { toTipologiaResumo } from "../empreendimentos/mapping";
+
+/**
+ * Looked up by `token_publico`, not by id — the token is the only thing the URL carries, and it
+ * is deliberately not the document's primary key. Shared between `[token]/page.tsx` and
+ * `[token]/opengraph-image.tsx`, which are separate requests (a crawler fetches the HTML, then
+ * separately fetches the image URL it finds in the meta tag), so `cache()` here only dedupes
+ * `generateMetadata` and the page component within one of those requests, not across both.
+ */
+export const buscarProposta = cache(async (token: string) => {
+  const client = await payload();
+  const { docs } = await client.find({
+    collection: "propostas",
+    where: { token_publico: { equals: token } },
+    depth: 2,
+    limit: 1,
+  });
+
+  return docs[0] ?? null;
+});
 
 /**
  * Payload document → view type, same split as `../empreendimentos/mapping.ts`: the components
